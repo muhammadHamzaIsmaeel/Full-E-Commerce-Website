@@ -1,0 +1,6 @@
+Test Case ID,Feature,Test Steps,Expected Result,Actual Result,Status
+TC-001,Product Listing,Load homepage and check product list display,Products should be visible,Products displayed correctly,Passed
+TC-002,Search Functionality,Enter search term and check results,Relevant products should be listed,Displayed accurate results,Passed
+TC-003,Cart Operations,"Add, update, and remove items from cart",Cart should update accordingly,Cart functions properly,Passed
+TC-004,Product Details Page,Click on a product to view details,Correct product details should load,Page loads as expected,Passed
+TC-005,Checkout Process,Complete checkout process with valid data,Order should be placed successfully,Order confirmed,Passed
