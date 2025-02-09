@@ -1,4 +1,3 @@
-// src/app/api/create-order/route.ts
 import { NextResponse } from 'next/server';
 import { client } from '@/sanity/lib/client'; // Import your Sanity client
 import { v4 as uuidv4 } from 'uuid';
@@ -43,6 +42,7 @@ interface Order {
   products: Product[];
   date: string;
   formData: FormData;
+  userId: string; // Add userId to the Order interface
 }
 
 export async function POST(req: Request) {
@@ -77,6 +77,7 @@ export async function POST(req: Request) {
       paymentStatus: 'pending', // Default payment status
       trackingNumber: '', // Default tracking number (can be updated later)
       formData: order.formData,
+      userId: order.userId, // Include the userId
     };
 
     // Sanity document creation

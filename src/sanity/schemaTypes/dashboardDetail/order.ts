@@ -6,6 +6,13 @@ export default defineType({
   type: 'document',
   fields: [
     {
+      name: 'userId',
+      title: 'User ID',
+      type: 'string',
+      description: 'The ID of the user who placed this order.',
+      validation: (Rule) => Rule.required(), // Ensure userId is required
+    },
+    {
       name: 'orderId',
       title: 'Order ID',
       type: 'number',
