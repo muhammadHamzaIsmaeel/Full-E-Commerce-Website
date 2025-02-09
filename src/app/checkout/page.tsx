@@ -122,31 +122,32 @@ export default function Checkout() {
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     setIsSubmitting(true);
-
-    // **ADD THIS CHECK:**  Verify cart is not empty before processing
+  
     if (cartItems.length === 0) {
-      toast.error(
-        "Your cart is empty. Please add products before confirming the order.",
-        {
-          position: "top-right",
-          autoClose: 3000,
-        }
-      );
-      setIsSubmitting(false); // Re-enable the button
-      return; // Stop the submission process
+      toast.error("Your cart is empty. Please add products before confirming the order.", {
+        position: "top-right",
+        autoClose: 3000,
+      });
+      setIsSubmitting(false);
+      return;
     }
-
+  
     try {
-      const pktDateTime = getPKTDateTime(); // Get PKT date and time
+      const pktDateTime = getPKTDateTime();
       const order: Order = {
         id: Date.now(),
-        status: "pending", // Directly confirmed for COD
+        status: "pending",
         products: cartItems,
-        date: pktDateTime, // Use the formatted PKT date/time
+        date: pktDateTime,
         formData: data,
       };
-
-      // ** Send order to Sanity **
+  
+      // Save order to localStorage
+      const existingOrders = JSON.parse(localStorage.getItem("orders") || "[]");
+      const updatedOrders = [...existingOrders, order];
+      localStorage.setItem("orders", JSON.stringify(updatedOrders));
+  
+      // Send order to Sanity (optional)
       const response = await fetch("/api/create-order", {
         method: "POST",
         headers: {
@@ -154,55 +155,45 @@ export default function Checkout() {
         },
         body: JSON.stringify({ order }),
       });
-
+  
       if (!response.ok) {
         const errorData = await response.json();
         console.error("Error sending order to Sanity:", errorData);
         throw new Error(`Failed to create order: ${response.statusText}`);
       }
-
-      // ** Send Invoice Email **
+  
+      // Send Invoice Email (optional)
       const emailResponse = await fetch("/api/send-email", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          email: data.emailAddress, // User's email from the form
-          orderId: order.id, // Order ID
-          products: cartItems, // List of products
-          totalAmount: calculateSubtotal(), // Total amount
+          email: data.emailAddress,
+          orderId: order.id,
+          products: cartItems,
+          totalAmount: calculateSubtotal(),
         }),
       });
-
+  
       if (!emailResponse.ok) {
         const errorData = await emailResponse.json();
         console.error("Error sending invoice email:", errorData);
-        throw new Error(
-          `Failed to send invoice email: ${emailResponse.statusText}`
-        );
+        throw new Error(`Failed to send invoice email: ${emailResponse.statusText}`);
       }
-
-      const existingOrders = JSON.parse(localStorage.getItem("orders") || "[]");
-      const updatedOrders = [...existingOrders, order];
-      localStorage.setItem("orders", JSON.stringify(updatedOrders));
-      console.log("Order added to localStorage:", order);
-
+  
       toast.success("Order confirmed! Invoice email sent.", {
         position: "top-right",
         autoClose: 3000,
       });
-
+  
       handlePaymentSuccess();
     } catch (error) {
       console.error("Error processing order:", error);
-      toast.error(
-        "An error occurred while processing your order. Please try again.",
-        {
-          position: "top-right",
-          autoClose: 3000,
-        }
-      );
+      toast.error("An error occurred while processing your order. Please try again.", {
+        position: "top-right",
+        autoClose: 3000,
+      });
     } finally {
       setIsSubmitting(false);
     }

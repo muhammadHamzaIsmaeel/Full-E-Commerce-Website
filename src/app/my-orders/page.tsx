@@ -1,31 +1,26 @@
-// src/app/my-orders/page.tsx
 "use client";
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { urlFor } from "@/sanity/lib/image";
-import { client } from "@/sanity/lib/client"; // Import Sanity client
+import { client } from "@/sanity/lib/client";
 
-
-// Define types for the product image
 interface ProductImage {
   asset: {
     _ref: string;
   };
 }
 
-
-
 interface CartItem {
-  _id: string; // Product ID
+  _id: string;
   title: string;
   price: number;
   quantity: number;
-  productImage: ProductImage; // Sanity image reference
+  productImage: ProductImage;
 }
 
 interface Order {
-  orderId: number; // Use orderId instead of id
+  id: number;
   status: string;
   products: CartItem[];
   date: string;
@@ -49,63 +44,25 @@ interface Order {
 
 export default function MyOrders() {
   const [orders, setOrders] = useState<Order[]>([]);
-  const [searchTerm, setSearchTerm] = useState(""); // State for search term
-  const [filteredOrders, setFilteredOrders] = useState<Order[]>([]); // State for filtered orders
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredOrders, setFilteredOrders] = useState<Order[]>([]);
 
   useEffect(() => {
-    // Fetch orders from Sanity
-    const fetchOrders = async () => {
-      try {
-        const query = `*[_type == "order"] | order(date desc) {
-          orderId, // Ensure this matches the field name in Sanity
-          status,
-          products[] {
-            _id,
-            title,
-            price,
-            quantity,
-            productImage
-          },
-          date,
-          formData {
-            fullName,
-            addressLine1,
-            addressLine2,
-            city,
-            province,
-            zipCode,
-            courierService,
-            phoneNumber1,
-            phoneNumber2,
-            emailAddress,
-            additionalInformation,
-            paymentMethod,
-            landmark,
-            addressType
-          }
-        }`;
-
-        const sanityOrders = await client.fetch(query);
-        setOrders(sanityOrders);
-        setFilteredOrders(sanityOrders); // Initialize filtered orders with all orders
-      } catch (error) {
-        console.error("Error fetching orders from Sanity:", error);
-      }
-    };
-
-    fetchOrders();
+    // Fetch orders from localStorage
+    const storedOrders = JSON.parse(localStorage.getItem("orders") || "[]");
+    setOrders(storedOrders);
+    setFilteredOrders(storedOrders);
   }, []);
 
-  // Handle search functionality
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const term = e.target.value;
     setSearchTerm(term);
 
     if (term === "") {
-      setFilteredOrders(orders); // Reset to all orders if search term is empty
+      setFilteredOrders(orders);
     } else {
       const filtered = orders.filter((order) =>
-        order.orderId.toString().includes(term)
+        order.id.toString().includes(term)
       );
       setFilteredOrders(filtered);
     }
@@ -115,7 +72,6 @@ export default function MyOrders() {
     <div className="max-w-7xl mx-auto p-6">
       <h1 className="text-3xl font-bold text-gray-900 mb-8">My Orders</h1>
 
-      {/* Search Bar */}
       <div className="mb-8">
         <input
           type="text"
@@ -132,20 +88,18 @@ export default function MyOrders() {
         <div className="space-y-6">
           {filteredOrders.map((order) => (
             <div
-              key={order.orderId}
+              key={order.id}
               className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300"
             >
-              {/* Order Header */}
               <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
                 <div>
                   <h2 className="text-xl font-semibold text-gray-800">
-                    Order #{order.orderId}
+                    Order #{order.id}
                   </h2>
                   <p className="text-sm text-gray-500">
                     Placed on {new Date(order.date).toLocaleDateString()}
                   </p>
                 </div>
-                {/* Status Badge */}
                 <span
                   className={`inline-flex items-center justify-center px-3 py-1 text-sm font-medium rounded-full mt-2 md:mt-0 ${
                     order.status === "pending"
@@ -163,7 +117,6 @@ export default function MyOrders() {
                 </span>
               </div>
 
-              {/* Shipping Information */}
               <div className="mb-6">
                 <h3 className="text-lg font-semibold text-gray-800 mb-4">
                   Shipping Information
@@ -213,7 +166,6 @@ export default function MyOrders() {
                 </div>
               </div>
 
-              {/* Products */}
               <div>
                 <h3 className="text-lg font-semibold text-gray-800 mb-4">
                   Products
@@ -224,7 +176,6 @@ export default function MyOrders() {
                       key={index}
                       className="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg"
                     >
-                      {/* Product Image */}
                       {product.productImage && (
                         <Image
                           src={urlFor(product.productImage).url()}
@@ -239,7 +190,6 @@ export default function MyOrders() {
                         />
                       )}
 
-                      {/* Product Details */}
                       <div className="flex-1">
                         <p className="font-medium text-gray-800">
                           {product.title}
@@ -259,7 +209,6 @@ export default function MyOrders() {
                 </div>
               </div>
 
-              {/* Order Total */}
               <div className="mt-6 pt-4 border-t border-gray-200">
                 <p className="text-lg font-semibold text-gray-800">
                   Order Total: Rs.{" "}
