@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { urlFor } from "@/sanity/lib/image";
-import { client } from "@/sanity/lib/client";
 
 interface ProductImage {
   asset: {
