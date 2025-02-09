@@ -22,12 +22,15 @@ import { Input } from "@/components/ui/input";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useRouter } from "next/navigation"; // Import useRouter
+import { useAuth } from "@clerk/nextjs"; // Import Clerk's useAuth hook
+
 
 // Define types for the product image
 interface ProductImage {
   asset: {
     _ref: string;
   };
+  userId: string; // Add userId property to the Order interface
 }
 
 // Define types for the cart item
@@ -67,12 +70,14 @@ interface Order {
   products: CartItem[];
   date: string;
   formData: z.infer<typeof formSchema>; // Use the inferred type from formSchema
+  userId: string; // Add userId property
 }
 
 export default function Checkout() {
   const [cartItems, setCartItems] = useLocalStorage<CartItem[]>("cart", []);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter(); // Initialize useRouter
+  const { userId } = useAuth(); // Get the logged-in user's ID
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -140,14 +145,10 @@ export default function Checkout() {
         products: cartItems,
         date: pktDateTime,
         formData: data,
+        userId: userId!, // Add the logged-in user's ID to the order
       };
   
-      // Save order to localStorage
-      const existingOrders = JSON.parse(localStorage.getItem("orders") || "[]");
-      const updatedOrders = [...existingOrders, order];
-      localStorage.setItem("orders", JSON.stringify(updatedOrders));
-  
-      // Send order to Sanity (optional)
+      // Save order to Sanity
       const response = await fetch("/api/create-order", {
         method: "POST",
         headers: {
@@ -162,31 +163,39 @@ export default function Checkout() {
         throw new Error(`Failed to create order: ${response.statusText}`);
       }
   
-      // Send Invoice Email (optional)
+      // Send Invoice Email
       const emailResponse = await fetch("/api/send-email", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          email: data.emailAddress,
-          orderId: order.id,
-          products: cartItems,
-          totalAmount: calculateSubtotal(),
+          email: data.emailAddress, // User's email from the form
+          orderId: order.id, // Order ID
+          products: cartItems, // List of products
+          totalAmount: calculateSubtotal(), // Total amount
         }),
       });
   
       if (!emailResponse.ok) {
         const errorData = await emailResponse.json();
         console.error("Error sending invoice email:", errorData);
-        throw new Error(`Failed to send invoice email: ${emailResponse.statusText}`);
+        throw new Error(
+          `Failed to send invoice email: ${emailResponse.statusText}`
+        );
       }
+  
+      const existingOrders = JSON.parse(localStorage.getItem("orders") || "[]");
+      const updatedOrders = [...existingOrders, order];
+      localStorage.setItem("orders", JSON.stringify(updatedOrders));
+      console.log("Order added to localStorage:", order);
   
       toast.success("Order confirmed! Invoice email sent.", {
         position: "top-right",
         autoClose: 3000,
       });
   
+      // Clear cart and redirect
       handlePaymentSuccess();
     } catch (error) {
       console.error("Error processing order:", error);
