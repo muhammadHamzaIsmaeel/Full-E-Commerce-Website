@@ -11,7 +11,7 @@ export const review ={
         name: 'product',
         title: 'Product',
         type: 'reference',
-        to: [{ type: 'product' }], // Link to your product schema
+        to: [{ type: 'product' }], // Link to your product sch
         validation: (Rule: Rule) => Rule.required(),
       },
       {
