@@ -34,12 +34,15 @@ interface ProductImage {
 }
 
 // Define types for the cart item
+// src/app/checkout/page.tsx
 interface CartItem {
-  _id?: string; // Optional Product ID
+  _id?: string;
   title: string;
   price: number;
   quantity: number;
-  productImage?: ProductImage; // Use the ProductImage type
+  productImage?: ProductImage;
+  selectedSize?: string; // Add selected size
+  selectedColor?: string; // Add selected color
 }
 
 // Define the form schema using Zod

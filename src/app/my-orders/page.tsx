@@ -1,10 +1,11 @@
+// src/app/my-orders/page.tsx
 "use client";
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { urlFor } from "@/sanity/lib/image";
 import { client } from "@/sanity/lib/client";
-import { useAuth } from "@clerk/nextjs"; // Import Clerk's useAuth hook
+import { useAuth } from "@clerk/nextjs";
 
 // Define types for the product image
 interface ProductImage {
@@ -20,6 +21,8 @@ interface CartItem {
   price: number;
   quantity: number;
   productImage: ProductImage;
+  selectedSize?: string; // Add selected size
+  selectedColor?: string; // Add selected color
 }
 
 // Define types for the order
@@ -66,7 +69,9 @@ export default function MyOrders() {
             title,
             price,
             quantity,
-            productImage
+            productImage,
+            selectedSize, // Fetch selected size
+            selectedColor // Fetch selected color
           },
           date,
           formData {
@@ -153,12 +158,12 @@ export default function MyOrders() {
                     order.status === "pending"
                       ? "bg-yellow-100 text-yellow-800"
                       : order.status === "processing"
-                      ? "bg-blue-100 text-blue-800"
-                      : order.status === "shipped"
-                      ? "bg-purple-100 text-purple-800"
-                      : order.status === "delivered"
-                      ? "bg-green-100 text-green-800"
-                      : "bg-red-100 text-red-800"
+                        ? "bg-blue-100 text-blue-800"
+                        : order.status === "shipped"
+                          ? "bg-purple-100 text-purple-800"
+                          : order.status === "delivered"
+                            ? "bg-green-100 text-green-800"
+                            : "bg-red-100 text-red-800"
                   }`}
                 >
                   {order.status}
@@ -224,7 +229,7 @@ export default function MyOrders() {
                   {order.products.map((product, index) => (
                     <div
                       key={index}
-                      className="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg"
+                      className="flex items-center space-x-4 p-4 bg-white rounded-lg border border-gray-200 hover:shadow-md transition-shadow duration-300"
                     >
                       {/* Product Image */}
                       {product.productImage && (
@@ -235,9 +240,6 @@ export default function MyOrders() {
                           height={80}
                           className="w-20 h-20 object-cover rounded-md"
                           loading="lazy"
-                          onError={(e) => {
-                            console.error("Image load error:", e);
-                          }}
                         />
                       )}
 
@@ -246,14 +248,31 @@ export default function MyOrders() {
                         <p className="font-medium text-gray-800">
                           {product.title}
                         </p>
-                        <div className="flex justify-between items-center">
+                        <div className="flex justify-between items-center mt-2">
                           <p className="text-gray-600 text-sm">
                             {product.quantity} x Rs.{" "}
                             {product.price.toLocaleString()}
                           </p>
                           <p className="text-gray-800 font-semibold">
-                            Rs. {(product.price * product.quantity).toLocaleString()}
+                            Rs.{" "}
+                            {(
+                              product.price * product.quantity
+                            ).toLocaleString()}
                           </p>
+                        </div>
+
+                        {/* Display Selected Size and Color */}
+                        <div className="mt-2 flex flex-wrap gap-2">
+                          {product.selectedSize && (
+                            <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
+                              Size: {product.selectedSize}
+                            </span>
+                          )}
+                          {product.selectedColor && (
+                            <span className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">
+                              Color: {product.selectedColor}
+                            </span>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -266,7 +285,10 @@ export default function MyOrders() {
                 <p className="text-lg font-semibold text-gray-800">
                   Order Total: Rs.{" "}
                   {order.products
-                    .reduce((total, item) => total + item.price * item.quantity, 0)
+                    .reduce(
+                      (total, item) => total + item.price * item.quantity,
+                      0
+                    )
                     .toLocaleString()}
                 </p>
               </div>

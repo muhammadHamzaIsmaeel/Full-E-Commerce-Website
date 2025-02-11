@@ -47,8 +47,10 @@ export default defineType({
               name: 'productImage',
               type: 'image',
               title: 'Product Image',
-              options: { hotspot: true }, // Enable hotspot for image cropping
+              options: { hotspot: true },
             },
+            { name: 'selectedSize', type: 'string', title: 'Selected Size' }, // Add selected size
+            { name: 'selectedColor', type: 'string', title: 'Selected Color' }, // Add selected color
           ],
         },
       ],
