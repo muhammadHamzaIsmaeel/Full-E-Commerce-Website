@@ -92,6 +92,12 @@ export const product = defineType({
         hotspot: true,
       },
     },
+    {
+      name: 'reviews',
+      title: 'Reviews',
+      type: 'array',
+      of: [{ type: 'reference', to: [{ type: 'review' }] }],
+    },
     
     {
       name: "rating",
