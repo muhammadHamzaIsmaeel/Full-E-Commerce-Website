@@ -21,7 +21,7 @@ export default function PrivacyPolicyPage() {
             <Link href="/" aria-label="Go to Home">
               <Image
                 src="/logo.png"
-                alt="Furniro Logo"
+                alt="Saud Solution Logo"
                 width="32"
                 height="20"
                 className="w-12 h-8"
@@ -50,7 +50,7 @@ export default function PrivacyPolicyPage() {
         <div className="max-w-4xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-bold">Our Privacy Policy</h2>
           <p className="mt-4 text-gray-600">
-            At Furniro, we are committed to protecting your privacy. This Privacy Policy explains how we collect, use, and safeguard your personal information when you visit our website or make a purchase.
+            At Saud Solution, we are committed to protecting your privacy. This Privacy Policy explains how we collect, use, and safeguard your personal information when you visit our website or make a purchase.
           </p>
 
           {/* Data Collection Section */}
@@ -114,7 +114,7 @@ export default function PrivacyPolicyPage() {
               If you have any questions or concerns about our Privacy Policy, please contact us at:
             </p>
             <p className="mt-2 text-gray-600">
-              Email: <Link href="mailto:privacy@furniro.com" className="text-blue-600 hover:underline">privacy@furniro.com</Link>
+              Email: <Link href="mailto:privacy@Saud Solution.com" className="text-blue-600 hover:underline">privacy@Saud Solution.com</Link>
             </p>
             <p className="mt-2 text-gray-600">
               Phone: <Link href="tel:+1234567890" className="text-blue-600 hover:underline">+1 (234) 567-890</Link>

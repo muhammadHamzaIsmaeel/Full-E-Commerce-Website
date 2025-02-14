@@ -93,6 +93,21 @@ export const product = defineType({
       },
     },
     {
+      name: 'productVideo',
+      title: 'Product Video',
+      type: 'file',
+      options: {
+        accept: 'video/*',  // Allow all video types
+      },
+    },
+    {
+      name: 'stockQuantity',
+      title: 'Stock Quantity',
+      type: 'number',
+      description: 'The number of units currently in stock.',
+      validation: Rule => Rule.integer().min(0).required(), // Ensure it's a non-negative integer.
+    },
+    {
       name: 'reviews',
       title: 'Reviews',
       type: 'array',
@@ -161,8 +176,16 @@ export const product = defineType({
       name: "category",
       title: "Category",
       type: "string",
-      // validation: (rule) => rule.required(),
+      options: {
+        list: [
+          { title: "Beauty", value: "beauty" },
+          { title: "Fashion", value: "fashion" },
+          { title: "Electronics", value: "electronics" },
+        ],
+      },
+      validation: (rule) => rule.required(),
     },
+    
     {
       name: "isNew",
       title: "New Badge",

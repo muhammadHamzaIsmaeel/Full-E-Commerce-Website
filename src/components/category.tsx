@@ -70,14 +70,16 @@ const BrowseRange = () => {
             role="button"
             aria-label={`Explore category: ${category.title}`}
           >
-            <Image
-              src={urlFor(category.image).url()}
-              alt={`Category: ${category.title}`}
-              width={500}
-              height={500}
-              className="w-full h-[400px] md:h-auto object-cover"
-              priority={index === 0} // Prioritize the first image for better performance
-            />
+            <div className="relative w-full h-[400px]"> {/* Added relative positioning to the container */}
+              <Image
+                src={urlFor(category.image).url()}
+                alt={`Category: ${category.title}`}
+                fill // Make the image fill the container
+                style={{ objectFit: 'cover' }} // Use object-fit: cover to maintain aspect ratio and fill
+                className="w-full h-full" // Ensures image takes up the full container
+                priority={index === 0} // Prioritize the first image for better performance
+              />
+            </div>
             <div className="p-4">
               <h3 className="text-lg font-medium">{category.title}</h3>
             </div>

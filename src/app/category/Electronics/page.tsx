@@ -131,8 +131,8 @@ export default function BedroomPage() {
     const fetchProducts = async () => {
       try {
         const products: IProduct[] = await client.fetch(
-          '*[_type == "product" && category == "living"]{_id, title, shortDescription, dicountPercentage, price, oldPrice, isNew, productImage}'
-        );
+          '*[_type == "product" && lower(category) == "electronics"]{_id, title, shortDescription, discountPercentage, price, oldPrice, isNew, productImage}'
+                  );
         setData(products);
         setIsLoading(false);
       } catch (error) {
@@ -170,20 +170,20 @@ export default function BedroomPage() {
             <Link href="/">
               <Image
                 src="/logo.png"
-                alt="Furniro Logo"
+                alt="Saud Solution Logo"
                 width={32}
                 height={20}
                 className="w-12 h-8"
                 loading="lazy"
               />
             </Link>
-            <h1 className="text-4xl font-bold">Living</h1>
+            <h1 className="text-4xl font-bold">Electronics</h1>
             <nav className="flex items-center text-sm md:text-xl mb-4 space-x-1">
               <Link className="font-bold text-xl" href="/">
                 Home
               </Link>
               <MdKeyboardArrowRight className="mt-2 text-2xl" />
-              <span className="mt-2 md:mt-0">Living</span>
+              <span className="mt-2 md:mt-0">Electronics</span>
             </nav>
           </div>
         </div>

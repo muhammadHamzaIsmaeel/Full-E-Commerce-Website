@@ -35,7 +35,7 @@ const WishlistPage = () => {
             <Link href="/" aria-label="Go to Home">
               <Image
                 src="/logo.png"
-                alt="Furniro Logo"
+                alt="Saud Solution Logo"
                 width={32}
                 height={20}
                 className="w-12 h-8"

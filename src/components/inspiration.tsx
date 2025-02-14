@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react"; // Import useRef
 import { FaArrowRightLong } from "react-icons/fa6";
 import { client } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
@@ -25,6 +25,7 @@ export default function TrendyProductsSection() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const sliderRef = useRef<HTMLDivElement>(null); // Create a ref
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -53,12 +54,30 @@ export default function TrendyProductsSection() {
   }, []);
 
   const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % products.length); // Loop back to the first slide
+    setCurrentSlide((prev) => (prev + 1) % products.length);
   };
 
   const prevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + products.length) % products.length); // Loop back to the last slide
+    setCurrentSlide((prev) => (prev - 1 + products.length) % products.length);
   };
+
+  // Animation Effect
+  useEffect(() => {
+    if (sliderRef.current) {
+      sliderRef.current.style.transition = 'transform 0.5s ease-in-out'; // Add transition property
+      sliderRef.current.style.transform = `translateX(-${currentSlide * 35}%)`;
+    }
+
+    // Reset transition after animation
+    const transitionTimeout = setTimeout(() => {
+      if (sliderRef.current) {
+        sliderRef.current.style.transition = ''; // Remove transition after animation
+      }
+    }, 500);
+
+    return () => clearTimeout(transitionTimeout);
+
+  }, [currentSlide]);
 
   if (isLoading) return <div className="text-center">Loading products...</div>;
   if (error) return <div className="text-center text-red-500">{error}</div>;
@@ -72,12 +91,12 @@ export default function TrendyProductsSection() {
       {/* Left Section */}
       <div className="md:pl-16 pl-4 py-5 w-full md:py-20 text-black space-y-4 md:space-y-6">
         <h1 className="md:text-4xl text-2xl font-bold text-gray-800 leading-tight">
-          50+ Beautiful Rooms Inspiration
+          Trending Now: Must-Have Products
         </h1>
         <p className="md:text-lg lg:pr-16 text-gray-600">
-          Our designers have created a wide variety of beautiful room prototypes to inspire you.
+          Discover the hottest products everyone&apos;s talking about. Shop the latest trends in fashion, electronics, beauty, and more!
         </p>
-        <a href="/explore" aria-label="Explore More">
+        <a href="/shop" aria-label="Explore More">
           <button
             className="bg-[#B88E2F] text-white mt-5 px-4 py-2 md:px-8 md:py-3 text-lg font-medium 
             hover:bg-[#c89b32] transition duration-300"
@@ -90,11 +109,12 @@ export default function TrendyProductsSection() {
       {/* Right Section: Product Image Slider */}
       <div className="relative flex items-center w-full md:w-2/3 justify-center mt-6 md:mt-0">
         {/* Image Slider */}
-        <div className="relative w-full md:w-[440px] lg:w-[850px] overflow-hidden">
+        <div className="relative w-full md:w-[440px] lg:w-[950px] overflow-hidden">
           <div
             className="flex transition-transform duration-500 ease-in-out"
             style={{ transform: `translateX(-${currentSlide * 35}%)` }}
             role="list"
+            ref={sliderRef} // Attach the ref to the slider container
           >
             {products.map((product, index) => (
               <div
@@ -108,8 +128,8 @@ export default function TrendyProductsSection() {
                   alt={`Product: ${product.title}`}
                   className="w-full h-full rounded-sm object-cover"
                   loading="lazy"
-                  width={400} // Optimized for performance
-                  height={400} // Optimized for performance
+                  width={400}
+                  height={400}
                 />
                 <div
                   className="absolute bottom-4 left-4 bg-white bg-opacity-70 text-black text-sm 

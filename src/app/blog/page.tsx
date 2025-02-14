@@ -119,7 +119,7 @@ export default function BlogPage() {
             className="mx-auto mb-4 animate-pulse"
             loading="lazy"
           />
-          <div className="text-3xl font-bold text-black animate-pulse">Furniro...</div>
+          <div className="text-3xl font-bold text-black animate-pulse">Saud Solution...</div>
           <div className="flex justify-center space-x-2 text-yellow-700">
             <span className="dot text-5xl">.</span>
             <span className="dot text-5xl">.</span>
@@ -146,7 +146,7 @@ export default function BlogPage() {
           <Link href="/">
             <Image
               src="/logo.png"
-              alt="Furniro Logo"
+              alt="Saud Solution Logo"
               width="32"
               height="20"
               className="w-12 h-8"

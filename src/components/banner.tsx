@@ -65,7 +65,7 @@ export default function Banner() {
             loading="lazy"
           />
           <div className="text-3xl font-bold text-black animate-pulse">
-            Furniro...
+          Saud Solution...
           </div>
           <div className="flex justify-center space-x-2 text-yellow-700">
             <span className="dot text-5xl">.</span>

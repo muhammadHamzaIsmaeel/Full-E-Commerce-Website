@@ -114,7 +114,7 @@ export default function ShopProducts() {
             aria-label="Loading..."
           />
           <div className="text-3xl font-bold text-black animate-pulse">
-            Furniro...
+          Saud Solution...
           </div>
           <div className="flex justify-center space-x-2 text-yellow-700">
             <span className="dot text-5xl">.</span>
@@ -186,7 +186,7 @@ export default function ShopProducts() {
             <Link href="/" aria-label="Go to Home">
               <Image
                 src="/logo.png"
-                alt="Furniro Logo"
+                alt="Saud Solution Logo"
                 width="32"
                 height="20"
                 className="w-12 h-8"

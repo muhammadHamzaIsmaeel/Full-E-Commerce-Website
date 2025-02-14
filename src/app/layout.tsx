@@ -21,53 +21,49 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Furniro | Modern Furniture & Home Decor",
+  title: "Saud Solution | Your Ecommerce Store", // Be more specific about what you sell.
   description:
-    "Discover high-quality, stylish, and affordable furniture and home decor at Furniro. Shop our curated collection of modern furniture and decor items to transform your home.",
+    "Shop the best e-commerce products at Saud Solution.  Find great deals and high-quality items. [Add a more specific description of your niche here!]",
   keywords: [
-    "Furniro",
-    "modern furniture",
-    "home decor",
-    "affordable furniture",
-    "stylish furniture",
-    "living room furniture",
-    "bedroom furniture",
-    "office furniture",
-    "home decoration",
-    "decorative items",
-    "wall art",
-    "lighting",
-    "rugs",
-    "curtains",
-    "home accessories",
+    "Saud Solution",
+    "ecommerce",
+    "products",
+    // Add keywords specific to the *types* of products you sell.  For example:
+    "electronics",
+    "gadgets",
+    "home goods",
+    "fashion",
+    "accessories",
+    "deals",
+    "best prices",
   ],
   openGraph: {
-    title: "Furniro | Modern Furniture & Home Decor",
+    title: "Saud Solution | Your Ecommerce Store",
     description:
-      "Discover high-quality, stylish, and affordable furniture and home decor at Furniro. Shop our curated collection of modern furniture and decor items to transform your home.",
+      "Shop the best e-commerce products at Saud Solution.  Find great deals and high-quality items.  [Add a more specific description of your niche here!]",
     type: "website",
-    url: "https://www.furniro.com", // Replace with your website URL
-    siteName: "Furniro",
+    url: "https://www.saudsolution.com", // VERY IMPORTANT: Replace with your actual website URL!
+    siteName: "Saud Solution",
     images: [
       {
-        url: "https://www.furniro.com/og-image.jpg", // Replace with your Open Graph image URL
+        url: "https://www.saudsolution.com/og-image.jpg", // VERY IMPORTANT:  Replace with YOUR Open Graph image URL!  Create a visually appealing image representing your brand.
         width: 1200,
         height: 630,
-        alt: "Furniro | Modern Furniture & Home Decor",
+        alt: "Saud Solution | Your Ecommerce Store",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Furniro | Modern Furniture & Home Decor",
+    title: "Saud Solution | Your Ecommerce Store",
     description:
-      "Discover high-quality, stylish, and affordable furniture and home decor at Furniro. Shop our curated collection of modern furniture and decor items to transform your home.",
+      "Shop the best e-commerce products at Saud Solution.  Find great deals and high-quality items. [Add a more specific description of your niche here!]",
     images: [
       {
-        url: "https://www.furniro.com/twitter-image.jpg", // Replace with your Twitter image URL
+        url: "https://www.saudsolution.com/twitter-image.jpg", // VERY IMPORTANT: Replace with YOUR Twitter image URL!
         width: 1200,
         height: 630,
-        alt: "Furniro | Modern Furniture & Home Decor",
+        alt: "Saud Solution | Your Ecommerce Store",
       },
     ],
   },

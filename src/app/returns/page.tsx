@@ -18,7 +18,7 @@ const faqs: FAQ[] = [
   {
     question: "How do I initiate a return?",
     answer:
-      "To initiate a return, please contact our customer support team at support@furniro.com or visit the Returns section in your account.",
+      "To initiate a return, please contact our customer support team at support@Saud Solution.com or visit the Returns section in your account.",
   },
   {
     question: "Are there any items that cannot be returned?",
@@ -51,7 +51,7 @@ export default function ReturnPolicyPage() {
             <Link href="/" aria-label="Go to Home">
               <Image
                 src="/logo.png"
-                alt="Furniro Logo"
+                alt="Saud Solution Logo"
                 width="32"
                 height="20"
                 className="w-12 h-8"
@@ -85,7 +85,7 @@ export default function ReturnPolicyPage() {
         <div className="text-center">
           <h2 className="text-3xl md:text-4xl font-bold">Our Return Process</h2>
           <p className="mt-4 text-gray-600 max-w-2xl mx-auto">
-            At Furniro, we want you to be completely satisfied with your
+            At Saud Solution, we want you to be completely satisfied with your
             purchase. If you&apos;re not happy with your order, follow these simple
             steps to return it.
           </p>

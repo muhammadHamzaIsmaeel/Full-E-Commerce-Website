@@ -12,12 +12,11 @@ import {
   FaTwitter,
 } from "react-icons/fa6";
 import { MdOutlineStar } from "react-icons/md";
-import { useRouter } from "next/navigation"; // Import useRouter
-import { useUser } from "@clerk/nextjs"; // Import useUser from
-import Notification from "../Notification"; // Import the Notification component
-
-// Import react-dropzone
+import { useRouter } from "next/navigation";
+import { useUser } from "@clerk/nextjs";
+import Notification from "../Notification";
 import { SanityImageSource } from "@sanity/image-url/lib/types/types";
+import VideoPlayer from "./VideoPlayer";
 
 export interface IProduct {
   title: string;
@@ -28,15 +27,25 @@ export interface IProduct {
   category?: string;
   rating?: number;
   customerReview?: number;
-  productImage?: string;
-  productImage1?: string;
-  productImage2?: string;
-  productImage3?: string;
+  productImage?: SanityImageSource;
+  productImage1?: SanityImageSource;
+  productImage2?: SanityImageSource;
+  productImage3?: SanityImageSource;
   availableSizes?: string[];
   availableColors?: string[];
   defaultSize?: string;
   defaultColor?: string;
-  reviews?: IReview[]; // Add reviews to IProduct
+  reviews?: IReview[];
+  productVideo?: {
+    // Changed to file type
+    _type: "file";
+    asset: {
+      _ref: string;
+      _type: "reference";
+      url?: string;
+    };
+  };
+  stockQuantity: number; // Add the stock quantity here
 }
 
 interface IReview {
@@ -44,7 +53,7 @@ interface IReview {
   name: string;
   rating: number;
   comment: string;
-  image?: SanityImageSource; // Replace `any` with `SanityImageSource`
+  image?: SanityImageSource;
   createdAt: string;
   isVerifiedPurchase?: boolean;
 }
@@ -58,16 +67,14 @@ export default function Detail({ id }: { id: string }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [cart, setCart] = useLocalStorage<IProduct[]>("cart", []);
-  const [isModalOpen, setIsModalOpen] = useState(false); // State for modal
-  const router = useRouter(); // Initialize useRouter
-  const { isSignedIn, isLoaded } = useUser(); // Use the useUser hook from
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const router = useRouter();
+  const { isSignedIn, isLoaded } = useUser();
 
-  // Review Form State
   const [reviewName, setReviewName] = useState("");
-  const [reviewRating, setReviewRating] = useState(5); // Default to 5 stars
+  const [reviewRating, setReviewRating] = useState(5);
   const [reviewComment, setReviewComment] = useState("");
   const [reviews, setReviews] = useState<IReview[]>([]);
-  // State to manage the visibility of all reviews
   const [showAllReviews, setShowAllReviews] = useState(false);
   const [averageRating, setAverageRating] = useState(0);
   const [ratingCounts, setRatingCounts] = useState({
@@ -78,7 +85,6 @@ export default function Detail({ id }: { id: string }) {
     1: 0,
   });
 
-  // State for the notification
   const [notification, setNotification] = useState<{
     message: string;
     type: "success" | "error" | "info";
@@ -88,9 +94,8 @@ export default function Detail({ id }: { id: string }) {
     setNotification(null);
   };
 
+  const [videoUrl, setVideoUrl] = useState<string | null>(null); // Video URL state
 
-
-  // Fetch product data and reviews
   useEffect(() => {
     if (!id) {
       setError("Product ID is missing.");
@@ -107,8 +112,6 @@ export default function Detail({ id }: { id: string }) {
           tags,
           SKU,
           category,
-          rating,
-          customerReview,
           productImage,
           productImage1,
           productImage2,
@@ -117,13 +120,19 @@ export default function Detail({ id }: { id: string }) {
           availableColors,
           defaultSize,
           defaultColor,
+          stockQuantity, // Add this line to fetch the stock
+          productVideo{
+               asset->{
+                   url
+               }
+           }, // Fetch video URL and its URL
           "reviews": *[_type == "review" && references(^._id)]{
             _id,
             name,
             rating,
             comment,
             createdAt,
-            isVerifiedPurchase, // Fetch the verified purchase status
+            isVerifiedPurchase,
             image
           }
         }`;
@@ -137,7 +146,7 @@ export default function Detail({ id }: { id: string }) {
         }
 
         setProduct(data);
-        setReviews(data.reviews || []); // Initialize reviews
+        setReviews(data.reviews || []);
 
         if (data.productImage) {
           setSelectedImage(urlFor(data.productImage).url());
@@ -161,7 +170,6 @@ export default function Detail({ id }: { id: string }) {
 
   useEffect(() => {
     if (reviews && reviews.length > 0) {
-      // Calculate average rating
       const totalRating = reviews.reduce(
         (sum, review) => sum + review.rating,
         0
@@ -169,23 +177,20 @@ export default function Detail({ id }: { id: string }) {
       const avgRating = totalRating / reviews.length;
       setAverageRating(avgRating);
 
-      // Count ratings for the bar chart
       type RatingCounts = {
         5: number;
         4: number;
         3: number;
         2: number;
         1: number;
-      }; // Define the type
+      };
       const counts: RatingCounts = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
       reviews.forEach((review) => {
         const ratingString = review.rating.toString();
-
-        // Check if ratingString is a valid key before indexing
         if (ratingString in counts) {
-          counts[ratingString as unknown as keyof RatingCounts] += 1; // Type assertion
+          counts[ratingString as unknown as keyof RatingCounts] += 1;
         } else {
-          console.warn(`Invalid review rating: ${review.rating}`); // Handle unexpected rating
+          console.warn(`Invalid review rating: ${review.rating}`);
         }
       });
       setRatingCounts(counts);
@@ -214,7 +219,6 @@ export default function Detail({ id }: { id: string }) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          // Serialize the data
           productId: id,
           name: reviewName,
           rating: reviewRating,
@@ -223,7 +227,7 @@ export default function Detail({ id }: { id: string }) {
       });
 
       if (!response.ok) {
-        const errorData = await response.json(); // Parse the error
+        const errorData = await response.json();
         console.error("API route error:", errorData);
         setNotification({
           message: errorData.error || "Failed to submit review.",
@@ -236,7 +240,6 @@ export default function Detail({ id }: { id: string }) {
       const data = await response.json();
       const newReview = data.review;
 
-      // Update local state
       setReviews((prevReviews) => [
         ...prevReviews,
         {
@@ -248,7 +251,6 @@ export default function Detail({ id }: { id: string }) {
         },
       ]);
 
-      // Clear the form
       setReviewName("");
       setReviewRating(5);
       setReviewComment("");
@@ -265,7 +267,6 @@ export default function Detail({ id }: { id: string }) {
     }
   };
 
-  // Handle quantity change
   const handleQuantityChange = (type: "increase" | "decrease") => {
     if (type === "increase") {
       setQuantity(quantity + 1);
@@ -274,37 +275,39 @@ export default function Detail({ id }: { id: string }) {
     }
   };
 
-  // Handle share functionality
   const handleShare = (platform: "facebook" | "twitter" | "instagram") => {
     if (!product) return;
     const productUrl = window.location.href;
     let url = "";
     switch (platform) {
       case "facebook":
-        url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(productUrl)}`;
+        url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+          productUrl
+        )}`;
         break;
       case "twitter":
-        url = `https://twitter.com/intent/tweet?url=${encodeURIComponent(productUrl)}&text=Check out this product!`;
+        url = `https://twitter.com/intent/tweet?url=${encodeURIComponent(
+          productUrl
+        )}&text=Check out this product!`;
         break;
       case "instagram":
-        url = `https://www.instagram.com/?url=${encodeURIComponent(productUrl)}`;
+        url = `https://www.instagram.com/?url=${encodeURIComponent(
+          productUrl
+        )}`;
         break;
     }
     window.open(url, "_blank");
   };
 
-  // Handle add to cart
   const handleCart = () => {
     if (!product) return;
 
     if (!isLoaded) {
-      // Clerk is still loading, you might want to show a loading indicator
       console.log("Clerk is still loading...");
       return;
     }
 
     if (!isSignedIn) {
-      // Redirect to sign-in page with returnBackUrl
       const returnBackUrl = window.location.href;
       router.push(
         `/sign-in?returnBackUrl=${encodeURIComponent(returnBackUrl)}`
@@ -323,8 +326,21 @@ export default function Detail({ id }: { id: string }) {
     ];
 
     setCart(updatedCart);
-    // Show the notification
     setNotification({ message: "Product added to cart!", type: "success" });
+  };
+
+  const handleThumbnailClick = (src: string, isVideo: boolean) => {
+    if (isVideo && product?.productVideo?.asset?.url) {
+      console.log("Video thumbnail clicked!");
+      console.log("Video URL:", product.productVideo.asset.url); // Log URL
+      setSelectedImage(null);
+      setVideoUrl(product?.productVideo?.asset?.url || null); // Set the video URL
+      setIsModalOpen(false);
+    } else {
+      setSelectedImage(src);
+      setVideoUrl(null);
+      setIsModalOpen(false);
+    }
   };
 
   const ImageModal = ({
@@ -361,12 +377,10 @@ export default function Detail({ id }: { id: string }) {
     );
   };
 
-  // Loading and error states
   if (loading) return <p>Loading...</p>;
   if (error) return <p className="text-red-500">{error}</p>;
   if (!product) return <p>Product not found.</p>;
 
-  // Destructure product data
   const {
     title,
     price,
@@ -374,30 +388,33 @@ export default function Detail({ id }: { id: string }) {
     tags,
     SKU,
     category,
-    rating,
-    customerReview,
     productImage,
     productImage1,
     productImage2,
     productImage3,
     availableSizes,
     availableColors,
+    stockQuantity
   } = product;
 
-  // Prepare thumbnail images
   const thumbnailImages = [
     productImage,
     productImage1,
     productImage2,
     productImage3,
+    product.productVideo ? "/video-placeholder.png" : null,
   ]
-    .filter((img) => img)
-    .map((img) => urlFor(img!).url());
+    .filter((img): img is SanityImageSource | string => img !== null)
+    .map((img) => {
+      if (typeof img === "string") {
+        return img; // Serve the placeholder image directly
+      }
+      return urlFor(img).url(); // Get the URL from Sanity for image assets
+    });
 
   return (
     <>
       <div className="max-w-7xl mx-auto grid md:mx-8 grid-cols-1 lg:grid-cols-12 gap-12">
-        {/* Render the notification component */}
         {notification && (
           <Notification
             message={notification.message}
@@ -405,75 +422,84 @@ export default function Detail({ id }: { id: string }) {
             onClose={closeNotification}
           />
         )}
-        {/* Left Section */}
         <div className="lg:col-span-6 lg:flex gap-3 md:gap-7 space-y-6">
           <div className="lg:space-y-10 md:space-x-0 space-x-5 flex justify-center lg:block mt-6">
-            {thumbnailImages.map((src, index) => (
-              <div
-                key={index}
-                className="w-16 h-16 rounded-lg overflow-hidden cursor-pointer"
-                onClick={() => setSelectedImage(src)}
-              >
-                <Image
-                  src={src}
-                  alt={`Thumbnail ${index + 1}`}
-                  width={1000}
-                  height={1000}
-                  className="md:w-full md:h-full object-cover"
-                  loading="lazy"
-                />
-              </div>
-            ))}
+            {thumbnailImages.map((src, index) => {
+              const isVideoThumbnail = src === "/video-placeholder.png";
+              return (
+                <div
+                  key={index}
+                  className="w-16 h-16 rounded-lg overflow-hidden cursor-pointer"
+                  onClick={() => handleThumbnailClick(src, isVideoThumbnail)}
+                >
+                  {isVideoThumbnail ? (
+                    <div className="flex items-center justify-center bg-gray-800 text-white">
+                      <span>
+                        <Image
+                          src="/play.png"
+                          alt="Play Video"
+                          width={1000}
+                          height={1000}
+                          className="md:w-full md:h-full object-cover"
+                          loading="lazy"
+                        />
+                      </span>
+                    </div>
+                  ) : (
+                    <Image
+                      src={src}
+                      alt={`Thumbnail ${index + 1}`}
+                      width={1000}
+                      height={1000}
+                      className="md:w-full md:h-full object-cover"
+                      loading="lazy"
+                    />
+                  )}
+                </div>
+              );
+            })}
           </div>
 
           <div className="aspect-w-1 aspect-h-1 rounded-lg overflow-hidden">
-            {selectedImage && (
-              <div onClick={() => setIsModalOpen(true)}>
-                <Image
-                  src={selectedImage}
-                  alt="Product Image"
-                  width={1000}
-                  height={1000}
-                  className="h-[240px] lg:h-[500px] lg:w-[423px] object-cover cursor-pointer"
-                  loading="lazy"
-                />
-              </div>
+            {videoUrl ? (
+              <VideoPlayer src={videoUrl} />
+            ) : (
+              selectedImage && (
+                <div onClick={() => setIsModalOpen(true)}>
+                  <Image
+                    src={selectedImage}
+                    alt="Product Image"
+                    width={1000}
+                    height={1000}
+                    className="h-[240px] lg:h-[500px] lg:w-[423px] object-cover cursor-pointer"
+                    loading="lazy"
+                  />
+                </div>
+              )
             )}
           </div>
         </div>
 
-        {/* Right Section */}
         <div className="lg:col-span-6 mx-3 md:mx-0 mt-8 space-y-6">
           <h1 className="text-3xl lg:text-4xl font-bold text-gray-800">
             {title}
           </h1>
           <p className="text-xl text-gray-400 font-semibold">Rs. {price}</p>
+
+          {/* Display Stock Quantity */}
+          <p className="text-gray-500">
+            {stockQuantity > 0
+              ? `In Stock: ${stockQuantity} units`
+              : "Out of Stock"}
+          </p>
+
           <p className="text-gray-600 md:mr-48">{description}</p>
 
-          {/* Rating and Customer Reviews */}
-          <div className="flex items-center">
-            <div className="flex">
-              {Array.from({ length: rating || 0 }).map((_, i) => (
-                <span key={i}>
-                  <MdOutlineStar className="text-yellow-400 text-[25px]" />
-                </span>
-              ))}
-              {Array.from({ length: 5 - (rating || 0) }).map((_, i) => (
-                <span key={i}>
-                  <MdOutlineStar className="text-yellow-100 text-[25px]" />
-                </span>
-              ))}
-            </div>
-            <span className="border-l-2 b h-6 mx-5"></span>
-            <p className="text-gray-500">{customerReview} Customer Reviews</p>
-          </div>
-
-          {/* Size and Color Selectors */}
           <div className="space-y-4">
             <div>
               <h3 className="font-medium text-gray-800">Size</h3>
               <div className="flex space-x-4 mt-2">
-                {availableSizes?.map((size) => (
+                {availableSizes?.map((size: string) => (
                   <button
                     key={size}
                     onClick={() => setSelectedSize(size)}
@@ -492,7 +518,7 @@ export default function Detail({ id }: { id: string }) {
             <div>
               <h3 className="font-medium text-gray-800">Color</h3>
               <div className="flex space-x-4 mt-2">
-                {availableColors?.map((color) => (
+                {availableColors?.map((color: string) => (
                   <button
                     key={color}
                     onClick={() => setSelectedColor(color)}
@@ -508,7 +534,6 @@ export default function Detail({ id }: { id: string }) {
             </div>
           </div>
 
-          {/* Quantity Selector and Add to Cart */}
           <div className="md:flex items-center space-y-5 md:space-y-0 space-x-4">
             <div className="w-[120px] flex items-center border rounded-md overflow-hidden">
               <button
@@ -527,8 +552,11 @@ export default function Detail({ id }: { id: string }) {
             </div>
 
             <button
-              className="flex place-items-center border-2 text-gray-700 px-10 py-3 rounded-md font-medium hover:border-black transition"
+              className={`flex place-items-center border-2 ${
+                stockQuantity <= 0 ? 'text-gray-400 cursor-not-allowed border-gray-400' : 'text-gray-700 hover:border-black'
+              } px-10 py-3 rounded-md font-medium transition`}
               onClick={handleCart}
+              disabled={stockQuantity <= 0}
             >
               Add to Cart
             </button>
@@ -539,7 +567,6 @@ export default function Detail({ id }: { id: string }) {
             </button>
           </div>
 
-          {/* Product Details */}
           <div className="md:mr-[350px] md:grid md:grid-cols-2 gap-y-3 text-gray-400 text-sm items-center">
             <p className="font-medium">SKU:</p>
             <p>{SKU}</p>
@@ -567,7 +594,6 @@ export default function Detail({ id }: { id: string }) {
           </div>
         </div>
 
-        {/* Modal for Full Screen Image */}
         {isModalOpen && selectedImage && (
           <ImageModal
             src={selectedImage}
@@ -575,11 +601,9 @@ export default function Detail({ id }: { id: string }) {
           />
         )}
       </div>
-      {/* Review Section */}
+
+      {/* Customer rewiews */}
       <section className="mt-12 py-8 px-4 bg-white rounded-lg shadow-md">
-        {" "}
-        {/* Changed background to white */}
-        {/* Overall Rating */}
         <div className="flex items-center justify-between mb-6">
           <div>
             <h2 className="text-4xl font-bold text-gray-900">
@@ -605,7 +629,6 @@ export default function Detail({ id }: { id: string }) {
             <p className="text-gray-500">{reviews.length} Ratings</p>
           </div>
 
-          {/* Rating Breakdown (Bar Chart) */}
           <div>
             {Object.entries(ratingCounts)
               .sort((a, b) => parseInt(b[0]) - parseInt(a[0]))
@@ -626,32 +649,23 @@ export default function Detail({ id }: { id: string }) {
               ))}
           </div>
         </div>
-        {/* Product Reviews Header and Options */}
+
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-2xl font-semibold text-gray-900">
             Product Reviews
           </h3>
-         
         </div>
-        {/* Display Reviews */}
+
         <div className="mt-6">
-          {" "}
-          {/* Reduced marginTop */}
           {reviews.length === 0 ? (
             <p className="text-gray-600 italic text-center">No reviews yet.</p>
           ) : (
             <div className="space-y-4">
-              {" "}
-              {/* Reduced spacing */}
               {reviews
                 .slice(0, showAllReviews ? reviews.length : 1)
                 .map((review) => (
                   <div key={review._id} className="py-2">
-                    {" "}
-                    {/* Removed border, padding, background */}
                     <div className="flex items-center justify-between mb-1">
-                      {" "}
-                      {/* Reduced margin */}
                       <div className="flex items-center">
                         <h4 className="text-lg font-semibold text-gray-900 mr-2">
                           {review.name}
@@ -664,7 +678,7 @@ export default function Detail({ id }: { id: string }) {
                         <div className="flex">
                           {Array.from({ length: review.rating }).map((_, i) => (
                             <span key={i}>
-                              <MdOutlineStar className="text-yellow-400 text-[20px]" />
+                              <MdOutlineStar className="text-yellow-400 text-[25px]" />
                             </span>
                           ))}
                         </div>
@@ -687,7 +701,6 @@ export default function Detail({ id }: { id: string }) {
                         />
                       </div>
                     )}
-                    {/* Separator line */}
                     {reviews.indexOf(review) <
                       (showAllReviews ? reviews.length : 1) - 1 && (
                       <hr className="border-gray-200 my-2" />
@@ -696,7 +709,6 @@ export default function Detail({ id }: { id: string }) {
                 ))}
             </div>
           )}
-          {/* "Show More Reviews" button */}
           {reviews.length > 1 && !showAllReviews && (
             <div className="text-center mt-4">
               <button
@@ -708,7 +720,7 @@ export default function Detail({ id }: { id: string }) {
             </div>
           )}
         </div>
-        {/* Review Form */}
+
         <form onSubmit={handleSubmitReview} className="space-y-6">
           <div>
             <label

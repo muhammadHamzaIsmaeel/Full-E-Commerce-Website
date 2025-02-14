@@ -1,35 +1,59 @@
-'use client'
+'use client';
 import Link from "next/link";
+import { FaFacebook, FaInstagram } from 'react-icons/fa';
 import { useState } from "react";
 
 export default function Footer() {
   const [email, setEmail] = useState("");
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Handle form submission, e.g., send email to backend or newsletter service
-    console.log("Subscribed with email:", email);
-    setEmail(""); // Clear the input after submission
+    try {
+      const response = await fetch('/api/subscribe', { // Your API endpoint
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      if (response.ok) {
+        console.log('Subscription successful, email sent!');
+        // Optionally show a success message
+      } else {
+        console.error('Subscription failed:', response.status);
+        // Optionally show an error message
+      }
+    } catch (error) {
+      console.error('Error submitting subscription:', error);
+      // Optionally show an error message
+    }
+    setEmail(""); // Clear the input
   };
 
   return (
     <footer className="text-gray-400 border-t-2 pt-16 bg-white">
       <div className="container mx-auto px-4">
         <div className="md:flex justify-between mx-10 md:mx-0 lg:mx-28">
-          {/* Address Section */}
-          <div className="w-full md:w-1/4 mb-6 md:mb-0">
-            <h2 className="text-xl text-gray-950 font-bold">Funiro</h2>
-            <address className="not-italic mt-3 md:mt-12 text-gray-700">
-              400 University Drive Suite 200
-              <br />
-              Coral Gables,
-              <br /> FL 33134 USA
-            </address>
+          {/* About Us Section */}
+          <div className="w-full md:w-1/4 lg:mr-3 mb-6 md:mb-0">
+            <h2 className="text-xl text-gray-950 font-bold">Saud Solution</h2>
+            <p className="mt-3 md:mt-12 text-gray-700 text-sm">
+              Your one-stop shop for the latest fashion, cutting-edge electronics, and beauty essentials.
+            </p>
+            <div className="mt-4 flex space-x-4">
+              <Link href="#" aria-label="Facebook">
+                <FaFacebook className="text-gray-500 hover:text-gray-700" size={20} />
+              </Link>
+              <Link href="#" aria-label="Instagram">
+                <FaInstagram className="text-gray-500 hover:text-gray-700" size={20} />
+              </Link>
+            </div>
           </div>
 
-          {/* Links Section */}
+          {/* Important Links Section */}
           <div className="w-full md:w-1/4 mb-6 md:mb-0">
-            <h3 className="text-lg font-semibold">Links</h3>
+            <h3 className="text-lg font-semibold">Quick Links</h3>
             <ul className="md:mt-12 mt-3 font-semibold space-y-8">
               <li>
                 <Link href="/" className="text-gray-950 hover:text-gray-600" aria-label="Home Page">
@@ -42,35 +66,8 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/about" className="text-gray-950 hover:text-gray-600" aria-label="About Us Page">
-                  About
-                </Link>
-              </li>
-              <li>
                 <Link href="/contact" className="text-gray-950 hover:text-gray-600" aria-label="Contact Page">
                   Contact
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* Help Section */}
-          <div className="w-full md:w-1/4 mb-6 md:mb-0">
-            <h3 className="text-lg font-semibold">Help</h3>
-            <ul className="mt-3 md:mt-12 font-semibold space-y-8">
-              <li>
-                <Link href="/payment-options" className="text-gray-950 hover:text-gray-600" aria-label="Payment Options Page">
-                  Payment Options
-                </Link>
-              </li>
-              <li>
-                <Link href="/returns" className="text-gray-950 hover:text-gray-600" aria-label="Returns Page">
-                  Returns
-                </Link>
-              </li>
-              <li>
-                <Link href="/privacy-policies" className="text-gray-950 hover:text-gray-600" aria-label="Privacy Policies Page">
-                  Privacy Policies
                 </Link>
               </li>
             </ul>
@@ -102,7 +99,7 @@ export default function Footer() {
 
         {/* Footer Bottom Section */}
         <div className="mt-8 text-start font-medium border-t-2 mx-5 md:mx-24 py-6 text-gray-950">
-          &copy; {new Date().getFullYear()} Funiro. All rights reserved.
+          &copy; {new Date().getFullYear()} Saud Solution. All rights reserved.
         </div>
       </div>
     </footer>

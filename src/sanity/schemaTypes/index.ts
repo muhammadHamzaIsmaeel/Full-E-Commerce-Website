@@ -8,7 +8,9 @@ import blogContent from './blog/blogContent'
 import contactForm from './contactForm'
 import order from './dashboardDetail/order'
 import { review } from './review'
+import { imageGridItem } from './fram'
+import salesBanner from './salesBanner'
 
 export const schema: { types: SchemaTypeDefinition[] } = {
-  types: [product, banner, categories, blog, blogContent, category, contactForm, order, review],
+  types: [product, banner, categories, blog, blogContent, category, contactForm, order, review, imageGridItem, salesBanner],
 }

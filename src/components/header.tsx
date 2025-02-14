@@ -50,19 +50,19 @@ export default function Header() {
       <div className="flex justify-between items-center mx-2 md:mx-10 py-4">
         {/* Logo and Brand Name */}
         <div className="flex items-center gap-1">
-          <Link href="/" aria-label="Furniro Home" passHref>
+          <Link href="/" aria-label="Saud Solution Home" passHref>
             <Image
               src="/logo.png"
-              alt="Furniro - Premium Furniture Logo"
-              width={32}
-              height={20}
-              className="w-8 h-5"
+              alt="Saud Solution - Premium Furniture Logo"
+              width={3200}
+              height={2000}
+              className="w-9 h-7"
               onError={handleImageError} // Error handling for image
               priority // Prioritize loading the logo
             />
           </Link>
-          <Link href="/" aria-label="Furniro Home" passHref>
-            <h1 className="text-2xl font-bold">Furniro</h1>
+          <Link href="/" aria-label="Saud Solution Home" passHref>
+            <h1 className="text-2xl font-bold">Saud Solution</h1>
           </Link>
         </div>
 
@@ -114,10 +114,10 @@ export default function Header() {
             <SheetHeader>
               <SheetTitle>
                 <div className="flex items-center gap-1">
-                  <Link href="/" aria-label="Furniro Home" passHref>
+                  <Link href="/" aria-label="Saud Solution Home" passHref>
                     <Image
                       src="/logo.png"
-                      alt="Furniro Logo"
+                      alt="Saud Solution Logo"
                       width={32}
                       height={20}
                       className="w-8 h-5"
@@ -125,8 +125,8 @@ export default function Header() {
                       onError={handleImageError} // Error handling for image
                     />
                   </Link>
-                  <Link href="/" aria-label="Furniro Home" passHref>
-                    <h1 className="text-2xl font-bold">Furniro</h1>
+                  <Link href="/" aria-label="Saud Solution Home" passHref>
+                    <h1 className="text-2xl font-bold">Saud Solution</h1>
                   </Link>
                 </div>
               </SheetTitle>

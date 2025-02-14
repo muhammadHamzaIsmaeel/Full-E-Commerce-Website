@@ -131,7 +131,7 @@ export default function BedroomPage() {
     const fetchProducts = async () => {
       try {
         const products: IProduct[] = await client.fetch(
-          '*[_type == "product" && category == "bedroom"]{_id, title, shortDescription, dicountPercentage, price, oldPrice, isNew, productImage}'
+          '*[_type == "product" && lower(category) == "Beauty"]{_id, title, shortDescription, dicountPercentage, price, oldPrice, isNew, productImage}'
         );
         setData(products);
         setIsLoading(false);
@@ -157,7 +157,7 @@ export default function BedroomPage() {
       <Toaster />
 
       <Head>
-        <title>Bedroom Products - Furniro</title>
+        <title>Beauty product - Saud Solution</title>
         <meta
           name="description"
           content="Discover our exclusive collection of bedroom furniture. High-quality products at affordable prices!"
@@ -166,7 +166,7 @@ export default function BedroomPage() {
           name="keywords"
           content="bedroom furniture, affordable furniture, high-quality bedroom products, modern bedroom decor"
         />
-        <meta name="author" content="Furniro" />
+        <meta name="author" content="Saud Solution" />
       </Head>
 
       <div>
@@ -183,20 +183,20 @@ export default function BedroomPage() {
             <Link href="/">
               <Image
                 src="/logo.png"
-                alt="Furniro Logo"
+                alt="Saud Solution Logo"
                 width={32}
                 height={20}
                 className="w-12 h-8"
                 loading="lazy"
               />
             </Link>
-            <h4 className="text-4xl font-bold">Bedroom</h4>
+            <h4 className="text-4xl font-bold">Beauty</h4>
             <h5 className="flex items-center text-sm md:text-xl mb-4 space-x-1">
               <Link className="font-bold text-xl" href="/">
                 Home
               </Link>
               <MdKeyboardArrowRight className="mt-2 text-2xl" />
-              <span>Bedroom</span>
+              <span>Beauty</span>
             </h5>
           </div>
         </div>

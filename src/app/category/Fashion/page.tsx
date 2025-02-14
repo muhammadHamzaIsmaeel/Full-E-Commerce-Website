@@ -133,7 +133,7 @@ export default function BedroomPage() {
     const fetchProducts = async () => {
       try {
         const products: IProduct[] = await client.fetch(
-          '*[_type == "product" && category == "dining"]{_id, title, shortDescription, dicountPercentage, price, oldPrice, isNew, productImage}'
+          '*[_type == "product" && lower(category) == "Fashion"]{_id, title, shortDescription, dicountPercentage, price, oldPrice, isNew, productImage}'
         );
         setData(products);
         setIsLoading(false);
@@ -160,7 +160,7 @@ export default function BedroomPage() {
 
       {/* SEO Meta Tags */}
       <Head>
-        <title>Dining Furniture - Shop Now</title>
+        <title>Fashion Product - Saud Solution</title>
         <meta
           name="description"
           content="Explore our premium dining furniture collection, featuring modern designs and discounts. Perfect for every home!"
@@ -193,20 +193,20 @@ export default function BedroomPage() {
             <Link href="/">
               <Image
                 src="/logo.png"
-                alt="Furniro Logo"
+                alt="Saud Solution Logo"
                 width={32}
                 height={20}
                 className="w-12 h-8"
                 loading="lazy"
               />
             </Link>
-            <h4 className="text-4xl font-bold">Dining</h4>
+            <h4 className="text-4xl font-bold">Fashion</h4>
             <h5 className="flex items-center text-sm md:text-xl mb-4 space-x-1">
               <Link className="font-bold text-xl" href="/">
                 Home
               </Link>
               <MdKeyboardArrowRight className="mt-2 text-2xl" />
-              <span className="mt-2 md:mt-0">Dining</span>
+              <span className="mt-2 md:mt-0">Fashion</span>
             </h5>
           </div>
         </div>
