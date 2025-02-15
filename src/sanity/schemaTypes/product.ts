@@ -19,9 +19,54 @@ export const product = defineType({
     },
     {
       name: "description",
-      title: "Description",
-      type: "text",
-      validation: (rule) => rule.required().min(10).warning("Description is too short."),
+      title: "Product Description",
+      type: "array",
+      of: [
+        {
+          type: "block",
+          // Enable all formatting options
+          styles: [
+            { title: "Normal", value: "normal" },
+            { title: "Heading 1", value: "h1" },
+            { title: "Heading 2", value: "h2" },
+            { title: "Heading 3", value: "h3" },
+            { title: "Quote", value: "blockquote" },
+          ],
+          // Enable text formatting options
+          marks: {
+            decorators: [
+              { title: "Bold", value: "strong" },
+              { title: "Italic", value: "em" },
+              { title: "Underline", value: "underline" },
+              { title: "Strike-through", value: "strike-through" },
+            ],
+            annotations: [
+              {
+                name: "link",
+                type: "object",
+                title: "URL",
+                fields: [
+                  {
+                    name: "href",
+                    type: "url",
+                    title: "Link URL",
+                  },
+                ],
+              },
+            ],
+          },
+          // Enable lists
+          lists: [
+            { title: "Bullet List", value: "bullet" },
+            { title: "Numbered List", value: "number" },
+          ],
+        },
+      ],
+      validation: (rule) =>
+        rule
+          .required()
+          .min(1) // At least one block is required
+          .warning("Description cannot be empty. Please add some content."),
     },
     {
       name: "shortDescription",
@@ -112,17 +157,6 @@ export const product = defineType({
       title: 'Reviews',
       type: 'array',
       of: [{ type: 'reference', to: [{ type: 'review' }] }],
-    },
-    
-    {
-      name: "rating",
-      title: "Rating",
-      type: "number",
-    },
-    {
-      name: "customerReview",
-      title: "Customer Reviews",
-      type: "number",
     },
     {
       name: "availableSizes",
