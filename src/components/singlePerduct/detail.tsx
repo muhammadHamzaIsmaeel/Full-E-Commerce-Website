@@ -586,9 +586,9 @@ export default function Detail({ id }: { id: string }) {
           )}
 
           {/* Quantity Adjustment and Add to Cart */}
-          <div className="flex items-center space-x-4">
+          <div className="md:flex items-center md:space-y-0 space-y-3 md:space-x-4">
             {/* Quantity Control */}
-            <div className="flex items-center border border-gray-400 rounded-md overflow-hidden">
+            <div className="flex w-[130px]  items-center border border-gray-400 rounded-md overflow-hidden">
               <button
                 onClick={() => handleQuantityChange("decrease")}
                 className="px-3 py-2 text-gray-600 hover:bg-gray-100"
@@ -621,7 +621,7 @@ export default function Detail({ id }: { id: string }) {
               className={stockQuantity <= 0 ? "pointer-events-none" : ""}
             >
               <button
-                className={`bg-[#2E7D32] text-white px-8 py-3 rounded-md font-medium transition-colors duration-200 
+                className={`bg-[#2E7D32] ml-3 md:ml-0 text-white px-8 py-3 rounded-md font-medium transition-colors duration-200 
                 ${stockQuantity > 0 ? "hover:bg-[#1B5E20] focus:ring-2 focus:ring-[#b9935a]/50" : "opacity-50 cursor-not-allowed"}`}
                 onClick={handlebuy}
                 disabled={stockQuantity <= 0}
