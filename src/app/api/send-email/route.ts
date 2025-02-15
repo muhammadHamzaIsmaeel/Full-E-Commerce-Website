@@ -47,6 +47,10 @@ export async function POST(req: Request) {
             <li>
               ${product.title} - ${product.quantity} x Rs. ${product.price.toLocaleString()}
             </li>
+            <li>
+              With Shipping Fees - Rs. 200
+            </li>
+            
           `
             )
             .join("")}

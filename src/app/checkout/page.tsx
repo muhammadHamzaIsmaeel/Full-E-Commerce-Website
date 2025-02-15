@@ -1,4 +1,4 @@
-// // src/app/checkout/page.tsx
+// src/app/checkout/page.tsx
 "use client";
 
 import Image from "next/image";
@@ -24,6 +24,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { useRouter } from "next/navigation"; // Import useRouter
 import { useAuth } from "@clerk/nextjs"; // Import Clerk's useAuth hook
 
+const SHIPPING_COST = 200; // Example shipping cost
 
 // Define types for the product image
 interface ProductImage {
@@ -74,6 +75,7 @@ interface Order {
   date: string;
   formData: z.infer<typeof formSchema>; // Use the inferred type from formSchema
   userId: string; // Add userId property
+  shippingCost: number;
 }
 
 export default function Checkout() {
@@ -112,6 +114,10 @@ export default function Checkout() {
   const calculateSubtotal = () =>
     cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
 
+  const calculateGrandTotal = () => {
+    return calculateSubtotal() + SHIPPING_COST;
+  };
+
   const handlePaymentSuccess = () => {
     localStorage.removeItem("cart");
     setCartItems([]);
@@ -130,43 +136,46 @@ export default function Checkout() {
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     setIsSubmitting(true);
-  
+
     if (cartItems.length === 0) {
-      toast.error("Your cart is empty. Please add products before confirming the order.", {
-        position: "top-right",
-        autoClose: 3000,
-      });
+      toast.error(
+        "Your cart is empty. Please add products before confirming the order.",
+        {
+          position: "top-right",
+          autoClose: 3000,
+        }
+      );
       setIsSubmitting(false);
       return;
     }
-  
+
     try {
       const pktDateTime = getPKTDateTime();
+      const grandTotal = calculateGrandTotal();
       const order: Order = {
         id: Date.now(),
         status: "pending",
         products: cartItems,
         date: pktDateTime,
         formData: data,
-        userId: userId!, // Add the logged-in user's ID to the order
+        userId: userId!,
+        shippingCost: SHIPPING_COST,
       };
-  
-      // Save order to Sanity
+
       const response = await fetch("/api/create-order", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ order }),
+        body: JSON.stringify({ order, grandTotal }), // Pass grandTotal here
       });
-  
+
       if (!response.ok) {
         const errorData = await response.json();
         console.error("Error sending order to Sanity:", errorData);
         throw new Error(`Failed to create order: ${response.statusText}`);
       }
-  
-      // Send Invoice Email
+
       const emailResponse = await fetch("/api/send-email", {
         method: "POST",
         headers: {
@@ -176,10 +185,10 @@ export default function Checkout() {
           email: data.emailAddress, // User's email from the form
           orderId: order.id, // Order ID
           products: cartItems, // List of products
-          totalAmount: calculateSubtotal(), // Total amount
+          totalAmount: grandTotal, // totalAmount should be grandTotal now
         }),
       });
-  
+
       if (!emailResponse.ok) {
         const errorData = await emailResponse.json();
         console.error("Error sending invoice email:", errorData);
@@ -187,25 +196,27 @@ export default function Checkout() {
           `Failed to send invoice email: ${emailResponse.statusText}`
         );
       }
-  
+
       const existingOrders = JSON.parse(localStorage.getItem("orders") || "[]");
       const updatedOrders = [...existingOrders, order];
       localStorage.setItem("orders", JSON.stringify(updatedOrders));
       console.log("Order added to localStorage:", order);
-  
+
       toast.success("Order confirmed! Invoice email sent.", {
         position: "top-right",
         autoClose: 3000,
       });
-  
-      // Clear cart and redirect
+
       handlePaymentSuccess();
     } catch (error) {
       console.error("Error processing order:", error);
-      toast.error("An error occurred while processing your order. Please try again.", {
-        position: "top-right",
-        autoClose: 3000,
-      });
+      toast.error(
+        "An error occurred while processing your order. Please try again.",
+        {
+          position: "top-right",
+          autoClose: 3000,
+        }
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -454,7 +465,7 @@ export default function Checkout() {
                   name="phoneNumber2"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Phone Number</FormLabel>
+                      <FormLabel>Phone Number (Optional)</FormLabel>
                       <FormControl>
                         <Input
                           className="w-full border border-gray-300 rounded-md p-2"
@@ -488,7 +499,7 @@ export default function Checkout() {
                   name="additionalInformation"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Additional Information</FormLabel>
+                      <FormLabel>Additional Information (Optional)</FormLabel>
                       <FormControl>
                         <textarea
                           className="w-full border border-gray-300 rounded-md p-2"
@@ -538,9 +549,14 @@ export default function Checkout() {
                 </div>
               ))}
             </div>
+              {/* Shipping Cost */}
+              <div className="flex justify-between items-center text-lg font-medium text-gray-800">
+                  <span>Shipping</span>
+                  <span>Rs. {SHIPPING_COST.toLocaleString()}</span>
+                </div>
             <div className="flex justify-between items-center text-lg font-bold text-gray-800">
               <span>Total</span>
-              <span>Rs. {calculateSubtotal().toLocaleString()}</span>
+              <span>Rs. {calculateGrandTotal().toLocaleString()}</span>
             </div>
           </div>
         </div>

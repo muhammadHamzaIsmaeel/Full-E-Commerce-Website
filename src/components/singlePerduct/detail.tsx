@@ -17,12 +17,15 @@ import { useUser } from "@clerk/nextjs";
 import Notification from "../Notification";
 import { SanityImageSource } from "@sanity/image-url/lib/types/types";
 import VideoPlayer from "./VideoPlayer";
+import { PortableText } from "@portabletext/react"; // Import PortableText
+import { PortableTextBlock } from "@portabletext/types";
+
 
 export interface IProduct {
   title: string;
   price: string;
   oldPrice: string;
-  description?: string;
+  description?: PortableTextBlock[]; // Use PortableTextBlock array for description
   tags?: string[];
   SKU?: string;
   category?: string;
@@ -47,6 +50,7 @@ export interface IProduct {
     };
   };
   stockQuantity: number; // Add the stock quantity here
+  _id: string;
 }
 
 interface IReview {
@@ -122,6 +126,7 @@ export default function Detail({ id }: { id: string }) {
           defaultSize,
           defaultColor,
           stockQuantity, // Add this line to fetch the stock
+          _id,
           productVideo{
                asset->{
                    url
@@ -329,7 +334,7 @@ export default function Detail({ id }: { id: string }) {
     setNotification({ message: "Product added to cart!", type: "success" });
   };
 
-  const handlebuy = () => {
+  const handlebuy = async () => {
     if (!product) return;
 
     if (!isLoaded) {
@@ -345,18 +350,20 @@ export default function Detail({ id }: { id: string }) {
       return;
     }
 
-    const updatedCart = [
-      ...cart,
-      {
-        ...product,
-        quantity,
-        selectedColor,
-        selectedSize,
-      },
-    ];
+    const productToAdd = {
+      ...product,
+      quantity,
+      selectedColor,
+      selectedSize,
+    };
 
+    // Add product to cart
+    const updatedCart = [...cart, productToAdd];
     setCart(updatedCart);
-    setNotification({ message: "Buy Now!", type: "success" });
+
+    // Redirect to checkout
+    router.push("/checkout");
+    setNotification({ message: "Redirecting to checkout...", type: "success" });
   };
 
   const handleThumbnailClick = (src: string, isVideo: boolean) => {
@@ -539,7 +546,9 @@ export default function Detail({ id }: { id: string }) {
           </p>
 
           {/* Product Description - Shorten and add "Read More" if necessary */}
-          <p className="text-gray-700 leading-relaxed">{description}</p>
+          <div className="text-gray-700 leading-relaxed">
+            <PortableText value={description || []} />
+          </div>
 
           {/* Size Selection */}
           {availableSizes && availableSizes.length > 0 && (
@@ -616,10 +625,6 @@ export default function Detail({ id }: { id: string }) {
               {stockQuantity > 0 ? "Add to Cart" : "Out of Stock"}
             </button>
 
-            <a
-              href="/checkout"
-              className={stockQuantity <= 0 ? "pointer-events-none" : ""}
-            >
               <button
                 className={`bg-[#2E7D32] ml-3 md:ml-0 text-white px-8 py-3 rounded-md font-medium transition-colors duration-200 
                 ${stockQuantity > 0 ? "hover:bg-[#1B5E20] focus:ring-2 focus:ring-[#b9935a]/50" : "opacity-50 cursor-not-allowed"}`}
@@ -628,7 +633,7 @@ export default function Detail({ id }: { id: string }) {
               >
                 {stockQuantity > 0 ? "Buy Now" : "Out of Stock"}
               </button>
-            </a>
+
           </div>
 
           {/* Product Meta Information (SKU, Category, Tags) */}
