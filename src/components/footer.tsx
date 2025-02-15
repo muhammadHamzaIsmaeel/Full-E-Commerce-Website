@@ -1,7 +1,8 @@
-'use client';
+"use client";
 import Link from "next/link";
-import { FaFacebook, FaInstagram } from 'react-icons/fa';
+import { FaFacebook, FaInstagram } from "react-icons/fa";
 import { useState } from "react";
+import { FaTiktok } from "react-icons/fa6";
 
 export default function Footer() {
   const [email, setEmail] = useState("");
@@ -9,23 +10,24 @@ export default function Footer() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const response = await fetch('/api/subscribe', { // Your API endpoint
-        method: 'POST',
+      const response = await fetch("/api/subscribe", {
+        // Your API endpoint
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ email }),
       });
 
       if (response.ok) {
-        console.log('Subscription successful, email sent!');
+        console.log("Subscription successful, email sent!");
         // Optionally show a success message
       } else {
-        console.error('Subscription failed:', response.status);
+        console.error("Subscription failed:", response.status);
         // Optionally show an error message
       }
     } catch (error) {
-      console.error('Error submitting subscription:', error);
+      console.error("Error submitting subscription:", error);
       // Optionally show an error message
     }
     setEmail(""); // Clear the input
@@ -39,14 +41,28 @@ export default function Footer() {
           <div className="w-full md:w-1/4 lg:mr-3 mb-6 md:mb-0">
             <h2 className="text-xl text-gray-950 font-bold">Saud Solution</h2>
             <p className="mt-3 md:mt-12 text-gray-700 text-sm">
-              Your one-stop shop for the latest fashion, cutting-edge electronics, and beauty essentials.
+              Your one-stop shop for the latest fashion, cutting-edge
+              electronics, and beauty essentials.
             </p>
             <div className="mt-4 flex space-x-4">
               <Link href="#" aria-label="Facebook">
-                <FaFacebook className="text-gray-500 hover:text-gray-700" size={20} />
+                <FaFacebook
+                  className="text-[#1877F2] hover:text-[#3b5998]"
+                  size={20}
+                />
               </Link>
               <Link href="#" aria-label="Instagram">
-                <FaInstagram className="text-gray-500 hover:text-gray-700" size={20} />
+                <FaInstagram
+                  className="text-[#E4405F] hover:text-[#C21E56]"
+                  size={20}
+                />
+              </Link>
+              <Link href="#" aria-label="TikTok">
+                <FaTiktok
+                  className="text-[#000000] hover:text-[#444444]"
+                  size={20}
+                />{" "}
+                {/* Or any other color scheme you like */}
               </Link>
             </div>
           </div>
@@ -56,17 +72,29 @@ export default function Footer() {
             <h3 className="text-lg font-semibold">Quick Links</h3>
             <ul className="md:mt-12 mt-3 font-semibold space-y-8">
               <li>
-                <Link href="/" className="text-gray-950 hover:text-gray-600" aria-label="Home Page">
+                <Link
+                  href="/"
+                  className="text-gray-950 hover:text-gray-600"
+                  aria-label="Home Page"
+                >
                   Home
                 </Link>
               </li>
               <li>
-                <Link href="/shop" className="text-gray-950 hover:text-gray-600" aria-label="Shop Page">
+                <Link
+                  href="/shop"
+                  className="text-gray-950 hover:text-gray-600"
+                  aria-label="Shop Page"
+                >
                   Shop
                 </Link>
               </li>
               <li>
-                <Link href="/contact" className="text-gray-950 hover:text-gray-600" aria-label="Contact Page">
+                <Link
+                  href="/contact"
+                  className="text-gray-950 hover:text-gray-600"
+                  aria-label="Contact Page"
+                >
                   Contact
                 </Link>
               </li>

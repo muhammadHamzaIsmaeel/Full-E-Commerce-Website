@@ -27,7 +27,7 @@ export async function POST(req: Request) {
     if (status === "shipped" || status === "delivered") {
       // Create a Nodemailer transporter
       const transporter = nodemailer.createTransport({
-        service: "gmail",
+        service:"gmail",
         auth: {
           user: process.env.EMAIL_USER, // Your Gmail email
           pass: process.env.EMAIL_PASS, // Your Gmail app password

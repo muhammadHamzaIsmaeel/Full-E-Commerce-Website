@@ -13,12 +13,15 @@ import {
 import { FaBars } from "react-icons/fa6";
 import Cart from "./adToCart/cart";
 import { IoMdSearch } from "react-icons/io";
-import { usePathname } from "next/navigation"; // Import usePathname
+import { usePathname, useRouter } from "next/navigation"; // Import usePathname and useRouter
 import WishlistIcon from "./wishlist/WishlistIcon";
 import AuthSection from "./authSection";
+import { useState } from "react";
 
 export default function Header() {
   const pathname = usePathname(); // Get the current pathname
+  const router = useRouter();
+  const [isSheetOpen, setIsSheetOpen] = useState(false); // Track sheet state
 
   // Performance Optimization: Preload critical resources
   const preloadResources = () => {
@@ -43,6 +46,11 @@ export default function Header() {
     target.src = "/fallback-logo.png"; // Provide a fallback image
   };
 
+  // Function to handle navigation and close the sheet
+  const handleNavigation = (href: string) => {
+    setIsSheetOpen(false); // Close the sheet
+    router.push(href); // Navigate to the new page
+  };
 
   return (
     <header className="sticky top-0 z-50 bg-white shadow">
@@ -106,7 +114,7 @@ export default function Header() {
         </div>
 
         {/* Mobile Menu */}
-        <Sheet>
+        <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
           <SheetTrigger className="lg:hidden text-2xl" aria-label="Open Menu">
             <FaBars className="text-[#B88E2F]" />
           </SheetTrigger>
@@ -138,17 +146,16 @@ export default function Header() {
                     const isActive = pathname === href; // Check if the current route matches the link
 
                     return (
-                      <Link
+                      <button // Changed Link to Button
                         key={item}
-                        href={href}
-                        className={`relative text-black after:content-[''] after:absolute after:left-0 after:bottom-0 after:h-[2px] after:w-0 after:bg-gray-500 after:transition-all after:duration-300 hover:after:w-full ${
+                        onClick={() => handleNavigation(href)} // Use handleNavigation
+                        className={`relative text-left text-black after:content-[''] after:absolute after:left-0 after:bottom-0 after:h-[2px] after:w-0 after:bg-gray-500 after:transition-all after:duration-300 hover:after:w-full ${
                           isActive ? "after:w-full" : ""
-                        }`}
+                        } py-2`} // Added padding for better click area
                         aria-label={`Navigate to ${item}`}
-                        passHref
                       >
                         {item}
-                      </Link>
+                      </button>
                     );
                   })}
                 </div>

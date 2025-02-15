@@ -21,6 +21,7 @@ import VideoPlayer from "./VideoPlayer";
 export interface IProduct {
   title: string;
   price: string;
+  oldPrice: string;
   description?: string;
   tags?: string[];
   SKU?: string;
@@ -53,7 +54,6 @@ interface IReview {
   name: string;
   rating: number;
   comment: string;
-  image?: SanityImageSource;
   createdAt: string;
   isVerifiedPurchase?: boolean;
 }
@@ -108,6 +108,7 @@ export default function Detail({ id }: { id: string }) {
         const query = `*[_type == "product" && _id == $id][0]{
           title,
           price,
+          oldPrice,
           description,
           tags,
           SKU,
@@ -133,7 +134,6 @@ export default function Detail({ id }: { id: string }) {
             comment,
             createdAt,
             isVerifiedPurchase,
-            image
           }
         }`;
 
@@ -329,6 +329,36 @@ export default function Detail({ id }: { id: string }) {
     setNotification({ message: "Product added to cart!", type: "success" });
   };
 
+  const handlebuy = () => {
+    if (!product) return;
+
+    if (!isLoaded) {
+      console.log("Clerk is still loading...");
+      return;
+    }
+
+    if (!isSignedIn) {
+      const returnBackUrl = window.location.href;
+      router.push(
+        `/sign-in?returnBackUrl=${encodeURIComponent(returnBackUrl)}`
+      );
+      return;
+    }
+
+    const updatedCart = [
+      ...cart,
+      {
+        ...product,
+        quantity,
+        selectedColor,
+        selectedSize,
+      },
+    ];
+
+    setCart(updatedCart);
+    setNotification({ message: "Buy Now!", type: "success" });
+  };
+
   const handleThumbnailClick = (src: string, isVideo: boolean) => {
     if (isVideo && product?.productVideo?.asset?.url) {
       console.log("Video thumbnail clicked!");
@@ -384,6 +414,7 @@ export default function Detail({ id }: { id: string }) {
   const {
     title,
     price,
+    oldPrice,
     description,
     tags,
     SKU,
@@ -394,7 +425,7 @@ export default function Detail({ id }: { id: string }) {
     productImage3,
     availableSizes,
     availableColors,
-    stockQuantity
+    stockQuantity,
   } = product;
 
   const thumbnailImages = [
@@ -428,34 +459,36 @@ export default function Detail({ id }: { id: string }) {
               const isVideoThumbnail = src === "/video-placeholder.png";
               return (
                 <div
-                  key={index}
-                  className="w-16 h-16 rounded-lg overflow-hidden cursor-pointer"
-                  onClick={() => handleThumbnailClick(src, isVideoThumbnail)}
-                >
-                  {isVideoThumbnail ? (
-                    <div className="flex items-center justify-center bg-gray-800 text-white">
-                      <span>
-                        <Image
-                          src="/play.png"
-                          alt="Play Video"
-                          width={1000}
-                          height={1000}
-                          className="md:w-full md:h-full object-cover"
-                          loading="lazy"
-                        />
-                      </span>
-                    </div>
-                  ) : (
-                    <Image
-                      src={src}
-                      alt={`Thumbnail ${index + 1}`}
-                      width={1000}
-                      height={1000}
-                      className="md:w-full md:h-full object-cover"
-                      loading="lazy"
-                    />
-                  )}
-                </div>
+                key={index}
+                className="w-16 h-16 rounded-lg overflow-hidden cursor-pointer relative" // Added 'relative'
+                onClick={() => handleThumbnailClick(src, isVideoThumbnail)}
+              >
+                {isVideoThumbnail ? (
+                  <div className="flex items-center justify-center bg-gray-800 text-white absolute inset-0"> {/* Added 'absolute inset-0' */}
+                    <span>
+                      <Image
+                        src="/play.png"
+                        alt="Play Video"
+                        width={1000}
+                        height={1000}
+                        className="object-contain w-full h-full" // Changed 'object-cover' to 'object-contain'
+                        loading="lazy"
+                        style={{ objectFit: 'contain' }} // Added inline style as fallback
+                      />
+                    </span>
+                  </div>
+                ) : (
+                  <Image
+                    src={src}
+                    alt={`Thumbnail ${index + 1}`}
+                    width={1000}
+                    height={1000}
+                    className="object-contain w-full h-full" // Changed 'object-cover' to 'object-contain'
+                    loading="lazy"
+                    style={{ objectFit: 'contain' }} // Added inline style as fallback
+                  />
+                )}
+              </div>
               );
             })}
           </div>
@@ -481,32 +514,46 @@ export default function Detail({ id }: { id: string }) {
         </div>
 
         <div className="lg:col-span-6 mx-3 md:mx-0 mt-8 space-y-6">
-          <h1 className="text-3xl lg:text-4xl font-bold text-gray-800">
-            {title}
-          </h1>
-          <p className="text-xl text-gray-400 font-semibold">Rs. {price}</p>
+          {/* Product Title and Price */}
+          <div className="items-start flex-col space-y-3">
+            <h1 className="text-3xl lg:text-4xl font-extrabold text-gray-900 tracking-tight">
+              {title}
+            </h1>
+            <div className="flex items-center space-x-3">
+              <p className="text-xl font-semibold text-gray-700">Rs. {price}</p>
+              {oldPrice && (
+                <span className="text-red-600 pb-2 font-serif line-through text-lg">
+                  Rs. {oldPrice}
+                </span>
+              )}
+            </div>
+          </div>
 
-          {/* Display Stock Quantity */}
-          <p className="text-gray-500">
+          {/* Stock Status */}
+          <p
+            className={`text-sm ${stockQuantity > 0 ? "text-green-600" : "text-red-600"} font-semibold`}
+          >
             {stockQuantity > 0
               ? `In Stock: ${stockQuantity} units`
               : "Out of Stock"}
           </p>
 
-          <p className="text-gray-600 md:mr-48">{description}</p>
+          {/* Product Description - Shorten and add "Read More" if necessary */}
+          <p className="text-gray-700 leading-relaxed">{description}</p>
 
-          <div className="space-y-4">
+          {/* Size Selection */}
+          {availableSizes && availableSizes.length > 0 && (
             <div>
-              <h3 className="font-medium text-gray-800">Size</h3>
-              <div className="flex space-x-4 mt-2">
-                {availableSizes?.map((size: string) => (
+              <h3 className="font-semibold text-gray-700 mb-2">Size:</h3>
+              <div className="flex flex-wrap gap-2">
+                {availableSizes.map((size) => (
                   <button
                     key={size}
                     onClick={() => setSelectedSize(size)}
-                    className={`px-4 py-2 rounded-md ${
+                    className={`px-3 py-1 rounded-md border border-gray-400 text-gray-700 hover:border-gray-600 focus:outline-none focus:ring-2 focus:ring-[#b9935a] ${
                       selectedSize === size
-                        ? "border-[#B88E2F] bg-[#B88E2F] text-white"
-                        : "bg-[#F9F1E7] text-gray-700"
+                        ? "bg-[#b9935a] text-white border-[#b9935a]"
+                        : ""
                     }`}
                   >
                     {size}
@@ -514,82 +561,108 @@ export default function Detail({ id }: { id: string }) {
                 ))}
               </div>
             </div>
+          )}
 
+          {/* Color Selection */}
+          {availableColors && availableColors.length > 0 && (
             <div>
-              <h3 className="font-medium text-gray-800">Color</h3>
-              <div className="flex space-x-4 mt-2">
-                {availableColors?.map((color: string) => (
+              <h3 className="font-semibold text-gray-700 mb-2">Color:</h3>
+              <div className="flex flex-wrap gap-2">
+                {availableColors.map((color) => (
                   <button
                     key={color}
                     onClick={() => setSelectedColor(color)}
                     style={{ backgroundColor: color }}
-                    className={`w-8 h-8 rounded-full border ${
+                    className={`w-8 h-8 rounded-full border border-gray-300 hover:border-gray-500 focus:outline-none focus:ring-2 focus:ring-[#b9935a] ${
                       selectedColor === color
-                        ? "ring-2 ring-[#b9935a]"
-                        : "border-gray-300"
+                        ? "ring-2 ring-[#b9935a] border-none"
+                        : ""
                     }`}
+                    aria-label={`Select color ${color}`} // Accessibility
                   ></button>
                 ))}
               </div>
             </div>
-          </div>
+          )}
 
-          <div className="md:flex items-center space-y-5 md:space-y-0 space-x-4">
-            <div className="w-[120px] flex items-center border rounded-md overflow-hidden">
+          {/* Quantity Adjustment and Add to Cart */}
+          <div className="flex items-center space-x-4">
+            {/* Quantity Control */}
+            <div className="flex items-center border border-gray-400 rounded-md overflow-hidden">
               <button
                 onClick={() => handleQuantityChange("decrease")}
-                className="px-3 py-2 text-gray-600"
+                className="px-3 py-2 text-gray-600 hover:bg-gray-100"
+                disabled={quantity <= 1} // Disable decrease button when quantity is 1
               >
                 <FaMinus />
               </button>
-              <span className="px-4 py-2 text-gray-800">{quantity}</span>
+              <span className="px-5 py-3 text-gray-800">{quantity}</span>
               <button
                 onClick={() => handleQuantityChange("increase")}
-                className="px-3 py-2 text-gray-600"
+                className="px-3 py-2 text-gray-600 hover:bg-gray-100"
               >
                 <FaPlus />
               </button>
             </div>
 
+            {/* Add to Cart Button */}
             <button
-              className={`flex place-items-center border-2 ${
-                stockQuantity <= 0 ? 'text-gray-400 cursor-not-allowed border-gray-400' : 'text-gray-700 hover:border-black'
-              } px-10 py-3 rounded-md font-medium transition`}
+              className={`bg-[#E53935] text-white px-8 py-3 rounded-md font-medium hover:bg-[#C62828] focus:outline-none focus:ring-2 focus:ring-[#b9935a]/50 transition-colors duration-200 ${
+                stockQuantity <= 0 ? "opacity-50 cursor-not-allowed" : ""
+              }`}
               onClick={handleCart}
               disabled={stockQuantity <= 0}
             >
-              Add to Cart
+              {stockQuantity > 0 ? "Add to Cart" : "Out of Stock"}
             </button>
 
-            <button className="flex place-items-center border-2 text-gray-700 px-10 py-3 rounded-md font-medium hover:border-black transition">
-              <FaPlus className="mx-2" />
-              <a href={`/comparison/${id}`}>Compare</a>
-            </button>
+            <a
+              href="/checkout"
+              className={stockQuantity <= 0 ? "pointer-events-none" : ""}
+            >
+              <button
+                className={`bg-[#2E7D32] text-white px-8 py-3 rounded-md font-medium transition-colors duration-200 
+                ${stockQuantity > 0 ? "hover:bg-[#1B5E20] focus:ring-2 focus:ring-[#b9935a]/50" : "opacity-50 cursor-not-allowed"}`}
+                onClick={handlebuy}
+                disabled={stockQuantity <= 0}
+              >
+                {stockQuantity > 0 ? "Buy Now" : "Out of Stock"}
+              </button>
+            </a>
           </div>
 
-          <div className="md:mr-[350px] md:grid md:grid-cols-2 gap-y-3 text-gray-400 text-sm items-center">
-            <p className="font-medium">SKU:</p>
-            <p>{SKU}</p>
-            <p className="font-medium">Category:</p>
-            <p>{category}</p>
-            <p className="font-medium">Tags:</p>
-            <p>{tags?.join(", ")}</p>
-            <div className="flex gap-7">
-              <p className="font-medium">Share:</p>
-              <div className="flex ml-11 space-x-3">
-                <FaFacebook
-                  className="text-gray-950 hover:text-[#3b5998] cursor-pointer text-xl"
-                  onClick={() => handleShare("facebook")}
-                />
-                <FaTwitter
-                  className="text-gray-950 hover:text-[#1DA1F2] cursor-pointer text-xl"
-                  onClick={() => handleShare("twitter")}
-                />
-                <FaInstagram
-                  className="text-gray-950 hover:text-[#E4405F] cursor-pointer text-xl"
-                  onClick={() => handleShare("instagram")}
-                />
+          {/* Product Meta Information (SKU, Category, Tags) */}
+          <div className="border-t border-gray-300 pt-4">
+            <div className="grid grid-cols-2 gap-y-2 text-gray-600 text-sm">
+              <div>
+                <span className="font-semibold">SKU:</span> {SKU}
               </div>
+              <div>
+                <span className="font-semibold">Category:</span> {category}
+              </div>
+              <div>
+                <span className="font-semibold">Tags:</span>{" "}
+                {tags?.join(", ") || "N/A"} {/* Handle empty tags */}
+              </div>
+            </div>
+          </div>
+
+          {/* Social Sharing Icons */}
+          <div className="border-t border-gray-300 pt-4">
+            <p className="font-semibold text-gray-700 mb-2">Share:</p>
+            <div className="flex space-x-4">
+              <FaFacebook
+                className="text-gray-600 hover:text-[#3b5998] cursor-pointer text-2xl transition"
+                onClick={() => handleShare("facebook")}
+              />
+              <FaTwitter
+                className="text-gray-600 hover:text-[#1DA1F2] cursor-pointer text-2xl transition"
+                onClick={() => handleShare("twitter")}
+              />
+              <FaInstagram
+                className="text-gray-600 hover:text-[#E4405F] cursor-pointer text-2xl transition"
+                onClick={() => handleShare("instagram")}
+              />
             </div>
           </div>
         </div>
@@ -602,117 +675,153 @@ export default function Detail({ id }: { id: string }) {
         )}
       </div>
 
-      {/* Customer rewiews */}
-      <section className="mt-12 py-8 px-4 bg-white rounded-lg shadow-md">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h2 className="text-4xl font-bold text-gray-900">
+      {/* Customer Reviews */}
+      <section className="mt-12 py-8 px-6 ">
+        {/* Average Rating Section */}
+        <div className="flex flex-col md:flex-row items-center justify-between mb-8">
+          <div className="text-center md:text-left mb-6 md:mb-0">
+            <h2 className="text-5xl font-bold text-gray-900">
               {averageRating.toFixed(1)}
               <span className="text-xl text-gray-500">/5</span>
             </h2>
-            <div className="flex">
+            <div className="flex justify-center md:justify-start mt-2">
               {Array.from({ length: Math.floor(averageRating) }).map((_, i) => (
                 <MdOutlineStar
                   key={i}
-                  className="text-yellow-400 text-[25px]"
+                  className="text-yellow-400 text-[28px]"
                 />
               ))}
               {Array.from({ length: 5 - Math.floor(averageRating) }).map(
                 (_, i) => (
                   <MdOutlineStar
                     key={i}
-                    className="text-yellow-100 text-[25px]"
+                    className="text-yellow-100 text-[28px]"
                   />
                 )
               )}
             </div>
-            <p className="text-gray-500">{reviews.length} Ratings</p>
+            <p className="text-gray-500 mt-2">{reviews.length} Ratings</p>
           </div>
 
-          <div>
+          {/* Rating Breakdown */}
+          <div className="w-full md:w-1/2">
             {Object.entries(ratingCounts)
               .sort((a, b) => parseInt(b[0]) - parseInt(a[0]))
               .map(([rating, count]) => (
-                <div
-                  key={rating}
-                  className="flex items-center justify-end space-x-2"
-                >
-                  <span className="text-gray-700">{rating} Stars</span>
-                  <div className="w-32 bg-gray-200 rounded-full h-2">
+                <div key={rating} className="flex items-center space-x-4 mb-3">
+                  <span className="text-gray-700 w-16">{rating} Stars</span>
+                  <div className="flex-1 bg-gray-200 rounded-full h-2.5">
                     <div
-                      className="bg-yellow-400 rounded-full h-2"
+                      className="bg-yellow-400 rounded-full h-2.5"
                       style={{ width: `${(count / reviews.length) * 100}%` }}
                     ></div>
                   </div>
-                  <span className="text-gray-500">{count}</span>
+                  <span className="text-gray-500 w-10 text-right">{count}</span>
                 </div>
               ))}
           </div>
         </div>
 
-        <div className="flex justify-between items-center mb-4">
+        {/* Reviews Heading */}
+        <div className="flex justify-between items-center mb-6">
           <h3 className="text-2xl font-semibold text-gray-900">
             Product Reviews
           </h3>
         </div>
 
-        <div className="mt-6">
+        {/* Reviews List */}
+        <div className="mt-8">
           {reviews.length === 0 ? (
-            <p className="text-gray-600 italic text-center">No reviews yet.</p>
+            <p className="text-gray-600 italic text-center py-6">
+              No reviews yet.
+            </p>
           ) : (
-            <div className="space-y-4">
+            <div className="space-y-6">
               {reviews
                 .slice(0, showAllReviews ? reviews.length : 1)
                 .map((review) => (
-                  <div key={review._id} className="py-2">
-                    <div className="flex items-center justify-between mb-1">
-                      <div className="flex items-center">
-                        <h4 className="text-lg font-semibold text-gray-900 mr-2">
-                          {review.name}
-                        </h4>
+                  <div
+                    key={review._id}
+                    className="p-6 bg-yellow-50 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200"
+                  >
+                    {/* Review Header */}
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center space-x-3">
+                        {/* User Avatar */}
+                        <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">
+                          <span className="text-lg font-semibold text-gray-700">
+                            {review.name.charAt(0).toUpperCase()}
+                          </span>
+                        </div>
+                        {/* User Name and Rating */}
+                        <div>
+                          <div className="flex items-center space-x-2">
+                            <h4 className="text-lg font-semibold text-gray-900">
+                              {review.name}
+                            </h4>
+                            {/* Verified Tick */}
+                            {review.isVerifiedPurchase && (
+                              <span className="text-green-500">
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  className="h-5 w-5"
+                                  viewBox="0 0 20 20"
+                                  fill="currentColor"
+                                >
+                                  <path
+                                    fillRule="evenodd"
+                                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                    clipRule="evenodd"
+                                  />
+                                </svg>
+                              </span>
+                            )}
+                          </div>
+                          <div className="flex items-center space-x-1">
+                            {Array.from({ length: review.rating }).map(
+                              (_, i) => (
+                                <span key={i}>
+                                  <MdOutlineStar className="text-yellow-400 text-[20px]" />
+                                </span>
+                              )
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                      {/* Verified Purchase and Date */}
+                      <div className="text-right">
                         {review.isVerifiedPurchase && (
-                          <span className="text-green-500 text-sm ml-2">
+                          <span className="text-green-500 text-sm font-medium">
                             Verified Purchase
                           </span>
                         )}
-                        <div className="flex">
-                          {Array.from({ length: review.rating }).map((_, i) => (
-                            <span key={i}>
-                              <MdOutlineStar className="text-yellow-400 text-[25px]" />
-                            </span>
-                          ))}
-                        </div>
+                        <p className="text-gray-500 text-sm mt-1">
+                          {new Date(review.createdAt).toLocaleDateString(
+                            "en-US",
+                            {
+                              year: "numeric",
+                              month: "long",
+                              day: "numeric",
+                            }
+                          )}
+                        </p>
                       </div>
-                      <p className="text-gray-500 text-sm">
-                        {new Date(review.createdAt).toLocaleDateString()}
-                      </p>
                     </div>
+
+                    {/* Review Comment */}
                     <p className="text-gray-700 leading-relaxed">
                       {review.comment}
                     </p>
-                    {review.image && (
-                      <div className="mt-2">
-                        <Image
-                          src={urlFor(review.image).url()}
-                          alt="Review Image"
-                          width={80}
-                          height={80}
-                          className="rounded-md object-cover"
-                        />
-                      </div>
-                    )}
-                    {reviews.indexOf(review) <
-                      (showAllReviews ? reviews.length : 1) - 1 && (
-                      <hr className="border-gray-200 my-2" />
-                    )}
                   </div>
                 ))}
             </div>
           )}
+
+          {/* Show More Button */}
           {reviews.length > 1 && !showAllReviews && (
-            <div className="text-center mt-4">
+            <div className="text-center mt-8">
               <button
-                className="text-[#B88E2F] hover:text-[#937329] font-semibold py-2 px-4 rounded"
+                className="bg-[#B88E2F] hover:bg-[#937329] text-white font-semibold py-2 px-6 rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[#B88E2F] focus:ring-offset-2"
                 onClick={() => setShowAllReviews(true)}
               >
                 Show More Reviews
@@ -721,35 +830,39 @@ export default function Detail({ id }: { id: string }) {
           )}
         </div>
 
-        <form onSubmit={handleSubmitReview} className="space-y-6">
+        {/* Review Form */}
+        <form onSubmit={handleSubmitReview} className="mt-8 space-y-6">
+          {/* Name Field */}
           <div>
             <label
               htmlFor="reviewName"
-              className="block text-gray-700 text-sm font-bold mb-2"
+              className="block text-sm font-medium text-gray-700 mb-2"
             >
-              Name:
+              Your Name
             </label>
             <input
               type="text"
               id="reviewName"
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#B88E2F] focus:border-transparent transition duration-200"
+              placeholder="Enter your name"
               value={reviewName}
               onChange={(e) => setReviewName(e.target.value)}
               required
             />
           </div>
 
+          {/* Rating Field */}
           <div>
             <label
               htmlFor="reviewRating"
-              className="block text-gray-700 text-sm font-bold mb-2"
+              className="block text-sm font-medium text-gray-700 mb-2"
             >
-              Rating:
+              Rating
             </label>
             <div className="relative">
               <select
                 id="reviewRating"
-                className="block appearance-none w-full bg-white border border-gray-300 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#B88E2F] focus:border-transparent appearance-none transition duration-200"
                 value={reviewRating}
                 onChange={(e) => setReviewRating(Number(e.target.value))}
               >
@@ -759,9 +872,9 @@ export default function Detail({ id }: { id: string }) {
                 <option value={4}>4 Stars</option>
                 <option value={5}>5 Stars</option>
               </select>
-              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-700">
                 <svg
-                  className="fill-current h-4 w-4"
+                  className="fill-current h-5 w-5"
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 20 20"
                 >
@@ -771,30 +884,59 @@ export default function Detail({ id }: { id: string }) {
             </div>
           </div>
 
+          {/* Comment Field */}
           <div>
             <label
               htmlFor="reviewComment"
-              className="block text-gray-700 text-sm font-bold mb-2"
+              className="block text-sm font-medium text-gray-700 mb-2"
             >
-              Comment:
+              Your Review
             </label>
             <textarea
               id="reviewComment"
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              rows={4}
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#B88E2F] focus:border-transparent transition duration-200"
+              rows={5}
+              placeholder="Write your review here..."
               value={reviewComment}
               onChange={(e) => setReviewComment(e.target.value)}
               required
             />
           </div>
 
+          {/* Submit Button */}
           <div>
             <button
               type="submit"
-              className="bg-[#B88E2F] hover:bg-[#937329] text-white font-bold py-3 px-6 rounded-md focus:outline-none focus:shadow-outline transition duration-200 block w-full text-center"
+              className="w-full bg-[#B88E2F] hover:bg-[#937329] text-white font-semibold py-3 px-6 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#B88E2F] focus:ring-offset-2 transition duration-200"
               disabled={loading}
             >
-              {loading ? "Submitting..." : "Submit Review"}
+              {loading ? (
+                <div className="flex items-center justify-center">
+                  <svg
+                    className="animate-spin h-5 w-5 mr-3 text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
+                  </svg>
+                  Submitting...
+                </div>
+              ) : (
+                "Submit Review"
+              )}
             </button>
           </div>
         </form>

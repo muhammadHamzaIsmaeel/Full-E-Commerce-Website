@@ -33,7 +33,13 @@ export const review ={
         name: 'comment',
         title: 'Comment',
         type: 'text',
-        validation: (Rule: Rule) => Rule.required().min(10).max(500), // Min and Max Comment
+        validation: (Rule: Rule) => Rule.required().min(5).max(500), // Min and Max Comment
+      },
+      {
+        name: 'isVerifiedPurchase',
+        title: 'Verified Purchase',
+        type: 'boolean',
+        description: 'Mark if the review is from a verified purchase.',
       },
     //   {
     //     name: 'image',

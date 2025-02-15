@@ -214,10 +214,10 @@ export default function Products() {
                 {item.shortDescription}
               </p>
               <div className="mt-2 flex items-center space-x-2">
-                <span className="font-bold">Rp {item.price}</span>
+                <span className="font-bold">Rs. {item.price}</span>
                 {item.oldPrice && (
                   <span className="text-gray-400 line-through text-sm">
-                    Rp {item.oldPrice}
+                    Rs. {item.oldPrice}
                   </span>
                 )}
               </div>
