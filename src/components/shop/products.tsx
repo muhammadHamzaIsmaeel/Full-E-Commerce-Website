@@ -153,10 +153,10 @@ const ProductGrid: React.FC<ProductGridProps> = ({ products }) => {
             <h3 className="font-semibold text-lg">{item.title}</h3>
             <p className="text-gray-500 text-sm">{item.shortDescription}</p>
             <div className="mt-2 flex items-center space-x-2">
-              <span className="font-bold">Rp {item.price}</span>
+              <span className="font-bold">Rs. {item.price}</span>
               {item.oldPrice && (
                 <span className="text-gray-400 line-through text-sm">
-                  Rp {item.oldPrice}
+                  Rs. {item.oldPrice}
                 </span>
               )}
             </div>
@@ -165,7 +165,7 @@ const ProductGrid: React.FC<ProductGridProps> = ({ products }) => {
           {/* Hover Overlay */}
           <div className="absolute inset-0 bg-black bg-opacity-50 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
             <Link href={`/product/${item._id}`} legacyBehavior>
-              <a className="bg-white text-yellow-600 px-6 py-2 mb-2 font-medium rounded shadow">
+              <a className="bg-white hover:bg-yellow-500 text-yellow-600 hover:text-white px-6 py-2 mb-2 font-medium rounded shadow">
                 View Details
               </a>
             </Link>

@@ -208,25 +208,24 @@ export default function Products() {
               </span>
             )}
 
-            <div className="p-4">
-              <h3 className="font-semibold text-lg truncate">{item.title}</h3>
-              <p className="text-gray-500 text-sm truncate">
-                {item.shortDescription}
-              </p>
-              <div className="mt-2 flex items-center space-x-2">
-                <span className="font-bold">Rs. {item.price}</span>
-                {item.oldPrice && (
-                  <span className="text-gray-400 line-through text-sm">
-                    Rs. {item.oldPrice}
-                  </span>
-                )}
-              </div>
+            {/* Product Details */}
+          <div className="p-4">
+            <h3 className="font-semibold text-lg">{item.title}</h3>
+            <p className="text-gray-500 text-sm">{item.shortDescription}</p>
+            <div className="mt-2 flex items-center space-x-2">
+              <span className="font-bold">Rs. {item.price}</span>
+              {item.oldPrice && (
+                <span className="text-gray-400 line-through text-sm">
+                  Rs. {item.oldPrice}
+                </span>
+              )}
             </div>
+          </div>
 
             <div className="absolute inset-0 bg-black bg-opacity-50 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
               <Link href={`/product/${item._id}`} legacyBehavior>
                 <a
-                  className="bg-white text-yellow-600 px-6 py-2 mb-2 font-medium rounded shadow"
+                  className="bg-white hover:bg-yellow-500 text-yellow-600 hover:text-white px-6 py-2 mb-2 font-medium rounded shadow"
                   aria-label={`View details of ${item.title}`}
                 >
                   View Details
