@@ -24,8 +24,6 @@ import "react-toastify/dist/ReactToastify.css";
 import { useRouter } from "next/navigation"; // Import useRouter
 import { useAuth } from "@clerk/nextjs"; // Import Clerk's useAuth hook
 
-const SHIPPING_COST = 200; // Example shipping cost
-
 // Define types for the product image
 interface ProductImage {
   asset: {
@@ -115,7 +113,7 @@ export default function Checkout() {
     cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
 
   const calculateGrandTotal = () => {
-    return calculateSubtotal() + SHIPPING_COST;
+    return calculateSubtotal(); // Shipping cost removed.
   };
 
   const handlePaymentSuccess = () => {
@@ -159,7 +157,7 @@ export default function Checkout() {
         date: pktDateTime,
         formData: data,
         userId: userId!,
-        shippingCost: SHIPPING_COST,
+        shippingCost: 0, // Set shipping cost to 0 for free delivery
       };
 
       const response = await fetch("/api/create-order", {
@@ -202,7 +200,7 @@ export default function Checkout() {
       localStorage.setItem("orders", JSON.stringify(updatedOrders));
       console.log("Order added to localStorage:", order);
 
-      toast.success("Order confirmed! Invoice email sent.", {
+      toast.success("Order confirmed! Invoice email sent. Enjoy free delivery!", {
         position: "top-right",
         autoClose: 3000,
       });
@@ -549,15 +547,13 @@ export default function Checkout() {
                 </div>
               ))}
             </div>
-              {/* Shipping Cost */}
-              <div className="flex justify-between items-center text-lg font-medium text-gray-800">
-                  <span>Shipping</span>
-                  <span>Rs. {SHIPPING_COST.toLocaleString()}</span>
-                </div>
+            {/* Shipping Cost Removed*/}
+
             <div className="flex justify-between items-center text-lg font-bold text-gray-800">
               <span>Total</span>
               <span>Rs. {calculateGrandTotal().toLocaleString()}</span>
             </div>
+            <p className="text-green-600 font-semibold">Free Delivery!</p>
           </div>
         </div>
       </div>

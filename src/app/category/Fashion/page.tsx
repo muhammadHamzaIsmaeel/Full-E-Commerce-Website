@@ -27,46 +27,45 @@ export default function BedroomPage() {
   const [data, setData] = useState<IProduct[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-   // Use the useWishlist hook to access wishlist functions
-   const { addToWishlist } = useWishlist();
+  // Use the useWishlist hook to access wishlist functions
+  const { addToWishlist } = useWishlist();
 
-   // Handle wishlist functionality
-   const handleWishlist = (product: IProduct) => {
-     if (!product) {
-       toast.error("Invalid product data.", {
-         position: "top-right",
-         duration: 3000,
-         style: {
-           background: "#f87171",
-           color: "white",
-         },
-       });
-       return;
-     }
- 
-     try {
-       addToWishlist(product); // Use the addToWishlist function from context
-       toast.success("Product added to wishlist!", {
-         position: "top-right",
-         duration: 3000,
-         style: {
-           background: "#B88E2F",
-           color: "white",
-         },
-       });
-     } catch (err) {
-       console.error("Error handling wishlist:", err);
-       toast.error("Failed to add product to wishlist.", {
-         position: "top-right",
-         duration: 3000,
-         style: {
-           background: "#f87171",
-           color: "white",
-         },
-       });
-     }
-   };
- 
+  // Handle wishlist functionality
+  const handleWishlist = (product: IProduct) => {
+    if (!product) {
+      toast.error("Invalid product data.", {
+        position: "top-right",
+        duration: 3000,
+        style: {
+          background: "#f87171",
+          color: "white",
+        },
+      });
+      return;
+    }
+
+    try {
+      addToWishlist(product); // Use the addToWishlist function from context
+      toast.success("Product added to wishlist!", {
+        position: "top-right",
+        duration: 3000,
+        style: {
+          background: "#B88E2F",
+          color: "white",
+        },
+      });
+    } catch (err) {
+      console.error("Error handling wishlist:", err);
+      toast.error("Failed to add product to wishlist.", {
+        position: "top-right",
+        duration: 3000,
+        style: {
+          background: "#f87171",
+          color: "white",
+        },
+      });
+    }
+  };
 
   // Function to handle sharing
   const handleShare = (productId: string) => {
@@ -183,9 +182,10 @@ export default function BedroomPage() {
       <div className="w-full">
         <div className="relative w-full h-[50vh]">
           <Image
-            src="/shop/banner11.png"
-            alt="Dining Furniture Collection"
+            src="/fashion.png"
+            alt="Fashion Shop Banner"
             layout="fill"
+            style={{ objectFit: "cover", filter: "blur(3px)", opacity: 0.7 }}
             objectFit="cover"
             loading="lazy"
           />
@@ -219,6 +219,8 @@ export default function BedroomPage() {
             <div
               key={item._id}
               className="relative bg-gray-100 rounded overflow-hidden group"
+              role="listitem"
+              aria-label={`Product: ${item.title}`}
             >
               <Image
                 src={urlFor(item.productImage).width(1000).height(1000).url()}
@@ -226,6 +228,7 @@ export default function BedroomPage() {
                 width={1000}
                 height={1000}
                 loading="lazy"
+                priority={false} // Optimize performance by lazy loading images
               />
 
               {item.dicountPercentage && (
@@ -236,6 +239,7 @@ export default function BedroomPage() {
                     height: "40px",
                     borderRadius: "50%",
                   }}
+                  aria-label={`Discount: ${item.dicountPercentage}%`}
                 >
                   %{item.dicountPercentage}
                 </span>
@@ -249,21 +253,21 @@ export default function BedroomPage() {
                     height: "40px",
                     borderRadius: "50%",
                   }}
+                  aria-label="New Product"
                 >
                   NEW
                 </span>
               )}
 
+              {/* Product Details */}
               <div className="p-4">
-                <h3 className="font-semibold text-lg truncate">{item.title}</h3>
-                <p className="text-gray-500 text-sm truncate">
-                  {item.shortDescription}
-                </p>
+                <h3 className="font-semibold text-lg">{item.title}</h3>
+                <p className="text-gray-500 text-sm">{item.shortDescription}</p>
                 <div className="mt-2 flex items-center space-x-2">
-                  <span className="font-bold">Rp {item.price}</span>
+                  <span className="font-bold">Rs. {item.price}</span>
                   {item.oldPrice && (
                     <span className="text-gray-400 line-through text-sm">
-                      Rp {item.oldPrice}
+                      Rs. {item.oldPrice}
                     </span>
                   )}
                 </div>
@@ -271,7 +275,10 @@ export default function BedroomPage() {
 
               <div className="absolute inset-0 bg-black bg-opacity-50 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                 <Link href={`/product/${item._id}`} legacyBehavior>
-                  <a className="bg-white text-yellow-600 px-6 py-2 mb-2 font-medium rounded shadow">
+                  <a
+                    className="bg-white hover:bg-yellow-500 text-yellow-600 hover:text-white px-6 py-2 mb-2 font-medium rounded shadow"
+                    aria-label={`View details of ${item.title}`}
+                  >
                     View Details
                   </a>
                 </Link>
@@ -279,19 +286,24 @@ export default function BedroomPage() {
                   <button
                     onClick={() => handleShare(item._id)}
                     className="flex items-center gap-1 hover:text-red-500 text-white"
+                    aria-label={`Share ${item.title}`}
                   >
                     <IoMdShare />
                     <span>Share</span>
                   </button>
-                  <a href={`/comparison/${item._id}`}>
-                    <button className="flex items-center gap-1 hover:text-red-500 text-white">
+                  <Link href={`/comparison/${item._id}`} legacyBehavior>
+                    <a
+                      className="flex items-center gap-1 hover:text-red-500 text-white"
+                      aria-label={`Compare ${item.title}`}
+                    >
                       <MdCompareArrows />
                       <span>Compare</span>
-                    </button>
-                  </a>
+                    </a>
+                  </Link>
                   <button
                     onClick={() => handleWishlist(item)}
                     className="flex items-center gap-1 text-white hover:text-red-500"
+                    aria-label={`Add ${item.title} to wishlist`}
                   >
                     <FaRegHeart />
                     <span>Like</span>

@@ -172,10 +172,11 @@ export default function BedroomPage() {
       <div>
         {/* Hero Section */}
         <div className="relative w-full h-[50vh]">
-          <Image
-            src="/shop/banner11.png"
-            alt="Bedroom Shop Banner"
+        <Image
+            src="/beauty.jpg"
+            alt="Beauty Shop Banner"
             layout="fill"
+            style={{ objectFit: 'cover', filter: 'blur(3px)', opacity: 0.7 }} 
             objectFit="cover"
             loading="lazy"
           />
@@ -184,9 +185,9 @@ export default function BedroomPage() {
               <Image
                 src="/logo.png"
                 alt="Saud Solution Logo"
-                width={32}
-                height={20}
-                className="w-12 h-8"
+                width={3200}
+                height={2000}
+                className="w-12 h-9"
                 loading="lazy"
               />
             </Link>
@@ -206,98 +207,100 @@ export default function BedroomPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
             {data.map((item) => (
               <div
-                key={item._id}
-                className="relative bg-gray-100 rounded overflow-hidden group"
-              >
-                <Image
-                  src={urlFor(item.productImage).width(1000).height(1000).url()}
-                  alt={`Image of ${item.title}`}
-                  width={1000}
-                  height={1000}
-                  loading="lazy"
-                />
-
-                {item.dicountPercentage && (
-                  <span
-                    className="absolute top-4 right-4 bg-red-500 text-white text-xs font-bold flex items-center justify-center"
-                    style={{
-                      width: "40px",
-                      height: "40px",
-                      borderRadius: "50%",
-                    }}
-                  >
-                    %{item.dicountPercentage}
+              key={item._id}
+              className="relative bg-gray-100 rounded overflow-hidden group"
+              role="listitem"
+              aria-label={`Product: ${item.title}`}
+            >
+              <Image
+                src={urlFor(item.productImage).width(1000).height(1000).url()}
+                alt={`Image of ${item.title}`}
+                width={1000}
+                height={1000}
+                loading="lazy"
+                priority={false} // Optimize performance by lazy loading images
+              />
+  
+              {item.dicountPercentage && (
+                <span
+                  className="absolute top-4 right-4 bg-red-500 text-white text-xs font-bold flex items-center justify-center"
+                  style={{
+                    width: "40px",
+                    height: "40px",
+                    borderRadius: "50%",
+                  }}
+                  aria-label={`Discount: ${item.dicountPercentage}%`}
+                >
+                  %{item.dicountPercentage}
+                </span>
+              )}
+  
+              {item.isNew && (
+                <span
+                  className="absolute top-4 right-4 bg-green-500 text-white text-xs font-bold flex items-center justify-center"
+                  style={{
+                    width: "40px",
+                    height: "40px",
+                    borderRadius: "50%",
+                  }}
+                  aria-label="New Product"
+                >
+                  NEW
+                </span>
+              )}
+  
+              {/* Product Details */}
+            <div className="p-4">
+              <h3 className="font-semibold text-lg">{item.title}</h3>
+              <p className="text-gray-500 text-sm">{item.shortDescription}</p>
+              <div className="mt-2 flex items-center space-x-2">
+                <span className="font-bold">Rs. {item.price}</span>
+                {item.oldPrice && (
+                  <span className="text-gray-400 line-through text-sm">
+                    Rs. {item.oldPrice}
                   </span>
                 )}
-
-                {item.isNew && (
-                  <span
-                    className="absolute top-4 right-4 bg-green-500 text-white text-xs font-bold flex items-center justify-center"
-                    style={{
-                      width: "40px",
-                      height: "40px",
-                      borderRadius: "50%",
-                    }}
+              </div>
+            </div>
+  
+              <div className="absolute inset-0 bg-black bg-opacity-50 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                <Link href={`/product/${item._id}`} legacyBehavior>
+                  <a
+                    className="bg-white hover:bg-yellow-500 text-yellow-600 hover:text-white px-6 py-2 mb-2 font-medium rounded shadow"
+                    aria-label={`View details of ${item.title}`}
                   >
-                    NEW
-                  </span>
-                )}
-
-                <div className="p-4">
-                  <h3 className="font-semibold text-lg truncate">
-                    {item.title}
-                  </h3>
-                  <p className="text-gray-500 text-sm truncate">
-                    {item.shortDescription}
-                  </p>
-                  <div className="mt-2 flex items-center space-x-2">
-                    <span className="font-bold">Rp {item.price}</span>
-                    {item.oldPrice && (
-                      <span className="text-gray-400 line-through text-sm">
-                        Rp {item.oldPrice}
-                      </span>
-                    )}
-                  </div>
-                </div>
-
-                <div className="absolute inset-0 bg-black bg-opacity-50 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                  <Link href={`/product/${item._id}`} legacyBehavior>
+                    View Details
+                  </a>
+                </Link>
+                <div className="flex space-x-4">
+                  <button
+                    onClick={() => handleShare(item._id)}
+                    className="flex items-center gap-1 hover:text-red-500 text-white"
+                    aria-label={`Share ${item.title}`}
+                  >
+                    <IoMdShare />
+                    <span>Share</span>
+                  </button>
+                  <Link href={`/comparison/${item._id}`} legacyBehavior>
                     <a
-                      className="bg-white text-yellow-600 px-6 py-2 mb-2 font-medium rounded shadow"
-                      aria-label={`View details of ${item.title}`}
+                      className="flex items-center gap-1 hover:text-red-500 text-white"
+                      aria-label={`Compare ${item.title}`}
                     >
-                      View Details
+                      <MdCompareArrows />
+                      <span>Compare</span>
                     </a>
                   </Link>
-                  <div className="flex space-x-4">
-                    <button
-                      onClick={() => handleShare(item._id)}
-                      className="flex items-center gap-1 hover:text-red-500 text-white"
-                      aria-label={`Share ${item.title}`}
-                    >
-                      <IoMdShare />
-                      <span>Share</span>
-                    </button>
-                    <Link href={`/comparison/${item._id}`} legacyBehavior>
-                      <a
-                        className="flex items-center gap-1 hover:text-red-500 text-white"
-                        aria-label={`Compare ${item.title}`}
-                      >
-                        <MdCompareArrows />
-                        <span>Compare</span>
-                      </a>
-                    </Link>
-                    <button
-                      onClick={() => handleWishlist(item)}
-                      className="flex items-center gap-1 text-white hover:text-red-500"
-                      aria-label={`Add ${item.title} to wishlist`}
-                    >
-                      <FaRegHeart />
-                      <span>Like</span>
-                    </button>
-                  </div>
+                  <button
+                    onClick={() => handleWishlist(item)}
+                    className="flex items-center gap-1 text-white hover:text-red-500"
+                    aria-label={`Add ${item.title} to wishlist`}
+                  >
+                    <FaRegHeart />
+                    <span>Like</span>
+                  </button>
                 </div>
               </div>
+            </div>
             ))}
           </div>
           <div className="mt-8 text-center">
