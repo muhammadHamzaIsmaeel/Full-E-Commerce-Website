@@ -45,13 +45,13 @@ export default function Footer() {
               electronics, and beauty essentials.
             </p>
             <div className="mt-4 flex space-x-4">
-              <Link href="#" aria-label="Facebook">
+              <Link href="https://web.facebook.com/saudsolution" aria-label="Facebook">
                 <FaFacebook
                   className="text-[#1877F2] hover:text-[#3b5998]"
                   size={20}
                 />
               </Link>
-              <Link href="#" aria-label="Instagram">
+              <Link href="https://www.instagram.com/saudsolution" aria-label="Instagram">
                 <FaInstagram
                   className="text-[#E4405F] hover:text-[#C21E56]"
                   size={20}
