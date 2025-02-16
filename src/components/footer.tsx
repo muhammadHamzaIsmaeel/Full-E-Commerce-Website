@@ -57,7 +57,7 @@ export default function Footer() {
                   size={20}
                 />
               </Link>
-              <Link href="#" aria-label="TikTok">
+              <Link href="https://www.tiktok.com/@saudsolution" aria-label="TikTok">
                 <FaTiktok
                   className="text-[#000000] hover:text-[#444444]"
                   size={20}

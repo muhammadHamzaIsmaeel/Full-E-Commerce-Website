@@ -173,7 +173,7 @@ export default function BedroomPage() {
         {/* Hero Section */}
         <div className="relative w-full h-[50vh]">
         <Image
-            src="/Electronic.jpg"
+            src="/electronic.jpg"
             alt="Electronics Shop Banner"
             layout="fill"
             style={{ objectFit: 'cover', filter: 'blur(3px)', opacity: 0.7 }} 
