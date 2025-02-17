@@ -56,7 +56,7 @@ export default function SearchResults() {
         <div className="container mx-auto py-8">
             <div className="flex items-center justify-between mb-6">
                 <h2 className="text-2xl font-semibold text-gray-800 flex items-center">
-                    <FaSearch className="mr-2 text-gray-500" /> Search Results for: <span className="ml-1 font-bold text-indigo-600">"{query}"</span>
+                    <FaSearch className="mr-2 text-gray-500" /> Search Results for: <span className="ml-1 font-bold text-indigo-600">&quot;{query}&quot;</span>
                 </h2>
                 <button
                     onClick={handleBackToShop}
@@ -80,7 +80,7 @@ export default function SearchResults() {
             ) : searchResults.length === 0 ? (
                 <div className="text-center py-12">
                     <p className="text-gray-500 text-lg">
-                        <FaSearch className="inline-block mr-1" /> No products found matching "{query}".
+                        <FaSearch className="inline-block mr-1" /> No products found matching &quot;{query}&quot;.
                     </p>
                 </div>
             ) : (
