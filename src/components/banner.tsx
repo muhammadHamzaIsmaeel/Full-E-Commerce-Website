@@ -56,7 +56,6 @@ export default function Banner() {
     setCurrentSlide(index);
   }, []);
 
-
   const textVariants = {
     hidden: { opacity: 0, y: 50 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.6, delay: 0.3, ease: "easeOut" } },
@@ -94,78 +93,89 @@ export default function Banner() {
         aria-live="polite"
       >
         {banners.map((banner, index) => {
-            console.log(`Rendering banner ${index}:`, banner); // Check EACH banner's data
-            return (
-          <div key={banner._id} className="relative min-w-full h-[600px] bg-cover bg-center" aria-hidden={index !== currentSlide}>
-            {banner.buttonLink ? (
-              <Link href={banner.buttonLink} aria-label={`Go to ${banner.buttonLink}`} className="block relative w-full h-full">
-                {/* Image with Fixed Height and objectFit */}
+          console.log(`Rendering banner ${index}:`, banner); // Check EACH banner's data
+          return (
+            <div
+              key={banner._id}
+              className="relative min-w-full h-[230px] sm:h-[300px] md:h-[400px] lg:h-[600px] bg-cover bg-center"
+              aria-hidden={index !== currentSlide}
+            >
+              {banner.buttonLink ? (
+                <Link
+                  href={banner.buttonLink}
+                  aria-label={`Go to ${banner.buttonLink}`}
+                  className="block relative w-full h-full"
+                >
+                  {/* Image with Fixed Height and objectFit */}
+                  <Image
+                    src={urlFor(banner.image).url()}
+                    alt={banner.alt || `Banner ${index + 1}`}
+                    width={1920}
+                    height={1080}
+                    priority={index === 0}
+                    style={{ objectFit: "cover", objectPosition: "center" }} // Set objectFit and objectPosition
+                    className="w-full h-full" // Image takes the full width and height
+                  />
+                  {(banner.topHeading || banner.centerHeading || banner.bottomHeading) && (
+                    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center w-full px-4">
+                      {banner.topHeading && (
+                        <motion.h2
+                          className="text-white text-lg sm:text-xl md:text-2xl font-semibold uppercase tracking-widest mb-2 drop-shadow-md"
+                          variants={textVariants}
+                          initial="hidden"
+                          animate="visible"
+                        >
+                          {banner.topHeading}
+                        </motion.h2>
+                      )}
+                      {banner.centerHeading && (
+                        <motion.h1
+                          className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl text-white font-extrabold leading-tight mb-4 drop-shadow-md"
+                          variants={textVariants}
+                          initial="hidden"
+                          animate="visible"
+                        >
+                          {banner.centerHeading}
+                        </motion.h1>
+                      )}
+                      {banner.bottomHeading && (
+                        <motion.p
+                          className="text-white text-sm sm:text-base md:text-lg font-semibold drop-shadow-md"
+                          variants={textVariants}
+                          initial="hidden"
+                          animate="visible"
+                        >
+                          {banner.bottomHeading}
+                        </motion.p>
+                      )}
+                    </div>
+                  )}
+                </Link>
+              ) : (
+                // Image only (no link)
                 <Image
                   src={urlFor(banner.image).url()}
                   alt={banner.alt || `Banner ${index + 1}`}
                   width={1920}
                   height={1080}
                   priority={index === 0}
-                  style={{ objectFit: 'cover', objectPosition: 'center' }} // Set objectFit and objectPosition
+                  style={{ objectFit: "cover", objectPosition: "center" }} // Set objectFit and objectPosition
                   className="w-full h-full" // Image takes the full width and height
                 />
-                {(banner.topHeading || banner.centerHeading || banner.bottomHeading) && (
-                 <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center">
-                 {banner.topHeading && (
-                   <motion.h2
-                     className="text-white text-xl font-semibold uppercase tracking-widest mb-2 drop-shadow-md"
-                     variants={textVariants}
-                     initial="hidden"
-                     animate="visible"
-                   >
-                     {banner.topHeading}
-                   </motion.h2>
-                 )}
-                 {banner.centerHeading && (
-                   <motion.h1
-                     className="text-5xl text-white font-extrabold leading-tight mb-4 drop-shadow-md"
-                     variants={textVariants}
-                     initial="hidden"
-                     animate="visible"
-                   >
-                     {banner.centerHeading}
-                   </motion.h1>
-                 )}
-                 {banner.bottomHeading && (
-                   <motion.p
-                     className="text-white text-lg font-semibold drop-shadow-md"
-                     variants={textVariants}
-                     initial="hidden"
-                     animate="visible"
-                   >
-                     {banner.bottomHeading}
-                   </motion.p>
-                 )}
-               </div>
-                )}
-              </Link>
-            ) : (
-              // Image only (no link)
-              <Image
-                src={urlFor(banner.image).url()}
-                alt={banner.alt || `Banner ${index + 1}`}
-                width={1920}
-                height={1080}
-                priority={index === 0}
-                style={{ objectFit: 'cover', objectPosition: 'center' }} // Set objectFit and objectPosition
-                className="w-full h-full" // Image takes the full width and height
-              />
-            )}
-          </div>
-            )
+              )}
+            </div>
+          );
         })}
       </div>
-      <nav className="absolute bottom-4 w-full flex justify-center space-x-2" aria-label="Carousel Navigation">
+      <nav
+        className="absolute bottom-4 w-full flex justify-center space-x-2"
+        aria-label="Carousel Navigation"
+      >
         {banners.map((_, index) => (
           <button
             key={index}
             onClick={() => handleSlideChange(index)}
-            className={`w-3 h-3 rounded-full transition-colors duration-300 ${
+            className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-colors duration-300 ${
               index === currentSlide ? "bg-white" : "bg-gray-500"
             }`}
             aria-label={`Slide ${index + 1}`}
