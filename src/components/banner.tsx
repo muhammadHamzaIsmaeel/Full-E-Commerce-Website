@@ -3,23 +3,27 @@
 import { client } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
 import Image from "next/image";
+import Link from "next/link";
 import { useState, useEffect, useCallback } from "react";
+import { motion } from "framer-motion";
 
 interface IBanner {
   _id: string;
   image: string;
   alt: string;
-  topHeading: string;
-  centerHeading: string;
-  bottomHeading: string;
-  buttonLink: string;
+  topHeading?: string;
+  centerHeading?: string;
+  bottomHeading?: string;
+  buttonLink?: string;
 }
 
 const fetchBannerData = async () => {
   try {
-    return await client.fetch(
+    const data = await client.fetch(
       '*[_type == "banner"]{_id, topHeading, centerHeading, bottomHeading, buttonLink, image, "alt": altText}'
     );
+    console.log("Fetched banner data:", data); // Check the ENTIRE fetched data
+    return data;
   } catch (error) {
     console.error("Error fetching banner data:", error);
     return [];
@@ -44,13 +48,19 @@ export default function Banner() {
     if (banners.length === 0) return;
     const slideInterval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % banners.length);
-    }, 3000);
+    }, 5000);
     return () => clearInterval(slideInterval);
   }, [banners.length]);
 
   const handleSlideChange = useCallback((index: number) => {
     setCurrentSlide(index);
   }, []);
+
+
+  const textVariants = {
+    hidden: { opacity: 0, y: 50 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.6, delay: 0.3, ease: "easeOut" } },
+  };
 
   if (loading)
     return (
@@ -65,7 +75,7 @@ export default function Banner() {
             loading="lazy"
           />
           <div className="text-3xl font-bold text-black animate-pulse">
-          Saud Solution...
+            Saud Solution...
           </div>
           <div className="flex justify-center space-x-2 text-yellow-700">
             <span className="dot text-5xl">.</span>
@@ -77,45 +87,87 @@ export default function Banner() {
     );
 
   return (
-    <section className="relative w-full h-full overflow-hidden" aria-label="Banner Carousel">
+    <section className="relative w-full overflow-hidden" aria-label="Banner Carousel">
       <div
         className="flex transition-transform duration-500 ease-in-out"
         style={{ transform: `translateX(-${currentSlide * 100}%)` }}
         aria-live="polite"
       >
-        {banners.map((banner, index) => (
-          <figure key={banner._id} className="relative min-w-full h-full bg-cover bg-center" aria-hidden={index !== currentSlide}>
-            <Image
-              src={urlFor(banner.image).url()}
-              alt={banner.alt || `Banner ${index + 1}`}
-              width={1920}
-              height={1080}
-              priority={index === 0}
-              className="w-full md:h-[400px] h-[250px] lg:h-[650px] object-cover"
-            />
-            <figcaption className="absolute top-1/2 py-3 px-2 md:pl-8 md:pr-5 md:pt-9 w-[190px] h-[140px] md:w-[360px] md:h-[280px] right-6 md:right-12 lg:w-[623px] lg:h-[423px] rounded-xl bg-[#FFF3E3] transform -translate-y-1/2">
-              <h2 className="lg:text-xl md:text-xl text-[13px] font-semibold">{banner.topHeading}</h2>
-              <h1 className="lg:text-5xl text-[12px] lg:my-4 md:text-2xl py-1 text-[#B88E2F] font-extrabold">
-                {banner.centerHeading}
-              </h1>
-              <p className="lg:font-semibold text-[8px] text-gray-600 md:text-sm">{banner.bottomHeading}</p>
-              <a
-                href={banner.buttonLink}
-                className="bg-[#B88E2F] cursor-pointer hover:bg-[rgba(184,143,47,0.77)] md:mt-7 py-1 px-1 lg:mt-12 md:px-5 md:py-2 lg:px-12 lg:py-6 text-[10px] lg:text-[20px] text-white font-bold inline-block"
-                aria-label={`Learn more about ${banner.centerHeading}`}
-              >
-                BUY NOW
-              </a>
-            </figcaption>
-          </figure>
-        ))}
+        {banners.map((banner, index) => {
+            console.log(`Rendering banner ${index}:`, banner); // Check EACH banner's data
+            return (
+          <div key={banner._id} className="relative min-w-full h-[600px] bg-cover bg-center" aria-hidden={index !== currentSlide}>
+            {banner.buttonLink ? (
+              <Link href={banner.buttonLink} aria-label={`Go to ${banner.buttonLink}`} className="block relative w-full h-full">
+                {/* Image with Fixed Height and objectFit */}
+                <Image
+                  src={urlFor(banner.image).url()}
+                  alt={banner.alt || `Banner ${index + 1}`}
+                  width={1920}
+                  height={1080}
+                  priority={index === 0}
+                  style={{ objectFit: 'cover', objectPosition: 'center' }} // Set objectFit and objectPosition
+                  className="w-full h-full" // Image takes the full width and height
+                />
+                {(banner.topHeading || banner.centerHeading || banner.bottomHeading) && (
+                 <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center">
+                 {banner.topHeading && (
+                   <motion.h2
+                     className="text-white text-xl font-semibold uppercase tracking-widest mb-2 drop-shadow-md"
+                     variants={textVariants}
+                     initial="hidden"
+                     animate="visible"
+                   >
+                     {banner.topHeading}
+                   </motion.h2>
+                 )}
+                 {banner.centerHeading && (
+                   <motion.h1
+                     className="text-5xl text-white font-extrabold leading-tight mb-4 drop-shadow-md"
+                     variants={textVariants}
+                     initial="hidden"
+                     animate="visible"
+                   >
+                     {banner.centerHeading}
+                   </motion.h1>
+                 )}
+                 {banner.bottomHeading && (
+                   <motion.p
+                     className="text-white text-lg font-semibold drop-shadow-md"
+                     variants={textVariants}
+                     initial="hidden"
+                     animate="visible"
+                   >
+                     {banner.bottomHeading}
+                   </motion.p>
+                 )}
+               </div>
+                )}
+              </Link>
+            ) : (
+              // Image only (no link)
+              <Image
+                src={urlFor(banner.image).url()}
+                alt={banner.alt || `Banner ${index + 1}`}
+                width={1920}
+                height={1080}
+                priority={index === 0}
+                style={{ objectFit: 'cover', objectPosition: 'center' }} // Set objectFit and objectPosition
+                className="w-full h-full" // Image takes the full width and height
+              />
+            )}
+          </div>
+            )
+        })}
       </div>
       <nav className="absolute bottom-4 w-full flex justify-center space-x-2" aria-label="Carousel Navigation">
         {banners.map((_, index) => (
           <button
             key={index}
             onClick={() => handleSlideChange(index)}
-            className={`w-3 h-3 rounded-full ${index === currentSlide ? "bg-white" : "bg-gray-500"}`}
+            className={`w-3 h-3 rounded-full transition-colors duration-300 ${
+              index === currentSlide ? "bg-white" : "bg-gray-500"
+            }`}
             aria-label={`Slide ${index + 1}`}
             aria-current={index === currentSlide ? "true" : "false"}
           ></button>

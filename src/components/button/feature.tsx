@@ -1,41 +1,49 @@
+"use client";
+
 import { FaShippingFast } from "react-icons/fa";
-import { FaHeadset, FaTrophy } from "react-icons/fa6";
-import { MdVerified } from "react-icons/md";
+import { FaHeadset, FaStar } from "react-icons/fa6"; // Swapped trophy for star
+import { RiSecurePaymentLine } from "react-icons/ri"; // Added secure payment icon
 
 export default function Feature() {
   return (
-    <div className="bg-[#FAF3EA] py-14">
-      <div className="flex flex-col md:flex-row justify-center md:justify-between items-center max-w-6xl mx-auto gap-8 text-center px-4">
-        {/* Feature 1 */}
-        <div className="flex flex-col md:flex-row items-center gap-4">
-          <FaTrophy className="text-4xl text-black" />
-          <div>
-            <h3 className="text-lg font-semibold">High Quality</h3>
-            <p className="text-sm text-gray-600">Crafted from top materials</p>
+    <div className="bg-gray-50 py-12"> {/* Less intense background */}
+      <div className="container mx-auto px-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"> {/* More structured layout */}
+
+          {/* Feature 1: High Quality */}
+          <div className="p-4 bg-white rounded shadow-md flex items-start space-x-3">
+            <FaStar className="text-3xl text-yellow-500 flex-shrink-0" /> {/* Brand color */}
+            <div>
+              <h3 className="text-lg font-semibold text-gray-800">Premium Quality</h3> {/* Darker text */}
+              <p className="text-sm text-gray-600">Carefully selected materials and craftsmanship.</p>
+            </div>
           </div>
-        </div>
-        {/* Feature 2 */}
-        <div className="flex flex-col md:flex-row items-center gap-4">
-          <MdVerified className="text-4xl text-black" />
-          <div>
-            <h3 className="text-lg font-semibold">Warranty Protection</h3>
-            <p className="text-sm text-gray-600">Over 2 years</p>
+
+          {/* Feature 2: Secure Payment */}
+          <div className="p-4 bg-white rounded shadow-md flex items-start space-x-3">
+            <RiSecurePaymentLine className="text-3xl text-green-500 flex-shrink-0" /> {/* Security color */}
+            <div>
+              <h3 className="text-lg font-semibold text-gray-800">Secure Payments</h3>
+              <p className="text-sm text-gray-600">Your transactions are encrypted and protected.</p>
+            </div>
           </div>
-        </div>
-        {/* Feature 3 */}
-        <div className="flex flex-col md:flex-row items-center gap-4">
-          <FaShippingFast className="text-4xl text-black" />
-          <div>
-            <h3 className="text-lg font-semibold">Free Shipping</h3>
-            <p className="text-sm text-gray-600">Order over 150 $</p>
+
+          {/* Feature 3: Free Shipping */}
+          <div className="p-4 bg-white rounded shadow-md flex items-start space-x-3">
+            <FaShippingFast className="text-3xl text-indigo-500 flex-shrink-0" /> {/* Shipping color */}
+            <div>
+              <h3 className="text-lg font-semibold text-gray-800">Fast & Free Shipping</h3>
+              <p className="text-sm text-gray-600">Enjoy free shipping on orders over 599.</p> {/* Adjusted amount */}
+            </div>
           </div>
-        </div>
-        {/* Feature 4 */}
-        <div className="flex flex-col md:flex-row items-center gap-4">
-          <FaHeadset className="text-4xl text-black" />
-          <div>
-            <h3 className="text-lg font-semibold">24/7 Support</h3>
-            <p className="text-sm text-gray-600">Dedicated support</p>
+
+          {/* Feature 4: Customer Support */}
+          <div className="p-4 bg-white rounded shadow-md flex items-start space-x-3">
+            <FaHeadset className="text-3xl text-blue-500 flex-shrink-0" /> {/* Support color */}
+            <div>
+              <h3 className="text-lg font-semibold text-gray-800">Dedicated Support</h3>
+              <p className="text-sm text-gray-600">24/7 assistance from our friendly team.</p>
+            </div>
           </div>
         </div>
       </div>

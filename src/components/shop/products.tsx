@@ -8,6 +8,7 @@ import { MdCompareArrows } from "react-icons/md";
 import { FaRegHeart } from "react-icons/fa6";
 import toast, { Toaster } from "react-hot-toast";
 import { useWishlist } from "@/app/context/WishlistContext";
+import { FaTruck } from "react-icons/fa"; // Import the truck icon
 
 interface ProductGridProps {
   products: IProduct[];
@@ -146,6 +147,14 @@ const ProductGrid: React.FC<ProductGridProps> = ({ products }) => {
             >
               NEW
             </span>
+          )}
+
+          {/* Free Delivery Tag */}
+          {item.freeDelivery && (
+            <div className="absolute top-4 left-4 bg-indigo-500 text-white text-xs font-bold py-1 px-2 rounded-md flex items-center space-x-1">
+              <FaTruck />
+              <span>Free Delivery</span>
+            </div>
           )}
 
           {/* Product Details */}

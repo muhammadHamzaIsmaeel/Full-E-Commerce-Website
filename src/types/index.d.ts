@@ -7,6 +7,7 @@ export interface IProduct {
     dicountPercentage?: string;
     isNew?: boolean;
     productImage: string;
+    freeDelivery?: boolean; // Add freeDelivery property
   }
   
   export interface PaginationProps {

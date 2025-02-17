@@ -30,7 +30,7 @@ export default function ShopProducts() {
     const fetchProducts = async () => {
       try {
         const products: IProduct[] = await client.fetch(
-          '*[_type == "product"]{_id, title, shortDescription, dicountPercentage, price, oldPrice, isNew, productImage}'
+          '*[_type == "product"]{_id, title, shortDescription, dicountPercentage, price, oldPrice, isNew, productImage, freeDelivery}'
         );
         setData(products);
         setFilteredData(products);

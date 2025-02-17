@@ -153,6 +153,13 @@ export const product = defineType({
       validation: Rule => Rule.integer().min(0).required(), // Ensure it's a non-negative integer.
     },
     {
+      name: 'freeDelivery',
+      title: 'Free Delivery',
+      type: 'boolean',
+      description: 'Check this box if the product has free delivery.',
+      initialValue: false // Default to false
+    },
+    {
       name: 'reviews',
       title: 'Reviews',
       type: 'array',

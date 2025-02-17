@@ -10,6 +10,7 @@ import { client } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
 import toast, { Toaster } from "react-hot-toast";
 import { useWishlist } from "@/app/context/WishlistContext";
+import { FaTruck } from "react-icons/fa"; // Import the truck icon
 
 interface IProduct {
   _id: string;
@@ -20,6 +21,7 @@ interface IProduct {
   dicountPercentage?: string;
   isNew?: boolean;
   productImage: string;
+  freeDelivery?: boolean; // Add freeDelivery property
 }
 
 export default function Products() {
@@ -27,7 +29,6 @@ export default function Products() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  
   // Use the useWishlist hook to access wishlist functions
   const { addToWishlist } = useWishlist();
 
@@ -118,7 +119,7 @@ export default function Products() {
     const fetchProducts = async () => {
       try {
         const products: IProduct[] = await client.fetch(
-          '*[_type == "product"][0...8]{_id, title, shortDescription, dicountPercentage, price, oldPrice, isNew, productImage}'
+          '*[_type == "product"][0...8]{_id, title, shortDescription, dicountPercentage, price, oldPrice, isNew, productImage, freeDelivery}' // Fetch the freeDelivery property
         );
         setData(products);
       } catch (err) {
@@ -208,19 +209,27 @@ export default function Products() {
               </span>
             )}
 
+            {/* Free Delivery Tag */}
+            {item.freeDelivery && (
+              <div className="absolute top-4 left-4 bg-indigo-500 text-white text-xs font-bold py-1 px-2 rounded-md flex items-center space-x-1">
+                <FaTruck />
+                <span>Free Delivery</span>
+              </div>
+            )}
+
             {/* Product Details */}
-          <div className="p-4">
-            <h3 className="font-semibold text-lg">{item.title}</h3>
-            <p className="text-gray-500 text-sm">{item.shortDescription}</p>
-            <div className="mt-2 flex items-center space-x-2">
-              <span className="font-bold">Rs. {item.price}</span>
-              {item.oldPrice && (
-                <span className="text-gray-400 line-through text-sm">
-                  Rs. {item.oldPrice}
-                </span>
-              )}
+            <div className="p-4">
+              <h3 className="font-semibold text-lg">{item.title}</h3>
+              <p className="text-gray-500 text-sm">{item.shortDescription}</p>
+              <div className="mt-2 flex items-center space-x-2">
+                <span className="font-bold">Rs. {item.price}</span>
+                {item.oldPrice && (
+                  <span className="text-gray-400 line-through text-sm">
+                    Rs. {item.oldPrice}
+                  </span>
+                )}
+              </div>
             </div>
-          </div>
 
             <div className="absolute inset-0 bg-black bg-opacity-50 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
               <Link href={`/product/${item._id}`} legacyBehavior>
