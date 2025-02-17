@@ -1,9 +1,10 @@
-import SearchResults from "@/components/searchResults";
+// src/app/search/page.tsx
+import SearchResultsClient from '@/components/SearchResultsClient';
 
 export default function SearchPage() {
   return (
     <div>
-      <SearchResults />
+      <SearchResultsClient />
     </div>
   );
 }

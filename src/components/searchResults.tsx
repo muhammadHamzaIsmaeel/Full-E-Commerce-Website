@@ -1,12 +1,12 @@
+// src/components/searchResults.tsx
 "use client";
 
 import { useEffect, useState } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation'; // Only these two
 import ProductGrid from '@/components/shop/products';
 import { IProduct } from '@/types';
 import { FaSearch } from 'react-icons/fa';
 import { BeatLoader } from 'react-spinners';
-import { useRouter } from 'next/navigation';
 
 async function getSearchProducts(query: string) {
     try {
