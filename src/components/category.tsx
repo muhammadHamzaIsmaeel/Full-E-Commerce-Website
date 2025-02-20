@@ -61,7 +61,7 @@ const BrowseRange = () => {
   }
 
   return (
-    <div className="py-16 bg-gray-50"> {/* Softer background */}
+    <div className="py-16"> {/* Softer background */}
       <div className="container mx-auto px-4"> {/* Container for max-width */}
         {/* Heading */}
         <div className="text-center mb-12">

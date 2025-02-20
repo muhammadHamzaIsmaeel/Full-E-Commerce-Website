@@ -11,7 +11,7 @@ import { urlFor } from "@/sanity/lib/image";
 import Head from "next/head";
 import toast, { Toaster } from "react-hot-toast";
 import { useWishlist } from "@/app/context/WishlistContext";
-import { FaTruck } from "react-icons/fa"; // Import the truck icon
+import { FaTruck } from "react-icons/fa";
 
 interface IProduct {
   _id: string;
@@ -20,12 +20,12 @@ interface IProduct {
   price: string;
   oldPrice?: string;
   dicountPercentage?: string;
-  isNew?: boolean; // Added isNew
+  isNew?: boolean;
   productImage: string;
   freeDelivery?: boolean; // Add freeDelivery property
 }
 
-export default function BedroomPage() {
+export default function DealPage() {
   const [data, setData] = useState<IProduct[]>([]);
   const [filteredData, setFilteredData] = useState<IProduct[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -35,7 +35,7 @@ export default function BedroomPage() {
   const [isNew, setIsNew] = useState<boolean | null>(null);
   const [discounted, setDiscounted] = useState<boolean>(false);
   const [priceRange, setPriceRange] = useState<number[]>([0, 10000]);
-  const [show] = useState<number>(8); // Adjusted default show value
+  const [show] = useState<number>(8);
   const [sortBy, setSortBy] = useState<string>("default");
   const [searchQuery, setSearchQuery] = useState<string>("");
 
@@ -44,7 +44,6 @@ export default function BedroomPage() {
 
   const { addToWishlist } = useWishlist();
 
-  // Handle wishlist functionality
   const handleWishlist = (product: IProduct) => {
     if (!product) {
       toast.error("Invalid product data.");
@@ -52,7 +51,7 @@ export default function BedroomPage() {
     }
 
     try {
-      addToWishlist(product); // Use the addToWishlist function from context
+      addToWishlist(product);
       toast.success("Product added to wishlist!");
     } catch (err) {
       console.error("Error handling wishlist:", err);
@@ -60,11 +59,9 @@ export default function BedroomPage() {
     }
   };
 
-  // Function to handle sharing
   const handleShare = (productId: string) => {
     const productLink = `${window.location.origin}/product/${productId}`;
 
-    // Check if the Web Share API is supported
     if (navigator.share) {
       navigator
         .share({
@@ -80,7 +77,6 @@ export default function BedroomPage() {
           toast.error("Failed to share product.");
         });
     } else {
-      // Fallback for browsers that don't support the Web Share API
       navigator.clipboard
         .writeText(productLink)
         .then(() => {
@@ -97,10 +93,11 @@ export default function BedroomPage() {
     const fetchProducts = async () => {
       try {
         const products: IProduct[] = await client.fetch(
-          '*[_type == "product" && "beauty" in category]{_id, title, shortDescription, dicountPercentage, price, oldPrice, isNew, productImage, freeDelivery}' // Fetch the freeDelivery property
+          '*[_type == "product" && "deal" in category] {_id, title, shortDescription, dicountPercentage, price, oldPrice, isNew, productImage, freeDelivery}' // Include freeDelivery
         );
+
         setData(products);
-        setFilteredData(products); // Initialize filtered data
+        setFilteredData(products);
         setIsLoading(false);
       } catch (error) {
         console.error("Failed to fetch products:", error);
@@ -149,7 +146,7 @@ export default function BedroomPage() {
     }
 
     setFilteredData(filtered);
-    setCurrentPage(1); // Reset to first page when filters change
+    setCurrentPage(1);
   }, [isNew, discounted, priceRange, sortBy, searchQuery, data]);
 
   // Pagination Logic
@@ -179,14 +176,14 @@ export default function BedroomPage() {
       <Toaster />
 
       <Head>
-        <title>Beauty product - Saud Solution</title>
+        <title>Deal Products - Saud Solution</title>
         <meta
           name="description"
-          content="Discover our exclusive collection of bedroom furniture. High-quality products at affordable prices!"
+          content="Discover our exclusive collection of deal products. High-quality products at affordable prices!"
         />
         <meta
           name="keywords"
-          content="bedroom furniture, affordable furniture, high-quality bedroom products, modern bedroom decor"
+          content="deal products, affordable products, high-quality products, discounted items"
         />
         <meta name="author" content="Saud Solution" />
       </Head>
@@ -195,34 +192,31 @@ export default function BedroomPage() {
         {/* Hero Section */}
         <div className="relative w-full h-[50vh]">
           <Image
-            src="/beauty.jpg"
-            alt="Beauty Shop Banner"
+            src="/beauty.jpg" //  Changed to a more relevant image
+            alt="Deal Products Banner"
             layout="fill"
             style={{ objectFit: "cover", filter: "blur(3px)", opacity: 0.7 }}
             objectFit="cover"
             loading="lazy"
           />
           <div className="absolute inset-0 flex flex-col justify-center items-center text-center text-gray-950">
-            <Link href="/" aria-label="Go to Home">
+            <Link href="/">
               <Image
                 src="/logo.png"
                 alt="Saud Solution Logo"
-                width={32}
-                height={20}
+                width={3200}
+                height={2000}
                 className="w-12 h-9"
                 loading="lazy"
               />
             </Link>
-            <h4 className="text-4xl font-bold">Beauty</h4>
+            <h4 className="text-4xl font-bold">Deals</h4>
             <h5 className="flex items-center text-sm md:text-xl mb-4 space-x-1">
-              <Link className="font-bold text-xl" href="/" aria-label="Home">
+              <Link className="font-bold text-xl" href="/">
                 Home
               </Link>
-              <MdKeyboardArrowRight
-                className="mt-2 text-2xl"
-                aria-hidden="true"
-              />
-              <span>Beauty</span>
+              <MdKeyboardArrowRight className="mt-2 text-2xl" />
+              <span>Deals</span>
             </h5>
           </div>
         </div>
@@ -351,14 +345,17 @@ export default function BedroomPage() {
                 role="listitem"
                 aria-label={`Product: ${item.title}`}
               >
-                <Image
-                  src={urlFor(item.productImage).width(1000).height(1000).url()}
-                  alt={`Image of ${item.title}`}
-                  width={1000}
-                  height={1000}
-                  loading="lazy"
-                  priority={false} // Optimize performance by lazy loading images
-                />
+                {item.productImage && (
+                  <Image
+                    src={urlFor(item.productImage).width(1000).height(1000).url()}
+                    alt={`Image of ${item.title}`}
+                    width={1000}
+                    height={1000}
+                    style={{ objectFit: "cover", width: "100%", height: "auto" }}
+                    loading="lazy"
+                    priority={false}
+                  />
+                )}
 
                 {item.dicountPercentage && (
                   <span
@@ -376,7 +373,7 @@ export default function BedroomPage() {
 
                 {item.isNew && (
                   <span
-                    className="absolute top-4 right-4 bg-green-500 text-white text-xs font-bold flex items-center justify-center"
+                    className="absolute top-4 left-4 bg-green-500 text-white text-xs font-bold flex items-center justify-center"
                     style={{
                       width: "40px",
                       height: "40px",

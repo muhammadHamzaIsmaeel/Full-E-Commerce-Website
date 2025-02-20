@@ -304,6 +304,20 @@ export default function Detail({ id }: { id: string }) {
     window.open(url, "_blank");
   };
 
+  const validateSelection = (): boolean => {
+    if (product) {
+      if (product.availableColors && product.availableColors.length > 0 && !selectedColor) {
+        setNotification({ message: 'Please select a color.', type: 'error' });
+        return false;
+      }
+      if (product.availableSizes && product.availableSizes.length > 0 && !selectedSize) {
+        setNotification({ message: 'Please select a size.', type: 'error' });
+        return false;
+      }
+    }
+    return true;
+  };
+
   const handleCart = () => {
     if (!product) return;
 
@@ -318,6 +332,10 @@ export default function Detail({ id }: { id: string }) {
         `/sign-in?returnBackUrl=${encodeURIComponent(returnBackUrl)}`
       );
       return;
+    }
+
+    if (!validateSelection()) {
+      return; // Stop if validation fails
     }
 
     const updatedCart = [
@@ -348,6 +366,10 @@ export default function Detail({ id }: { id: string }) {
         `/sign-in?returnBackUrl=${encodeURIComponent(returnBackUrl)}`
       );
       return;
+    }
+
+    if (!validateSelection()) {
+      return; // Stop if validation fails
     }
 
     const productToAdd = {

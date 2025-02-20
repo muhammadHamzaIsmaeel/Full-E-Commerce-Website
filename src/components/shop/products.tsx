@@ -130,7 +130,7 @@ const ProductGrid: React.FC<ProductGridProps> = ({ products }) => {
                 lineHeight: "40px",
               }}
             >
-              %{item.dicountPercentage}
+              {item.dicountPercentage}%
             </span>
           )}
 

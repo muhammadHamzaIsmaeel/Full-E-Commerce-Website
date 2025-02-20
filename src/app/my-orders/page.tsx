@@ -262,16 +262,22 @@ export default function MyOrders() {
                         </div>
 
                         {/* Display Selected Size and Color */}
-                        <div className="mt-2 flex flex-wrap gap-2">
+                        <div className="mt-2 flex flex-wrap items-center gap-2">
                           {product.selectedSize && (
                             <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
                               Size: {product.selectedSize}
                             </span>
                           )}
                           {product.selectedColor && (
-                            <span className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">
-                              Color: {product.selectedColor}
-                            </span>
+                            <>
+                              <span className="text-gray-700 text-xs">
+                                Color:
+                              </span>
+                              <div
+                                className="w-4 h-4 rounded-full shadow-md"
+                                style={{ backgroundColor: product.selectedColor }}
+                              ></div>
+                            </>
                           )}
                         </div>
                       </div>

@@ -216,15 +216,17 @@ export const product = defineType({
     {
       name: "category",
       title: "Category",
-      type: "string",
+      type: "array", // Change to array type
+      of: [{ type: "string" }], // Array of strings
       options: {
         list: [
           { title: "Beauty", value: "beauty" },
           { title: "Fashion", value: "fashion" },
           { title: "Electronics", value: "electronics" },
+          { title: "Deal", value: "deal" },
         ],
       },
-      validation: (rule) => rule.required(),
+      validation: (rule) => rule.required().min(1), // Ensure at least one category is selected
     },
     
     {

@@ -28,6 +28,7 @@ export default function Products() {
   const [data, setData] = useState<IProduct[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [animated, setAnimated] = useState(false); // State for animation
 
   // Use the useWishlist hook to access wishlist functions
   const { addToWishlist } = useWishlist();
@@ -133,6 +134,13 @@ export default function Products() {
     fetchProducts();
   }, []);
 
+  // Trigger animation on component mount
+  useEffect(() => {
+    if (!isLoading && !error) {
+      setAnimated(true);
+    }
+  }, [isLoading, error]);
+
   // Loading and error states
   if (isLoading) {
     return (
@@ -162,7 +170,9 @@ export default function Products() {
     <div className="py-12 px-8 lg:px-16">
       <Toaster />
       <div
-        className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 max-w-7xl mx-auto"
+        className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 max-w-7xl mx-auto ${
+          animated ? "animate-fade-in-bottom" : ""
+        }`}
         role="list"
       >
         {data.map((item) => (
@@ -191,7 +201,7 @@ export default function Products() {
                 }}
                 aria-label={`Discount: ${item.dicountPercentage}%`}
               >
-                %{item.dicountPercentage}
+                {item.dicountPercentage}%
               </span>
             )}
 
