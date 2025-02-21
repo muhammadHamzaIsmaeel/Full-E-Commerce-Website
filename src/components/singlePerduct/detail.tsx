@@ -477,7 +477,6 @@ const Detail: React.FC<Props> = ({ id }) => {
 
   const {
     title,
-    price,
     oldPrice,
     description,
     tags,
