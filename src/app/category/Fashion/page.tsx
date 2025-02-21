@@ -22,12 +22,12 @@ interface IProduct {
   dicountPercentage?: string;
   isNew?: boolean;
   productImage: string;
-  freeDelivery?: boolean; // Add freeDelivery property
+  freeDelivery?: boolean;
 }
 
-export default function BedroomPage() {
+export default function FashionPage() {
   const [data, setData] = useState<IProduct[]>([]);
-  const [filteredData, setFilteredData] = useState<IProduct[]>([]); // Added filtered data state
+  const [filteredData, setFilteredData] = useState<IProduct[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -35,14 +35,13 @@ export default function BedroomPage() {
   const [isNew, setIsNew] = useState<boolean | null>(null);
   const [discounted, setDiscounted] = useState<boolean>(false);
   const [priceRange, setPriceRange] = useState<number[]>([0, 10000]);
-  const [show] = useState<number>(8); // Adjusted default show value
+  const [show] = useState<number>(10); // Adjusted default show value
   const [sortBy, setSortBy] = useState<string>("default");
   const [searchQuery, setSearchQuery] = useState<string>("");
 
   // Pagination States
   const [currentPage, setCurrentPage] = useState<number>(1);
 
-  // Use the useWishlist hook to access wishlist functions
   const { addToWishlist } = useWishlist();
 
   // Handle wishlist functionality
@@ -98,7 +97,7 @@ export default function BedroomPage() {
     const fetchProducts = async () => {
       try {
         const products: IProduct[] = await client.fetch(
-          '*[_type == "product" && "fashion" in category]{_id, title, shortDescription, dicountPercentage, price, oldPrice, isNew, productImage, freeDelivery}'
+          '*[_type == "product" && "fashion" in category]{_id, title, shortDescription, dicountPercentage, price, oldPrice, isNew, productImage, freeDelivery}' // Fetch freeDelivery
         );
         setData(products);
         setFilteredData(products); // Initialize filtered data
@@ -176,32 +175,24 @@ export default function BedroomPage() {
   }
 
   return (
-    <div>
+    <>
       <Toaster />
 
-      {/* SEO Meta Tags */}
       <Head>
-        <title>Fashion Product - Saud Solution</title>
+        <title>Fashion product - Saud Solution</title>
         <meta
           name="description"
-          content="Explore our premium dining furniture collection, featuring modern designs and discounts. Perfect for every home!"
+          content="Discover our exclusive collection of Fashion. High-quality products at affordable prices!"
         />
         <meta
           name="keywords"
-          content="Dining furniture, premium furniture, home decor, discounts"
+          content="Fashion, affordable Fashion, high-quality Fashion, modern Fashion"
         />
-        <meta property="og:title" content="Dining Furniture - Shop Now" />
-        <meta
-          property="og:description"
-          content="Explore our premium dining furniture collection, featuring modern designs and discounts."
-        />
-        <meta property="og:image" content="/shop/banner11.png" />
-        <meta property="og:url" content="https://yourwebsite.com/dining" />
-        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="author" content="Saud Solution" />
       </Head>
 
-      {/* Hero Section */}
-      <div className="w-full">
+      <div>
+        {/* Hero Section */}
         <div className="relative w-full h-[50vh]">
           <Image
             src="/fashion.png"
@@ -212,149 +203,148 @@ export default function BedroomPage() {
             loading="lazy"
           />
           <div className="absolute inset-0 flex flex-col justify-center items-center text-center text-gray-950">
-            <Link href="/">
+            <Link href="/" aria-label="Go to Home">
               <Image
                 src="/logo.png"
                 alt="Saud Solution Logo"
                 width={32}
                 height={20}
-                className="w-12 h-8"
+                className="w-12 h-9"
                 loading="lazy"
               />
             </Link>
             <h4 className="text-4xl font-bold">Fashion</h4>
             <h5 className="flex items-center text-sm md:text-xl mb-4 space-x-1">
-              <Link className="font-bold text-xl" href="/">
+              <Link className="font-bold text-xl" href="/" aria-label="Home">
                 Home
               </Link>
-              <MdKeyboardArrowRight className="mt-2 text-2xl" />
-              <span className="mt-2 md:mt-0">Fashion</span>
+              <MdKeyboardArrowRight
+                className="mt-2 text-2xl"
+                aria-hidden="true"
+              />
+              <span>Fashion</span>
             </h5>
           </div>
         </div>
-      </div>
 
-      {/* Filter Section */}
-      <div className="py-6 px-8 lg:px-16 bg-white shadow-md rounded-lg">
-        <h3 className="text-lg font-semibold mb-4">Filter & Sort</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {/* New Products Filter */}
-          <div>
-            <label
-              htmlFor="isNew"
-              className="block text-gray-700 text-sm font-bold mb-2"
-            >
-              New Products:
-            </label>
-            <select
-              id="isNew"
-              value={isNew === null ? "all" : isNew ? "true" : "false"}
-              onChange={(e) => {
-                const value = e.target.value;
-                setIsNew(value === "all" ? null : value === "true");
-              }}
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            >
-              <option value="all">All</option>
-              <option value="true">Yes</option>
-              <option value="false">No</option>
-            </select>
-          </div>
+        {/* Filter Section */}
+        <div className="py-6 px-8 lg:px-16 bg-white shadow-md rounded-lg">
+          <h3 className="text-lg font-semibold mb-4">Filter & Sort</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {/* New Products Filter */}
+            <div>
+              <label
+                htmlFor="isNew"
+                className="block text-gray-700 text-sm font-bold mb-2"
+              >
+                New Products:
+              </label>
+              <select
+                id="isNew"
+                value={isNew === null ? "all" : isNew ? "true" : "false"}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  setIsNew(value === "all" ? null : value === "true");
+                }}
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              >
+                <option value="all">All</option>
+                <option value="true">Yes</option>
+                <option value="false">No</option>
+              </select>
+            </div>
 
-          {/* Discounted Filter */}
-          <div>
-            <label
-              htmlFor="discounted"
-              className="block text-gray-700 text-sm font-bold mb-2"
-            >
-              Discounted:
-            </label>
-            <label className="inline-flex items-center mt-3">
+            {/* Discounted Filter */}
+            <div>
+              <label
+                htmlFor="discounted"
+                className="block text-gray-700 text-sm font-bold mb-2"
+              >
+                Discounted:
+              </label>
+              <label className="inline-flex items-center mt-3">
+                <input
+                  type="checkbox"
+                  id="discounted"
+                  checked={discounted}
+                  onChange={(e) => setDiscounted(e.target.checked)}
+                  className="form-checkbox h-5 w-5 text-yellow-500"
+                />
+                <span className="ml-2 text-gray-900">
+                  Show only discounted products
+                </span>
+              </label>
+            </div>
+
+            {/* Price Range Filter */}
+            <div>
+              <label
+                htmlFor="priceRange"
+                className="block text-gray-700 text-sm font-bold mb-2"
+              >
+                Price Range:
+              </label>
               <input
-                type="checkbox"
-                id="discounted"
-                checked={discounted}
-                onChange={(e) => setDiscounted(e.target.checked)}
-                className="form-checkbox h-5 w-5 text-yellow-500"
+                type="range"
+                id="priceRange"
+                min="0"
+                max="10000"
+                step="100"
+                value={priceRange[1]}
+                onChange={(e) =>
+                  setPriceRange([priceRange[0], parseInt(e.target.value)])
+                }
+                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
               />
-              <span className="ml-2 text-gray-900">
-                Show only discounted products
-              </span>
-            </label>
-          </div>
+              <div className="text-sm text-gray-600 mt-1">
+                Up to: Rs.{priceRange[1]}
+              </div>
+            </div>
 
-          {/* Price Range Filter */}
-          <div>
-            <label
-              htmlFor="priceRange"
-              className="block text-gray-700 text-sm font-bold mb-2"
-            >
-              Price Range:
-            </label>
-            <input
-              type="range"
-              id="priceRange"
-              min="0"
-              max="10000"
-              step="100"
-              value={priceRange[1]}
-              onChange={(e) =>
-                setPriceRange([priceRange[0], parseInt(e.target.value)])
-              }
-              className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
-            />
-            <div className="text-sm text-gray-600 mt-1">
-              Up to: Rs.{priceRange[1]}
+            {/* Sort By Filter */}
+            <div>
+              <label
+                htmlFor="sortBy"
+                className="block text-gray-700 text-sm font-bold mb-2"
+              >
+                Sort By:
+              </label>
+              <select
+                id="sortBy"
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              >
+                <option value="default">Default</option>
+                <option value="price-asc">Price: Low to High</option>
+                <option value="price-desc">Price: High to Low</option>
+              </select>
+            </div>
+
+            {/* Search Filter */}
+            <div className="md:col-span-2 lg:col-span-4">
+              <label
+                htmlFor="search"
+                className="block text-gray-700 text-sm font-bold mb-2"
+              >
+                Search:
+              </label>
+              <input
+                type="text"
+                id="search"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search products..."
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              />
             </div>
           </div>
-
-          {/* Sort By Filter */}
-          <div>
-            <label
-              htmlFor="sortBy"
-              className="block text-gray-700 text-sm font-bold mb-2"
-            >
-              Sort By:
-            </label>
-            <select
-              id="sortBy"
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            >
-              <option value="default">Default</option>
-              <option value="price-asc">Price: Low to High</option>
-              <option value="price-desc">Price: High to Low</option>
-            </select>
-          </div>
-
-          {/* Search Filter */}
-          <div className="md:col-span-2 lg:col-span-4">
-            <label
-              htmlFor="search"
-              className="block text-gray-700 text-sm font-bold mb-2"
-            >
-              Search:
-            </label>
-            <input
-              type="text"
-              id="search"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search products..."
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            />
-          </div>
         </div>
-      </div>
 
-      {/* Product Section */}
-      <div className="py-12 px-8 lg:px-16">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
-          {currentProducts.map(
-            (
-              item // Changed to currentProducts
-            ) => (
+        {/* Product Section */}
+        <div className="py-12 px-8 lg:px-16">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 max-w-7xl mx-auto">
+            {currentProducts.map((item) => (
               <div
                 key={item._id}
                 className="relative bg-gray-100 rounded overflow-hidden group"
@@ -367,16 +357,16 @@ export default function BedroomPage() {
                   width={1000}
                   height={1000}
                   loading="lazy"
-                  style={{ objectFit: "cover", width: "100%", height: "auto" }}
                   priority={false} // Optimize performance by lazy loading images
+                  style={{ objectFit: "cover", width: "100%", height: "auto" }}
                 />
 
                 {item.dicountPercentage && (
                   <span
                     className="absolute top-4 right-4 bg-red-500 text-white text-xs font-bold flex items-center justify-center"
                     style={{
-                      width: "40px",
-                      height: "40px",
+                      width: "33px",
+                      height: "33px",
                       borderRadius: "50%",
                     }}
                     aria-label={`Discount: ${item.dicountPercentage}%`}
@@ -387,17 +377,18 @@ export default function BedroomPage() {
 
                 {item.isNew && (
                   <span
-                    className="absolute top-4 left-4 bg-green-500 text-white text-xs font-bold flex items-center justify-center"
+                    className="absolute top-4 right-4 bg-[#2EC1AC] text-white text-xs font-bold py-2 px-4 rounded-full flex items-center justify-center"
                     style={{
-                      width: "40px",
-                      height: "40px",
-                      borderRadius: "50%",
+                      width: "33px",
+                      height: "33px",
+                      textAlign: "center",
+                      lineHeight: "40px",
                     }}
-                    aria-label="New Product"
                   >
                     NEW
                   </span>
                 )}
+
                 {/* Free Delivery Tag */}
                 {item.freeDelivery && (
                   <div className="absolute top-4 left-4 bg-indigo-500 text-white text-xs font-bold py-1 px-2 rounded-md flex items-center space-x-1">
@@ -408,8 +399,10 @@ export default function BedroomPage() {
 
                 {/* Product Details */}
                 <div className="p-4">
-                  <h3 className="font-semibold text-lg">{item.title}</h3>
-                  <p className="text-gray-500 text-sm">
+                  <h3 className="font-semibold text-lg line-clamp-2" title={item.title}>
+                    {item.title}
+                  </h3>
+                  <p className="text-gray-500 text-sm line-clamp-1" title={item.shortDescription}>
                     {item.shortDescription}
                   </p>
                   <div className="mt-2 flex items-center space-x-2">
@@ -431,7 +424,7 @@ export default function BedroomPage() {
                       View Details
                     </a>
                   </Link>
-                  <div className="flex space-x-4">
+                  <div className="flex space-x-2">
                     <button
                       onClick={() => handleShare(item._id)}
                       className="flex items-center gap-1 hover:text-red-500 text-white"
@@ -460,27 +453,27 @@ export default function BedroomPage() {
                   </div>
                 </div>
               </div>
-            )
-          )}
-        </div>
+            ))}
+          </div>
 
-        {/* Pagination */}
-        <div className="flex justify-center mt-8">
-          {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-            <button
-              key={page}
-              className={`mx-1 px-4 py-2 rounded ${
-                currentPage === page
-                  ? "bg-yellow-500 text-white"
-                  : "bg-gray-200 text-gray-700 hover:bg-yellow-300"
-              }`}
-              onClick={() => handlePageChange(page)}
-            >
-              {page}
-            </button>
-          ))}
+          {/* Pagination */}
+          <div className="flex justify-center mt-8">
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+              <button
+                key={page}
+                className={`mx-1 px-4 py-2 rounded ${
+                  currentPage === page
+                    ? "bg-yellow-500 text-white"
+                    : "bg-gray-200 text-gray-700 hover:bg-yellow-300"
+                }`}
+                onClick={() => handlePageChange(page)}
+              >
+                {page}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }

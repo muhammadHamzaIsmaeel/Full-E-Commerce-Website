@@ -120,7 +120,7 @@ export default function Products() {
     const fetchProducts = async () => {
       try {
         const products: IProduct[] = await client.fetch(
-          '*[_type == "product"][0...8]{_id, title, shortDescription, dicountPercentage, price, oldPrice, isNew, productImage, freeDelivery}' // Fetch the freeDelivery property
+          '*[_type == "product"][0...10]{_id, title, shortDescription, dicountPercentage, price, oldPrice, isNew, productImage, freeDelivery}' // Fetch the freeDelivery property
         );
         setData(products);
       } catch (err) {
@@ -170,7 +170,7 @@ export default function Products() {
     <div className="py-12 px-8 lg:px-16">
       <Toaster />
       <div
-        className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 max-w-7xl mx-auto ${
+        className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 max-w-7xl mx-auto ${
           animated ? "animate-fade-in-bottom" : ""
         }`}
         role="list"
@@ -195,8 +195,8 @@ export default function Products() {
               <span
                 className="absolute top-4 right-4 bg-red-500 text-white text-xs font-bold flex items-center justify-center"
                 style={{
-                  width: "40px",
-                  height: "40px",
+                  width: "33px",
+                  height: "33px",
                   borderRadius: "50%",
                 }}
                 aria-label={`Discount: ${item.dicountPercentage}%`}
@@ -209,8 +209,8 @@ export default function Products() {
               <span
                 className="absolute top-4 right-4 bg-green-500 text-white text-xs font-bold flex items-center justify-center"
                 style={{
-                  width: "40px",
-                  height: "40px",
+                  width: "33px",
+                  height: "33px",
                   borderRadius: "50%",
                 }}
                 aria-label="New Product"
@@ -229,8 +229,12 @@ export default function Products() {
 
             {/* Product Details */}
             <div className="p-4">
-              <h3 className="font-semibold text-lg">{item.title}</h3>
-              <p className="text-gray-500 text-sm">{item.shortDescription}</p>
+              <h3 className="font-semibold text-lg line-clamp-2" title={item.title}>
+                {item.title}
+              </h3>
+              <p className="text-gray-500 text-sm line-clamp-1" title={item.shortDescription}>
+                {item.shortDescription}
+              </p>
               <div className="mt-2 flex items-center space-x-2">
                 <span className="font-bold">Rs. {item.price}</span>
                 {item.oldPrice && (
@@ -250,7 +254,7 @@ export default function Products() {
                   View Details
                 </a>
               </Link>
-              <div className="flex space-x-4">
+              <div className="flex space-x-2">
                 <button
                   onClick={() => handleShare(item._id)}
                   className="flex items-center gap-1 hover:text-red-500 text-white"

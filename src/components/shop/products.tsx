@@ -101,7 +101,7 @@ const ProductGrid: React.FC<ProductGridProps> = ({ products }) => {
   );
 
   return (
-    <div className="grid px-4 lg:px-16 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+    <div className="grid px-4 lg:px-16 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
       <Toaster />
       {products.map((item) => (
         <div
@@ -124,8 +124,8 @@ const ProductGrid: React.FC<ProductGridProps> = ({ products }) => {
             <span
               className="absolute top-4 right-4 bg-[#E97171] text-white text-xs font-bold py-2 px-4 rounded-full flex items-center justify-center"
               style={{
-                width: "40px",
-                height: "40px",
+                width: "33px",
+                height: "33px",
                 textAlign: "center",
                 lineHeight: "40px",
               }}
@@ -139,8 +139,8 @@ const ProductGrid: React.FC<ProductGridProps> = ({ products }) => {
             <span
               className="absolute top-4 right-4 bg-[#2EC1AC] text-white text-xs font-bold py-2 px-4 rounded-full flex items-center justify-center"
               style={{
-                width: "40px",
-                height: "40px",
+                width: "33px",
+                height: "33px",
                 textAlign: "center",
                 lineHeight: "40px",
               }}
@@ -159,8 +159,12 @@ const ProductGrid: React.FC<ProductGridProps> = ({ products }) => {
 
           {/* Product Details */}
           <div className="p-4">
-            <h3 className="font-semibold text-lg">{item.title}</h3>
-            <p className="text-gray-500 text-sm">{item.shortDescription}</p>
+            <h3 className="font-semibold text-lg line-clamp-2" title={item.title}>
+              {item.title}
+            </h3>
+            <p className="text-gray-500 text-sm line-clamp-1" title={item.shortDescription}>
+              {item.shortDescription}
+            </p>
             <div className="mt-2 flex items-center space-x-2">
               <span className="font-bold">Rs. {item.price}</span>
               {item.oldPrice && (
@@ -178,7 +182,7 @@ const ProductGrid: React.FC<ProductGridProps> = ({ products }) => {
                 View Details
               </a>
             </Link>
-            <div className="flex space-x-4">
+            <div className="flex space-x-2">
               <button
                 onClick={() => handleShare(item._id)}
                 className="flex items-center gap-1 hover:text-red-500 text-white"

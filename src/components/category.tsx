@@ -4,7 +4,12 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { client } from '@/sanity/lib/client';
 import { urlFor } from '@/sanity/lib/image';
 import Image from 'next/image';
-import { motion } from 'framer-motion'; // Animation library
+import { motion } from 'framer-motion';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Navigation } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 
 interface ICategory {
   title: string;
@@ -39,7 +44,7 @@ const BrowseRange = () => {
     window.location.href = `/category/${encodeURIComponent(title)}`;
   }, []);
 
-  const categoryVariants = {  // framer-motion variants for animation
+  const categoryVariants = {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
   };
@@ -61,43 +66,81 @@ const BrowseRange = () => {
   }
 
   return (
-    <div className="py-16"> {/* Softer background */}
-      <div className="container mx-auto px-4"> {/* Container for max-width */}
-        {/* Heading */}
+    <div className="py-16">
+      <div className="container mx-auto px-4 relative">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-gray-800 mb-4">{data.mainHeading}</h2>
-          <p className="text-gray-500 max-w-2xl mx-auto">{data.subHeading}</p> {/* Centered subheading */}
+          <h2 className="text-4xl font-extrabold text-gray-900 mb-4">{data.mainHeading}</h2>
+          <p className="text-gray-600 max-w-3xl mx-auto leading-relaxed">{data.subHeading}</p>
         </div>
 
-        {/* Categories */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-          {data.categories.map((category, index) => (
-            <motion.div // Wrap with motion.div for animation
-              key={index}
-              className="rounded-xl shadow-md overflow-hidden cursor-pointer transition-transform transform hover:scale-105" // Added more visual appeal
-              onClick={() => handleCategoryClick(category.title)}
-              role="button"
-              aria-label={`Explore category: ${category.title}`}
-              variants={categoryVariants}
-              initial="hidden"
-              animate="visible"
-              style={{ backgroundColor: 'rgba(255, 255, 255, 0.8)' }} // Added transparency
+        {/* Swiper Container with Relative Positioning */}
+        <div className="relative">
+          <Swiper
+            modules={[Navigation]}
+            spaceBetween={30}
+            slidesPerView={1}
+            navigation={{
+              nextEl: '.swiper-button-next',
+              prevEl: '.swiper-button-prev',
+            }}
+            breakpoints={{
+              768: {
+                slidesPerView: 2,
+              },
+              1024: {
+                slidesPerView: 3,
+              },
+              1280: {
+                slidesPerView: 4,
+              },
+            }}
+          >
+            {data.categories.map((category, index) => (
+              <SwiperSlide key={index}>
+                <motion.div
+                  className="rounded-2xl overflow-hidden shadow-xl cursor-pointer transition-transform transform hover:scale-105"
+                  onClick={() => handleCategoryClick(category.title)}
+                  role="button"
+                  aria-label={`Explore category: ${category.title}`}
+                  variants={categoryVariants}
+                  initial="hidden"
+                  animate="visible"
+                  style={{ backgroundColor: 'rgba(255, 255, 255, 0.9)' }}
+                >
+                  <div className="relative h-[350px]">
+                    <Image
+                      src={urlFor(category.image).url()}
+                      alt={`Category: ${category.title}`}
+                      fill
+                      style={{ objectFit: 'cover', transition: 'opacity 0.3s ease-in-out' }}
+                      className="hover:opacity-90"
+                      priority={index < 4}
+                    />
+                  </div>
+                  <div className="p-5">
+                    <h3 className="text-xl font-semibold text-gray-800 mb-2">{category.title}</h3>
+                    {/* You can add a short description here if available */}
+                  </div>
+                </motion.div>
+              </SwiperSlide>
+            ))}
+          </Swiper>
+
+          {/* Navigation Buttons - Positioned Relative to Swiper */}
+          <div className="absolute z-20 top-1/2 transform -translate-y-1/2 w-full flex justify-between items-center px-4">
+            <button
+              className="swiper-button-prev bg-white/70 backdrop-blur-md p-7 rounded-full shadow-md hover:bg-white/90 transition-colors"
+              aria-label="Previous"
             >
-              <div className="relative h-[400px]"> {/* Fixed height for images */}
-                <Image
-                  src={urlFor(category.image).url()}
-                  alt={`Category: ${category.title}`}
-                  fill
-                  style={{ objectFit: 'cover' }}
-                  className="transition-opacity duration-300 hover:opacity-90" // Added hover effect
-                  priority={index < 3} // Prioritize loading first few images
-                />
-              </div>
-              <div className="p-4">
-                <h3 className="text-lg font-semibold text-gray-700">{category.title}</h3> {/* Darker text */}
-              </div>
-            </motion.div>
-          ))}
+              <FaChevronLeft  className="text-gray-700" size={20} />
+            </button>
+            <button
+              className="swiper-button-next bg-white/70 backdrop-blur-md p-7 rounded-full shadow-md hover:bg-white/90 transition-colors"
+              aria-label="Next"
+            >
+              <FaChevronRight className="text-gray-700" size={20} />
+            </button>
+          </div>
         </div>
       </div>
     </div>

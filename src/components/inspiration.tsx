@@ -64,24 +64,24 @@ export default function TrendyProductsSection() {
   // Animation Effect
   useEffect(() => {
     if (sliderRef.current) {
-      sliderRef.current.style.transition = 'transform 0.5s ease-in-out'; // Add transition property
+      sliderRef.current.style.transition = "transform 0.5s ease-in-out"; // Add transition property
       sliderRef.current.style.transform = `translateX(-${currentSlide * 35}%)`;
     }
 
     // Reset transition after animation
     const transitionTimeout = setTimeout(() => {
       if (sliderRef.current) {
-        sliderRef.current.style.transition = ''; // Remove transition after animation
+        sliderRef.current.style.transition = ""; // Remove transition after animation
       }
     }, 500);
 
     return () => clearTimeout(transitionTimeout);
-
   }, [currentSlide]);
 
   if (isLoading) return <div className="text-center">Loading products...</div>;
   if (error) return <div className="text-center text-red-500">{error}</div>;
-  if (!products.length) return <div className="text-center">No products found.</div>;
+  if (!products.length)
+    return <div className="text-center">No products found.</div>;
 
   return (
     <section
@@ -94,7 +94,8 @@ export default function TrendyProductsSection() {
           Trending Now: Must-Have Products
         </h1>
         <p className="md:text-lg lg:pr-16 text-gray-600">
-          Discover the hottest products everyone&apos;s talking about. Shop the latest trends in fashion, electronics, beauty, and more!
+          Discover the hottest products everyone&apos;s talking about. Shop the
+          latest trends in fashion, electronics, beauty, and more!
         </p>
         <a href="/shop" aria-label="Explore More">
           <button
@@ -124,23 +125,31 @@ export default function TrendyProductsSection() {
                 aria-label={`Product: ${product.title}`}
               >
                 <Image
-                  src={urlFor(product.productImage).width(400).height(400).url()}
+                  src={urlFor(product.productImage)
+                    .width(400)
+                    .height(400)
+                    .url()}
                   alt={`Product: ${product.title}`}
                   className="w-full h-full rounded-sm object-cover"
                   loading="lazy"
                   width={400}
                   height={400}
                 />
-                <div
-                  className="absolute bottom-4 left-4 bg-white bg-opacity-70 text-black text-sm 
-                  md:w-36 md:h-20 p-2 md:p-4 font-light"
-                >
-                  {String(index + 1).padStart(2, "0")} - {product.category} <br />
-                  <span className="font-bold text-sm md:text-lg">{product.tag}</span>
+                {/*Improved Text Overlay */}
+                <div className="absolute bottom-6 left-6 w-auto bg-white bg-opacity-80 rounded-md py-4 px-6">
+                  <p className="text-xs md:text-sm font-semibold text-gray-800">
+                    {String(index + 1).padStart(2, "0")} - {product.category}
+                  </p>
+                  <h3 className="text-sm md:text-base font-bold text-gray-900 truncate">
+                    {product.tag}
+                  </h3>
                 </div>
-                <a href={`/product/${product._id}`} aria-label={`View ${product.title}`}>
+                <a
+                  href={`/product/${product._id}`}
+                  aria-label={`View ${product.title}`}
+                >
                   <div
-                    className="absolute cursor-pointer bottom-4 left-[110px] md:left-40 p-1 md:p-2 bg-[#B88E2F] 
+                    className="absolute cursor-pointer bottom-6 right-6 p-1 md:p-2 bg-[#B88E2F] 
                      shadow hover:bg-[#c89b32] transition"
                   >
                     <FaArrowRightLong aria-hidden="true" />

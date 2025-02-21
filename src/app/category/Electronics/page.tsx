@@ -22,10 +22,10 @@ interface IProduct {
   dicountPercentage?: string;
   isNew?: boolean;
   productImage: string;
-    freeDelivery?: boolean; // Add freeDelivery property
+  freeDelivery?: boolean; // Add freeDelivery property
 }
 
-export default function BedroomPage() {
+export default function ElectronicsPage() {
   const [data, setData] = useState<IProduct[]>([]);
   const [filteredData, setFilteredData] = useState<IProduct[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -35,7 +35,7 @@ export default function BedroomPage() {
   const [isNew, setIsNew] = useState<boolean | null>(null);
   const [discounted, setDiscounted] = useState<boolean>(false);
   const [priceRange, setPriceRange] = useState<number[]>([0, 10000]);
-  const [show] = useState<number>(8); // Adjusted default show value
+  const [show] = useState<number>(10); // Adjusted default show value
   const [sortBy, setSortBy] = useState<string>("default");
   const [searchQuery, setSearchQuery] = useState<string>("");
 
@@ -170,7 +170,7 @@ export default function BedroomPage() {
     return <div className="text-center">Loading products...</div>;
   }
 
-   if (error) {
+  if (error) {
     return <div className="text-center">Error: {error}</div>;
   }
 
@@ -343,7 +343,7 @@ export default function BedroomPage() {
 
         {/* Product Section */}
         <div className="py-12 px-8 lg:px-16">
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 max-w-7xl mx-auto">
             {currentProducts.map((item) => (
               <div
                 key={item._id}
@@ -358,15 +358,15 @@ export default function BedroomPage() {
                   height={1000}
                   loading="lazy"
                   priority={false} // Optimize performance by lazy loading images
-                  style={{objectFit: 'cover', width: '100%', height: 'auto'}}
+                  style={{ objectFit: "cover", width: "100%", height: "auto" }}
                 />
 
                 {item.dicountPercentage && (
                   <span
                     className="absolute top-4 right-4 bg-red-500 text-white text-xs font-bold flex items-center justify-center"
                     style={{
-                      width: "40px",
-                      height: "40px",
+                      width: "33px",
+                      height: "33px",
                       borderRadius: "50%",
                     }}
                     aria-label={`Discount: ${item.dicountPercentage}%`}
@@ -377,30 +377,32 @@ export default function BedroomPage() {
 
                 {item.isNew && (
                   <span
-                    className="absolute top-4 left-4 bg-green-500 text-white text-xs font-bold flex items-center justify-center"
+                    className="absolute top-4 right-4 bg-[#2EC1AC] text-white text-xs font-bold py-2 px-4 rounded-full flex items-center justify-center"
                     style={{
-                      width: "40px",
-                      height: "40px",
-                      borderRadius: "50%",
+                      width: "33px",
+                      height: "33px",
+                      textAlign: "center",
+                      lineHeight: "40px",
                     }}
-                    aria-label="New Product"
                   >
                     NEW
                   </span>
                 )}
-                 {/* Free Delivery Tag */}
-                 {item.freeDelivery && (
+
+                {/* Free Delivery Tag */}
+                {item.freeDelivery && (
                   <div className="absolute top-4 left-4 bg-indigo-500 text-white text-xs font-bold py-1 px-2 rounded-md flex items-center space-x-1">
                     <FaTruck />
                     <span>Free Delivery</span>
                   </div>
                 )}
 
-
                 {/* Product Details */}
                 <div className="p-4">
-                  <h3 className="font-semibold text-lg">{item.title}</h3>
-                  <p className="text-gray-500 text-sm">
+                  <h3 className="font-semibold text-lg line-clamp-2" title={item.title}>
+                    {item.title}
+                  </h3>
+                  <p className="text-gray-500 text-sm line-clamp-1" title={item.shortDescription}>
                     {item.shortDescription}
                   </p>
                   <div className="mt-2 flex items-center space-x-2">
@@ -422,7 +424,7 @@ export default function BedroomPage() {
                       View Details
                     </a>
                   </Link>
-                  <div className="flex space-x-4">
+                  <div className="flex space-x-2">
                     <button
                       onClick={() => handleShare(item._id)}
                       className="flex items-center gap-1 hover:text-red-500 text-white"
