@@ -1,4 +1,5 @@
 "use client";
+
 import { useLocalStorage } from "@/app/context/CartContext";
 import { client } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
@@ -23,6 +24,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
+import Head from "next/head"; // Import Head component
 
 export interface IProduct {
   title: string;
@@ -71,7 +73,11 @@ interface IReview {
   isVerifiedPurchase?: boolean;
 }
 
-export default function Detail({ id }: { id: string }) {
+interface Props {
+  id: string;
+}
+
+const Detail: React.FC<Props> = ({ id }) => {
   const [quantity, setQuantity] = useState(1);
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
@@ -471,6 +477,7 @@ export default function Detail({ id }: { id: string }) {
 
   const {
     title,
+    price,
     oldPrice,
     description,
     tags,
@@ -513,8 +520,41 @@ export default function Detail({ id }: { id: string }) {
       return urlFor(img).url(); // Get the URL from Sanity for image assets
     });
 
+    // Function to extract plain text from PortableTextBlock
+  const getDescriptionText = (description: PortableTextBlock[] | undefined): string => {
+    if (!description || description.length === 0) return "";
+
+    return description
+      .map(block => {
+        if (block._type !== 'block' || !block.children) return '';
+        return block.children
+          .map(child => {
+            if (typeof child === 'object' && child !== null && 'text' in child) {
+              return (child as { text?: string }).text || '';
+            }
+            return '';
+          })
+          .join('');
+      })
+      .join('\n');
+  };
+
+  const descriptionText = getDescriptionText(description);
+
   return (
     <>
+      {/* SEO Metadata */}
+      <Head>
+        <title>{title} - Buy online at Saud Solution</title>
+        <meta name="description" content={descriptionText} />
+        <meta
+          name="keywords"
+          content={`${title}, ${category}, ${tags?.join(", ")}, product, buy online`}
+        />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={descriptionText} />
+        {/* Add more Open Graph tags as needed (e.g., image, url) */}
+      </Head>
       <div className="max-w-7xl mx-auto grid md:mx-8 grid-cols-1 lg:grid-cols-12 gap-12">
         {notification && (
           <Notification
@@ -532,7 +572,7 @@ export default function Detail({ id }: { id: string }) {
                 <div onClick={() => setIsModalOpen(true)}>
                   <Image
                     src={selectedImage}
-                    alt="Product Image"
+                    alt={title}
                     width={1000}
                     height={1000}
                     className="h-[240px] lg:h-[500px] lg:w-full object-cover cursor-pointer"
@@ -597,11 +637,17 @@ export default function Detail({ id }: { id: string }) {
         <div className="lg:col-span-6 mx-3 md:mx-0 mt-8 space-y-6">
           {/* Product Title and Price */}
           <div className="items-start flex-col space-y-3">
-            <h1 className="text-3xl lg:text-4xl font-extrabold text-gray-900 tracking-tight">
+            <h1
+              itemProp="name"
+              className="text-3xl lg:text-4xl font-extrabold text-gray-900 tracking-tight"
+            >
               {title}
             </h1>
             <div className="flex items-center space-x-3">
-              <p className="text-xl font-semibold text-gray-700">
+              <p
+                itemProp="price"
+                className="text-xl font-semibold text-gray-700"
+              >
                 Rs. {currentPrice.toFixed(2)}
               </p>
               {oldPrice && (
@@ -622,7 +668,7 @@ export default function Detail({ id }: { id: string }) {
           </p>
 
           {/* Product Description - Shorten and add "Read More" if necessary */}
-          <div className="text-gray-700 leading-relaxed">
+          <div className="text-gray-700 leading-relaxed" itemProp="description">
             <PortableText value={description || []} />
           </div>
 
@@ -916,6 +962,7 @@ export default function Detail({ id }: { id: string }) {
           <div>
             <label
               htmlFor="reviewName"
+              
               className="block text-sm font-medium text-gray-700 mb-2"
             >
               Your Name
@@ -1024,3 +1071,4 @@ export default function Detail({ id }: { id: string }) {
     </>
   );
 }
+export default Detail

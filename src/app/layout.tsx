@@ -8,6 +8,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next"
 import { ClerkProvider } from "@clerk/nextjs";
 import SalesBanner from "@/components/salesBanner";
 import { WishlistProvider } from "./context/WishlistContext";
+import WhatsAppButton from "../components/WhatsAppButton";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -82,6 +83,7 @@ export default function RootLayout({
             <SalesBanner />
             <Header />
             {children}
+            <WhatsAppButton phoneNumber="923152121984" />
             <SpeedInsights />
             <Analytics />
             <Footer />
