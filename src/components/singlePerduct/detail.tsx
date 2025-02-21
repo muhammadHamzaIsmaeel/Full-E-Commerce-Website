@@ -471,7 +471,6 @@ export default function Detail({ id }: { id: string }) {
 
   const {
     title,
-    price,
     oldPrice,
     description,
     tags,
