@@ -19,7 +19,10 @@ import { SanityImageSource } from "@sanity/image-url/lib/types/types";
 import VideoPlayer from "./VideoPlayer";
 import { PortableText } from "@portabletext/react"; // Import PortableText
 import { PortableTextBlock } from "@portabletext/types";
-
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/navigation";
 
 export interface IProduct {
   title: string;
@@ -35,6 +38,12 @@ export interface IProduct {
   productImage1?: SanityImageSource;
   productImage2?: SanityImageSource;
   productImage3?: SanityImageSource;
+  productImage4?: SanityImageSource;
+  productImage5?: SanityImageSource;
+  productImage6?: SanityImageSource;
+  productImage7?: SanityImageSource;
+  productImage8?: SanityImageSource;
+  productImage9?: SanityImageSource;
   availableSizes?: string[];
   availableColors?: string[];
   defaultSize?: string;
@@ -99,6 +108,7 @@ export default function Detail({ id }: { id: string }) {
   };
 
   const [videoUrl, setVideoUrl] = useState<string | null>(null); // Video URL state
+  const [currentPrice, setCurrentPrice] = useState(0); // State to hold the current price
 
   useEffect(() => {
     if (!id) {
@@ -110,37 +120,43 @@ export default function Detail({ id }: { id: string }) {
     const fetchProduct = async () => {
       try {
         const query = `*[_type == "product" && _id == $id][0]{
-          title,
-          price,
-          oldPrice,
-          description,
-          tags,
-          SKU,
-          category,
-          productImage,
-          productImage1,
-          productImage2,
-          productImage3,
-          availableSizes,
-          availableColors,
-          defaultSize,
-          defaultColor,
-          stockQuantity, // Add this line to fetch the stock
-          _id,
-          productVideo{
-               asset->{
-                   url
-               }
-           }, // Fetch video URL and its URL
-          "reviews": *[_type == "review" && references(^._id)]{
-            _id,
-            name,
-            rating,
-            comment,
-            createdAt,
-            isVerifiedPurchase,
-          }
-        }`;
+                    title,
+                    price,
+                    oldPrice,
+                    description,
+                    tags,
+                    SKU,
+                    category,
+                    productImage,
+                    productImage1,
+                    productImage2,
+                    productImage3,
+                    productImage4,
+                    productImage5,
+                    productImage6,
+                    productImage7,
+                    productImage8,
+                    productImage9,
+                    availableSizes,
+                    availableColors,
+                    defaultSize,
+                    defaultColor,
+                    stockQuantity, // Add this line to fetch the stock
+                    _id,
+                    productVideo{
+                         asset->{
+                             url
+                         }
+                     }, // Fetch video URL and its URL
+                    "reviews": *[_type == "review" && references(^._id)]{
+                      _id,
+                      name,
+                      rating,
+                      comment,
+                      createdAt,
+                      isVerifiedPurchase,
+                    }
+                  }`;
 
         const data: IProduct = await client.fetch(query, { id });
 
@@ -152,6 +168,7 @@ export default function Detail({ id }: { id: string }) {
 
         setProduct(data);
         setReviews(data.reviews || []);
+        setCurrentPrice(parseFloat(data.price)); // Initialize current price with the base price
 
         if (data.productImage) {
           setSelectedImage(urlFor(data.productImage).url());
@@ -272,11 +289,15 @@ export default function Detail({ id }: { id: string }) {
     }
   };
 
+  // Update quantity change
   const handleQuantityChange = (type: "increase" | "decrease") => {
+    if (!product) return;
     if (type === "increase") {
       setQuantity(quantity + 1);
+      setCurrentPrice(parseFloat(product.price) * (quantity + 1)); // Update current price
     } else if (type === "decrease" && quantity > 1) {
       setQuantity(quantity - 1);
+      setCurrentPrice(parseFloat(product.price) * (quantity - 1)); // Update current price
     }
   };
 
@@ -306,12 +327,20 @@ export default function Detail({ id }: { id: string }) {
 
   const validateSelection = (): boolean => {
     if (product) {
-      if (product.availableColors && product.availableColors.length > 0 && !selectedColor) {
-        setNotification({ message: 'Please select a color.', type: 'error' });
+      if (
+        product.availableColors &&
+        product.availableColors.length > 0 &&
+        !selectedColor
+      ) {
+        setNotification({ message: "Please select a color.", type: "error" });
         return false;
       }
-      if (product.availableSizes && product.availableSizes.length > 0 && !selectedSize) {
-        setNotification({ message: 'Please select a size.', type: 'error' });
+      if (
+        product.availableSizes &&
+        product.availableSizes.length > 0 &&
+        !selectedSize
+      ) {
+        setNotification({ message: "Please select a size.", type: "error" });
         return false;
       }
     }
@@ -452,6 +481,12 @@ export default function Detail({ id }: { id: string }) {
     productImage1,
     productImage2,
     productImage3,
+    productImage4,
+    productImage5,
+    productImage6,
+    productImage7,
+    productImage8,
+    productImage9,
     availableSizes,
     availableColors,
     stockQuantity,
@@ -462,9 +497,16 @@ export default function Detail({ id }: { id: string }) {
     productImage1,
     productImage2,
     productImage3,
+    productImage4,
+    productImage5,
+    productImage6,
+    productImage7,
+    productImage8,
+    productImage9,
     product.productVideo ? "/video-placeholder.png" : null,
   ]
     .filter((img): img is SanityImageSource | string => img !== null)
+    .slice(0, 10)
     .map((img) => {
       if (typeof img === "string") {
         return img; // Serve the placeholder image directly
@@ -482,46 +524,7 @@ export default function Detail({ id }: { id: string }) {
             onClose={closeNotification}
           />
         )}
-        <div className="lg:col-span-6 lg:flex gap-3 md:gap-7 space-y-6">
-          <div className="lg:space-y-10 md:space-x-0 space-x-5 flex justify-center lg:block mt-6">
-            {thumbnailImages.map((src, index) => {
-              const isVideoThumbnail = src === "/video-placeholder.png";
-              return (
-                <div
-                key={index}
-                className="w-16 h-16 rounded-lg overflow-hidden cursor-pointer relative" // Added 'relative'
-                onClick={() => handleThumbnailClick(src, isVideoThumbnail)}
-              >
-                {isVideoThumbnail ? (
-                  <div className="flex items-center justify-center bg-gray-800 text-white absolute inset-0"> {/* Added 'absolute inset-0' */}
-                    <span>
-                      <Image
-                        src="/play.png"
-                        alt="Play Video"
-                        width={1000}
-                        height={1000}
-                        className="object-contain w-full h-full" // Changed 'object-cover' to 'object-contain'
-                        loading="lazy"
-                        style={{ objectFit: 'contain' }} // Added inline style as fallback
-                      />
-                    </span>
-                  </div>
-                ) : (
-                  <Image
-                    src={src}
-                    alt={`Thumbnail ${index + 1}`}
-                    width={1000}
-                    height={1000}
-                    className="object-contain w-full h-full" // Changed 'object-cover' to 'object-contain'
-                    loading="lazy"
-                    style={{ objectFit: 'contain' }} // Added inline style as fallback
-                  />
-                )}
-              </div>
-              );
-            })}
-          </div>
-
+        <div className="lg:col-span-6 p-3 md:p-0 mt-10">
           <div className="aspect-w-1 aspect-h-1 rounded-lg overflow-hidden">
             {videoUrl ? (
               <VideoPlayer src={videoUrl} />
@@ -533,12 +536,62 @@ export default function Detail({ id }: { id: string }) {
                     alt="Product Image"
                     width={1000}
                     height={1000}
-                    className="h-[240px] lg:h-[500px] lg:w-[423px] object-cover cursor-pointer"
+                    className="h-[240px] lg:h-[500px] lg:w-full object-cover cursor-pointer"
                     loading="lazy"
                   />
                 </div>
               )
             )}
+          </div>
+
+          {/* Thumbnail Slider */}
+          <div className="mt-4">
+            <Swiper
+              modules={[Navigation]}
+              spaceBetween={10}
+              slidesPerView={5} // Adjust based on how many thumbnails you want to show
+              navigation
+            >
+              {thumbnailImages.map((src, index) => {
+                const isVideoThumbnail = src === "/video-placeholder.png";
+                return (
+                  <SwiperSlide key={index}>
+                    <div
+                      className="w-full h-20 rounded-lg overflow-hidden cursor-pointer relative"
+                      onClick={() =>
+                        handleThumbnailClick(src, isVideoThumbnail)
+                      }
+                    >
+                      {isVideoThumbnail ? (
+                        <div className="flex items-center justify-center bg-gray-800 text-white absolute inset-0">
+                          <span>
+                            <Image
+                              src="/play.png"
+                              alt="Play Video"
+                              width={1000}
+                              height={1000}
+                              className="object-contain w-full h-full"
+                              loading="lazy"
+                              style={{ objectFit: "contain" }}
+                            />
+                          </span>
+                        </div>
+                      ) : (
+                        <Image
+                          src={src}
+                          alt={`Thumbnail ${index + 1}`}
+                          width={1000}
+                          height={1000}
+                          className="object-cover w-full h-full"
+                          loading="lazy"
+                          style={{ objectFit: "cover" }}
+                        />
+                      )}
+                    </div>
+                  </SwiperSlide>
+                );
+              })}
+            </Swiper>
           </div>
         </div>
 
@@ -549,7 +602,9 @@ export default function Detail({ id }: { id: string }) {
               {title}
             </h1>
             <div className="flex items-center space-x-3">
-              <p className="text-xl font-semibold text-gray-700">Rs. {price}</p>
+              <p className="text-xl font-semibold text-gray-700">
+                Rs. {currentPrice.toFixed(2)}
+              </p>
               {oldPrice && (
                 <span className="text-red-600 pb-2 font-serif line-through text-lg">
                   Rs. {oldPrice}
@@ -647,15 +702,14 @@ export default function Detail({ id }: { id: string }) {
               {stockQuantity > 0 ? "Add to Cart" : "Out of Stock"}
             </button>
 
-              <button
-                className={`bg-[#2E7D32] ml-3 md:ml-0 text-white px-8 py-3 rounded-md font-medium transition-colors duration-200 
+            <button
+              className={`bg-[#2E7D32] ml-3 md:ml-0 text-white px-8 py-3 rounded-md font-medium transition-colors duration-200 
                 ${stockQuantity > 0 ? "hover:bg-[#1B5E20] focus:ring-2 focus:ring-[#b9935a]/50" : "opacity-50 cursor-not-allowed"}`}
-                onClick={handlebuy}
-                disabled={stockQuantity <= 0}
-              >
-                {stockQuantity > 0 ? "Buy Now" : "Out of Stock"}
-              </button>
-
+              onClick={handlebuy}
+              disabled={stockQuantity <= 0}
+            >
+              {stockQuantity > 0 ? "Buy Now" : "Out of Stock"}
+            </button>
           </div>
 
           {/* Product Meta Information (SKU, Category, Tags) */}

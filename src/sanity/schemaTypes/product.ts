@@ -138,6 +138,54 @@ export const product = defineType({
       },
     },
     {
+      name: "productImage4",
+      title: "Product Image 4",
+      type: "image",
+      options: {
+        hotspot: true,
+      },
+    },
+    {
+      name: "productImage5",
+      title: "Product Image 5",
+      type: "image",
+      options: {
+        hotspot: true,
+      },
+    },
+    {
+      name: "productImage6",
+      title: "Product Image 6",
+      type: "image",
+      options: {
+        hotspot: true,
+      },
+    },
+    {
+      name: "productImage7",
+      title: "Product Image 7",
+      type: "image",
+      options: {
+        hotspot: true,
+      },
+    },
+    {
+      name: "productImage8",
+      title: "Product Image 8",
+      type: "image",
+      options: {
+        hotspot: true,
+      },
+    },
+    {
+      name: "productImage9",
+      title: "Product Image 9",
+      type: "image",
+      options: {
+        hotspot: true,
+      },
+    },
+    {
       name: 'productVideo',
       title: 'Product Video',
       type: 'file',
