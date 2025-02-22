@@ -86,7 +86,7 @@ export default function PrivacyPolicyPage() {
                             <li>To send you promotional offers, updates, and marketing communications (with your consent, where required by law). You can opt-out of these communications at any time.</li>
                             <li>To comply with legal and regulatory requirements related to the sale of products, including age verification, tracking sales, and reporting to relevant authorities (where applicable).</li>
                             <li>To detect, prevent, and address fraud, security breaches, or other illegal activities.</li>
-                            <li>To analyze website traffic and usage patterns to improve our site's performance and user experience.</li>
+                            <li>To analyze website traffic and usage patterns to improve our site&apos;s performance and user experience.</li>
                         </ul>
                     </div>
 
@@ -137,7 +137,7 @@ export default function PrivacyPolicyPage() {
                             <li><strong>Access:</strong> Request a copy of the personal data we hold about you.</li>
                             <li><strong>Correction:</strong> Request corrections to inaccurate or incomplete personal data.</li>
                             <li><strong>Deletion:</strong> Request deletion of your personal data under certain conditions, such as when the data is no longer necessary for the purposes for which it was collected.</li>
-                            <li><strong>Opt-Out:</strong> Unsubscribe from marketing communications at any time by clicking the "unsubscribe" link in our emails or contacting us directly.</li>
+                            <li><strong>Opt-Out:</strong> Unsubscribe from marketing communications at any time by clicking the &quot;unsubscribe&quot; link in our emails or contacting us directly.</li>
                             <li><strong>Restriction of Processing:</strong> Request restriction of processing of your personal data in certain circumstances.</li>
                             <li><strong>Data Portability:</strong> Request to receive your personal data in a structured, commonly used, and machine-readable format and have the right to transmit that data to another controller.</li>
                             <li><strong>Withdraw Consent:</strong> If we are processing your personal data based on your consent, you have the right to withdraw your consent at any time.</li>
@@ -147,7 +147,7 @@ export default function PrivacyPolicyPage() {
 
                     {/* Children's Privacy Section */}
                     <div className="mt-12">
-                        <h3 className="text-2xl font-bold">7. Children's Privacy</h3>
+                        <h3 className="text-2xl font-bold">7. Children&apos;s Privacy</h3>
                         <p className="mt-4 text-gray-600">
                             Our website is not directed to children under the age of 18. We do not knowingly collect personal information from children. If you are a parent or guardian and believe that your child has provided us with personal information, please contact us, and we will take steps to delete that information.
                         </p>
@@ -165,7 +165,7 @@ export default function PrivacyPolicyPage() {
                     <div className="mt-12">
                         <h3 className="text-2xl font-bold">9. Changes to this Privacy Policy</h3>
                         <p className="mt-4 text-gray-600">
-                            We may update this Privacy Policy from time to time to reflect changes in our practices or applicable laws. We will post any changes on this page and update the "Last Updated" date below. We encourage you to review this Privacy Policy periodically. Significant changes will be communicated via email.
+                            We may update this Privacy Policy from time to time to reflect changes in our practices or applicable laws. We will post any changes on this page and update the &quot;Last Updated&quot; date below. We encourage you to review this Privacy Policy periodically. Significant changes will be communicated via email.
                         </p>
                         <p className="mt-2 text-gray-600"><strong>Last Updated:</strong> {formattedDate}</p>
                     </div>
