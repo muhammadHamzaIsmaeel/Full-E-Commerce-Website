@@ -177,7 +177,7 @@ export default function PrivacyPolicyPage() {
                             If you have any questions or concerns about our Privacy Policy, please contact us at:
                         </p>
                         <p className="mt-2 text-gray-600">
-                            Email: <Link href="mailto:ss.saudsolution@gmail.com" className="text-blue-600 hover:underline">privacy@Saud Solution.com</Link>
+                            Email: <Link href="mailto:privacy@Saud Solution.com" className="text-blue-600 hover:underline">privacy@Saud Solution.com</Link>
                         </p>
                         <p className="mt-2 text-gray-600">
                             Phone: <Link href="tel:+923152121984" className="text-blue-600 hover:underline">+92 315 2121984</Link>
