@@ -277,7 +277,7 @@ export default function ReturnPolicyPage() {
           <p className="mt-8 text-gray-600 text-center leading-relaxed">
             {" "}
             {/* Added leading */}
-            For "change of mind" returns, please contact us. These are assessed
+            For &quot;change of mind&quot; returns, please contact us. These are assessed
             individually and may be subject to return shipping costs borne by
             the customer.
           </p>

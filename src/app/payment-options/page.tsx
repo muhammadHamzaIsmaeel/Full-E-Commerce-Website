@@ -65,8 +65,8 @@ export default function PaymentOptionsPage() {
               </a>
             </h2>
             <p className="mt-2 text-lg text-gray-900">
-            Secure and convenient payment methods for your shopping needs.
-          </p>
+              Secure and convenient payment methods for your shopping needs.
+            </p>
           </div>
         </div>
       </div>
@@ -158,7 +158,7 @@ export default function PaymentOptionsPage() {
         <div className="text-center">
           <h2 className="text-3xl md:text-4xl font-bold">Frequently Asked Questions</h2>
           <p className="mt-4 text-gray-600 max-w-2xl mx-auto">
-            Have questions about payments? We’ve got answers.
+            Have questions about payments? We've got answers.
           </p>
         </div>
         <div className="mt-12 space-y-6 max-w-2xl mx-auto">
