@@ -6,8 +6,8 @@ import React from "react";
 import {
   MdKeyboardArrowRight,
   MdLocalPhone,
-  MdLocationPin,
   MdOutlineAccessTimeFilled,
+  MdOutlineEmail,
 } from "react-icons/md";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -133,45 +133,64 @@ const ContactPage: React.FC = () => {
           </p>
         </div>
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12">
-          {/* Contact Information */}
-          <div className="space-y-8">
-            <div className="space-y-6">
-              <div className="flex items-start space-x-3">
-                <span className="text-2xl">
-                  <MdLocationPin />
-                </span>
-                <div>
-                  <h4 className="font-semibold pt-2 text-gray-800">Address</h4>
-                  <p className="text-gray-600">
-                    Sector 13, Block J Orangi Town Karachi, Pakistan.
-                  </p>
-                </div>
+          {/* Online Shop Information */}
+
+          <div className="space-y-6">
+            <h3 className="text-2xl font-semibold text-gray-800 mb-2">
+              We're Here to Help Online
+            </h3>
+            <p className="text-gray-600">
+              Our online store is available 24/7 to assist you with your
+              shopping needs. Contact us using the form or the options below.
+            </p>
+            <div className="flex items-center space-x-4">
+              <span className="text-2xl text-yellow-600">
+                <MdOutlineEmail />
+              </span>
+              <div>
+                <h4 className="font-semibold text-gray-800">Email Support</h4>
+                <p className="text-gray-600">
+                  Email us your questions or concerns, and we'll respond as soon
+                  as possible.
+                </p>
+                <a
+                  href="mailto:ss.saudsolution@gmail.com"
+                  className="text-blue-500 hover:underline"
+                >
+                  support@example.com
+                </a>
               </div>
-              <div className="flex items-start space-x-4">
-                <span className="text-2xl">
-                  <MdLocalPhone />
-                </span>
-                <div>
-                  <h4 className="font-semibold pt-2 text-gray-800">Phone</h4>
-                  <p className="text-gray-600">
-                    Mobile: (+92) 341-2358480 <br />
-                    Hotline: (+92) 341-2358480
-                  </p>
-                </div>
+            </div>
+            <div className="flex items-center space-x-4">
+              <span className="text-2xl text-yellow-600">
+                <MdLocalPhone />
+              </span>
+              <div>
+                <h4 className="font-semibold text-gray-800">Message Us</h4>
+                <p className="text-gray-600">
+                  Send us a message through WhatsApp or SMS, and we'll get back
+                  to you promptly.
+                </p>
+                <p className="text-gray-600">
+                  WhatsApp: +92 315 2121984
+                  <br />
+                  SMS: +92 307 3482322
+                </p>
               </div>
-              <div className="flex items-start space-x-4">
-                <span className="text-2xl">
-                  <MdOutlineAccessTimeFilled />
-                </span>
-                <div>
-                  <h4 className="font-semibold pt-2 text-gray-800">
-                    Working Time
-                  </h4>
-                  <p className="text-gray-600">
-                    Monday-Friday: 9:00 - 22:00 <br />
-                    Saturday-Sunday: 9:00 - 21:00
-                  </p>
-                </div>
+            </div>
+            <div className="flex items-center space-x-4">
+              <span className="text-2xl text-yellow-600">
+                <MdOutlineAccessTimeFilled />
+              </span>
+              <div>
+                <h4 className="font-semibold text-gray-800">Online Hours</h4>
+                <p className="text-gray-600">
+                  Our online support team is available during the following
+                  hours:
+                </p>
+                <p className="text-gray-600">
+                  Monday-Saturday: 9:00 AM - 5:00 PM (EST)
+                </p>
               </div>
             </div>
           </div>
