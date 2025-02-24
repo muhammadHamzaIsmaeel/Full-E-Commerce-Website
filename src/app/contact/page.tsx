@@ -1,9 +1,14 @@
-'use client';
+"use client";
 
-import Image from 'next/image';
-import Link from 'next/link';
-import React from 'react';
-import { MdKeyboardArrowRight, MdLocalPhone, MdLocationPin, MdOutlineAccessTimeFilled } from 'react-icons/md';
+import Image from "next/image";
+import Link from "next/link";
+import React from "react";
+import {
+  MdKeyboardArrowRight,
+  MdLocalPhone,
+  MdLocationPin,
+  MdOutlineAccessTimeFilled,
+} from "react-icons/md";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -17,8 +22,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css'; // Import Toastify CSS
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css"; // Import Toastify CSS
 
 // Zod schema for form validation
 const formSchema = z.object({
@@ -86,10 +91,11 @@ const ContactPage: React.FC = () => {
         <div className="relative w-full lg:h-[50vh] md:h-[30vh] h-[30vh]">
           <Image
             src="/shop/banner11.png"
-            alt="Shop Map"
+            alt="Contact Banner"
             layout="fill"
+            style={{ objectFit: "cover", filter: "blur(3px)", opacity: 0.7 }}
             objectFit="cover"
-            priority // Prioritize loading the banner image
+            loading="lazy"
           />
           <div className="absolute inset-0 flex flex-col justify-center items-center text-center text-gray-950">
             <Link href="/">
@@ -104,20 +110,26 @@ const ContactPage: React.FC = () => {
             </Link>
             <h4 className="text-4xl font-bold">Contact</h4>
             <h5 className="flex items-center text-sm md:text-xl mb-4 space-x-1">
-              <Link className="font-bold text-2xl" href="/">Home</Link>
+              <Link className="font-bold text-2xl" href="/">
+                Home
+              </Link>
               <MdKeyboardArrowRight className="mt-2 text-2xl" />
-              <a className='mt-1 md:mt-0' href="#">Contact</a>
+              <a className="mt-1 md:mt-0" href="#">
+                Contact
+              </a>
             </h5>
           </div>
         </div>
       </header>
       <div className="pt-16 pb-11 px-6 lg:px-36">
-        <div className='items-center mb-24 justify-center text-center'>
+        <div className="items-center mb-24 justify-center text-center">
           <h2 className="md:text-3xl text-2xl lg:text-4xl font-bold text-gray-800">
             Get In Touch With Us
           </h2>
           <p className="text-gray-600 md:px-52">
-            For more information about our products & services, please feel free to drop us an email. Our staff is always here to help you out. Do not hesitate!
+            For more information about our products & services, please feel free
+            to drop us an email. Our staff is always here to help you out. Do
+            not hesitate!
           </p>
         </div>
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12">
@@ -125,7 +137,9 @@ const ContactPage: React.FC = () => {
           <div className="space-y-8">
             <div className="space-y-6">
               <div className="flex items-start space-x-3">
-                <span className="text-2xl"><MdLocationPin /></span>
+                <span className="text-2xl">
+                  <MdLocationPin />
+                </span>
                 <div>
                   <h4 className="font-semibold pt-2 text-gray-800">Address</h4>
                   <p className="text-gray-600">
@@ -134,7 +148,9 @@ const ContactPage: React.FC = () => {
                 </div>
               </div>
               <div className="flex items-start space-x-4">
-                <span className="text-2xl"><MdLocalPhone /></span>
+                <span className="text-2xl">
+                  <MdLocalPhone />
+                </span>
                 <div>
                   <h4 className="font-semibold pt-2 text-gray-800">Phone</h4>
                   <p className="text-gray-600">
@@ -144,9 +160,13 @@ const ContactPage: React.FC = () => {
                 </div>
               </div>
               <div className="flex items-start space-x-4">
-                <span className="text-2xl"><MdOutlineAccessTimeFilled /></span>
+                <span className="text-2xl">
+                  <MdOutlineAccessTimeFilled />
+                </span>
                 <div>
-                  <h4 className="font-semibold pt-2 text-gray-800">Working Time</h4>
+                  <h4 className="font-semibold pt-2 text-gray-800">
+                    Working Time
+                  </h4>
                   <p className="text-gray-600">
                     Monday-Friday: 9:00 - 22:00 <br />
                     Saturday-Sunday: 9:00 - 21:00
@@ -171,7 +191,11 @@ const ContactPage: React.FC = () => {
                     <FormItem>
                       <FormLabel>Your Name</FormLabel>
                       <FormControl>
-                        <Input className='py-6' placeholder="Enter your name" {...field} />
+                        <Input
+                          className="py-6"
+                          placeholder="Enter your name"
+                          {...field}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -184,7 +208,11 @@ const ContactPage: React.FC = () => {
                     <FormItem>
                       <FormLabel>Email</FormLabel>
                       <FormControl>
-                        <Input className='py-6' placeholder="Enter your email" {...field} />
+                        <Input
+                          className="py-6"
+                          placeholder="Enter your email"
+                          {...field}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -197,7 +225,11 @@ const ContactPage: React.FC = () => {
                     <FormItem>
                       <FormLabel>Subject</FormLabel>
                       <FormControl>
-                        <Input className='py-6' placeholder="Enter subject" {...field} />
+                        <Input
+                          className="py-6"
+                          placeholder="Enter subject"
+                          {...field}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -221,7 +253,10 @@ const ContactPage: React.FC = () => {
                     </FormItem>
                   )}
                 />
-                <Button type="submit" className="w-full bg-yellow-600 hover:bg-yellow-500">
+                <Button
+                  type="submit"
+                  className="w-full bg-yellow-600 hover:bg-yellow-500"
+                >
                   Submit
                 </Button>
               </form>

@@ -114,7 +114,7 @@ export default function ShopProducts() {
             aria-label="Loading..."
           />
           <div className="text-3xl font-bold text-black animate-pulse">
-          Saud Solution...
+            Saud Solution...
           </div>
           <div className="flex justify-center space-x-2 text-yellow-700">
             <span className="dot text-5xl">.</span>
@@ -177,10 +177,9 @@ export default function ShopProducts() {
             src="/shop/banner11.png"
             alt="Shop Banner"
             layout="fill"
+            style={{ objectFit: "cover", filter: "blur(3px)", opacity: 0.7 }}
             objectFit="cover"
-            className=""
             loading="lazy"
-            aria-label="Shop Banner"
           />
           <div className="absolute inset-0 flex flex-col justify-center items-center text-center text-gray-950">
             <Link href="/" aria-label="Go to Home">
@@ -193,12 +192,16 @@ export default function ShopProducts() {
                 loading="lazy"
               />
             </Link>
-            <h1 className="text-4xl font-bold">Shop</h1> {/* Changed to h1 for better accessibility */}
+            <h1 className="text-4xl font-bold">Shop</h1>{" "}
+            {/* Changed to h1 for better accessibility */}
             <h2 className="flex items-center text-sm md:text-xl mb-4 space-x-1">
               <Link className="font-bold text-xl" href="/" aria-label="Home">
                 Home
               </Link>
-              <MdKeyboardArrowRight className="mt-2 text-2xl" aria-hidden="true" />
+              <MdKeyboardArrowRight
+                className="mt-2 text-2xl"
+                aria-hidden="true"
+              />
               <a className="mt-2 md:mt-0" href="#" aria-label="Shop">
                 Shop
               </a>

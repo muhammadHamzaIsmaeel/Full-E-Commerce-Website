@@ -43,12 +43,11 @@ export default function ReturnPolicyPage() {
         <div className="relative w-full lg:h-[50vh] md:h-[30vh] h-[30vh]">
           <Image
             src="/shop/banner11.png"
-            alt="Shop Banner"
-            fill
-            style={{ objectFit: "cover" }}
-            className="z-0"
+            alt="Returns Banner"
+            layout="fill"
+            style={{ objectFit: "cover", filter: "blur(3px)", opacity: 0.7 }}
+            objectFit="cover"
             loading="lazy"
-            aria-label="Shop Banner"
           />
           <div className="absolute inset-0 flex flex-col justify-center items-center text-center text-gray-950">
             <Link href="/" aria-label="Go to Home">
@@ -277,9 +276,9 @@ export default function ReturnPolicyPage() {
           <p className="mt-8 text-gray-600 text-center leading-relaxed">
             {" "}
             {/* Added leading */}
-            For &quot;change of mind&quot; returns, please contact us. These are assessed
-            individually and may be subject to return shipping costs borne by
-            the customer.
+            For &quot;change of mind&quot; returns, please contact us. These are
+            assessed individually and may be subject to return shipping costs
+            borne by the customer.
           </p>
         </div>
       </section>

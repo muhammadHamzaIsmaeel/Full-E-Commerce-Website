@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useLocalStorage } from "../context/CartContext";
+import { motion } from "framer-motion";
+import { AiOutlineCheckCircle } from "react-icons/ai";
 
 interface CartItem {
   title: string;
@@ -36,20 +38,42 @@ export default function SuccessPage() {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50">
-      <h1 className="text-4xl font-bold text-blue-600 mb-4">Order Confirmed!</h1>
-      <p className="text-lg text-gray-700 mb-4">Thank you for your order.  We will contact you to arrange delivery.</p>
-      {orderId && (
-        <p className="text-md text-gray-700 mb-4">
-          Your Order ID is: <span className="font-semibold">{orderId}</span>.  Please keep this for reference.
-        </p>
-      )}
-      <p className="text-lg text-gray-700 mb-8">
-        You can view your order details in your <Link href="/my-orders" className="text-blue-500 hover:underline">My Orders</Link> section.
-      </p>
-      <Link href="/" className="px-6 py-3 bg-black text-white rounded-md hover:bg-gray-800">
-        Continue Shopping
-      </Link>
-    </div>
+    <motion.div
+      className="min-h-screen flex flex-col items-center justify-center bg-gray-100 py-8 px-4 sm:px-6 lg:px-8"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.5 }}
+    >
+      <div className="bg-white rounded-lg shadow-xl overflow-hidden sm:max-w-md w-full">
+        <div className="bg-green-100 border-b border-green-200 py-4 px-6 text-center">
+          <AiOutlineCheckCircle className="inline-block h-8 w-8 text-green-500 mb-2" />
+          <h1 className="text-2xl font-semibold text-gray-800">Order Confirmed!</h1>
+        </div>
+        <div className="p-6">
+          <p className="text-md text-gray-700 mb-4">
+            Thank you for your order. We will contact you shortly to arrange delivery.
+          </p>
+          {orderId && (
+            <p className="text-sm text-gray-700 mb-4">
+              Your Order ID is: <span className="font-semibold">{orderId}</span>. Please keep this for reference.
+            </p>
+          )}
+          <p className="text-sm text-gray-700 mb-6">
+            You can view your order details in your{" "}
+            <Link href="/my-orders" className="text-blue-500 hover:underline">
+              My Orders
+            </Link>{" "}
+            section.
+          </p>
+          <Link
+            href="/"
+            className="block w-full px-4 py-2 text-sm font-medium text-center text-white bg-gray-800 rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500"
+          >
+            Continue Shopping
+          </Link>
+        </div>
+      </div>
+    </motion.div>
   );
 }

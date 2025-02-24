@@ -165,10 +165,10 @@ const ProductGrid: React.FC<ProductGridProps> = ({ products }) => {
             <p className="text-gray-500 text-sm line-clamp-1" title={item.shortDescription}>
               {item.shortDescription}
             </p>
-            <div className="mt-2 flex items-center space-x-2">
+            <div className="mt-2 flex items-center justify-between space-x-2">
               <span className="font-bold">Rs. {item.price}</span>
               {item.oldPrice && (
-                <span className="text-gray-400 line-through text-sm">
+                <span className="text-red-500 line-through text-sm">
                   Rs. {item.oldPrice}
                 </span>
               )}

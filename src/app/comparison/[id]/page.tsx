@@ -182,10 +182,10 @@ export default function ComparisonPage() {
       <div className="relative w-full lg:h-[50vh] md:h-[30vh] h-[30vh] ">
         <Image
           src="/shop/banner11.png"
-          alt="Shop Map"
+          alt="Comparison Banner"
           layout="fill"
+          style={{ objectFit: "cover", filter: "blur(3px)", opacity: 0.7 }}
           objectFit="cover"
-          className=""
           loading="lazy"
         />
         <div className="absolute inset-0 flex flex-col justify-center items-center text-center text-gray-950">

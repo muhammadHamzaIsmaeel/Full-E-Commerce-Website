@@ -119,7 +119,9 @@ export default function BlogPage() {
             className="mx-auto mb-4 animate-pulse"
             loading="lazy"
           />
-          <div className="text-3xl font-bold text-black animate-pulse">Saud Solution...</div>
+          <div className="text-3xl font-bold text-black animate-pulse">
+            Saud Solution...
+          </div>
           <div className="flex justify-center space-x-2 text-yellow-700">
             <span className="dot text-5xl">.</span>
             <span className="dot text-5xl">.</span>
@@ -130,17 +132,19 @@ export default function BlogPage() {
     );
   }
 
-  if (!filteredBlogs.length) return <div className="text-center">No blogs found.</div>;
+  if (!filteredBlogs.length)
+    return <div className="text-center">No blogs found.</div>;
 
   return (
     <div className="min-h-screen">
       <header className="relative w-full lg:h-[50vh] md:h-[30vh] h-[30vh]">
         <Image
           src="/shop/banner11.png"
-          alt="Blog Header"
+          alt="Blog Banner"
           layout="fill"
+          style={{ objectFit: "cover", filter: "blur(3px)", opacity: 0.7 }}
           objectFit="cover"
-          priority
+          loading="lazy"
         />
         <div className="absolute inset-0 flex flex-col justify-center items-center text-center text-gray-950">
           <Link href="/">
@@ -184,10 +188,14 @@ export default function BlogPage() {
                     <MdPerson3 /> {blog.author}
                   </span>
                   <span className="flex items-center gap-2">
-                    <BsCalendar2DateFill /> {new Date(blog.date).toLocaleDateString()}
+                    <BsCalendar2DateFill />{" "}
+                    {new Date(blog.date).toLocaleDateString()}
                   </span>
                   <span className="flex items-center gap-2">
-                    <BsFillTagFill /> {Array.isArray(blog.tags) ? blog.tags.join(", ") : "No tags"}
+                    <BsFillTagFill />{" "}
+                    {Array.isArray(blog.tags)
+                      ? blog.tags.join(", ")
+                      : "No tags"}
                   </span>
                 </div>
                 <h2 className="text-xl font-bold">{blog.title}</h2>
@@ -216,15 +224,23 @@ export default function BlogPage() {
               className="w-full h-[58px] border border-gray-300 rounded-md p-4 pr-12"
               onChange={(e) => handleSearch(e.target.value)}
             />
-            <AiOutlineSearch className="absolute right-4 top-4 text-gray-500" size={20} />
+            <AiOutlineSearch
+              className="absolute right-4 top-4 text-gray-500"
+              size={20}
+            />
           </div>
           <div>
             <h3 className="text-lg font-bold mb-4">Categories</h3>
             <ul className="space-y-4">
               {categories.map((category) => (
-                <li key={category._id} className="text-gray-600 flex justify-between items-center">
+                <li
+                  key={category._id}
+                  className="text-gray-600 flex justify-between items-center"
+                >
                   <span>{category.title}</span>
-                  <span className="text-sm text-gray-400">{category.blogCount}</span>
+                  <span className="text-sm text-gray-400">
+                    {category.blogCount}
+                  </span>
                 </li>
               ))}
             </ul>
@@ -243,7 +259,10 @@ export default function BlogPage() {
                     loading="lazy"
                   />
                   <div>
-                    <Link href={`/blog/${encodeURIComponent(blog._id)}`} className="text-blue-600 hover:underline">
+                    <Link
+                      href={`/blog/${encodeURIComponent(blog._id)}`}
+                      className="text-blue-600 hover:underline"
+                    >
                       {blog.title}
                     </Link>
                     <p className="text-sm text-gray-500">
