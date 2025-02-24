@@ -137,7 +137,7 @@ const ContactPage: React.FC = () => {
 
           <div className="space-y-6">
             <h3 className="text-2xl font-semibold text-gray-800 mb-2">
-              We're Here to Help Online
+              We&apos;re Here to Help Online
             </h3>
             <p className="text-gray-600">
               Our online store is available 24/7 to assist you with your
@@ -150,7 +150,7 @@ const ContactPage: React.FC = () => {
               <div>
                 <h4 className="font-semibold text-gray-800">Email Support</h4>
                 <p className="text-gray-600">
-                  Email us your questions or concerns, and we'll respond as soon
+                  Email us your questions or concerns, and we&apos;ll respond as soon
                   as possible.
                 </p>
                 <a
@@ -168,7 +168,7 @@ const ContactPage: React.FC = () => {
               <div>
                 <h4 className="font-semibold text-gray-800">Message Us</h4>
                 <p className="text-gray-600">
-                  Send us a message through WhatsApp or SMS, and we'll get back
+                  Send us a message through WhatsApp or SMS, and we&apos;ll get back
                   to you promptly.
                 </p>
                 <p className="text-gray-600">
