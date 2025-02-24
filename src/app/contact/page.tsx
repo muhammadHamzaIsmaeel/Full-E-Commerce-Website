@@ -157,7 +157,7 @@ const ContactPage: React.FC = () => {
                   href="mailto:ss.saudsolution@gmail.com"
                   className="text-blue-500 hover:underline"
                 >
-                  support@example.com
+                  ss.saudsolution@gmail.com
                 </a>
               </div>
             </div>
