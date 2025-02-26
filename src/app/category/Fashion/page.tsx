@@ -1,17 +1,16 @@
-"use client";
-
+"use client"
 import React, { useEffect, useState } from "react";
 import { IoMdShare } from "react-icons/io";
 import { MdCompareArrows, MdKeyboardArrowRight } from "react-icons/md";
 import { FaRegHeart } from "react-icons/fa";
 import Image from "next/image";
 import Link from "next/link";
-import Head from "next/head";
 import { client } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
+import Head from "next/head";
 import toast, { Toaster } from "react-hot-toast";
 import { useWishlist } from "@/app/context/WishlistContext";
-import { FaTruck } from "react-icons/fa6";
+import { FaTruck } from "react-icons/fa";
 
 interface IProduct {
   _id: string;
@@ -23,9 +22,10 @@ interface IProduct {
   isNew?: boolean;
   productImage: string;
   freeDelivery?: boolean;
+  tags?: string[]; // Ensure tags is an array of strings
 }
 
-export default function FashionPage() {
+export default function BeautyPage() {
   const [data, setData] = useState<IProduct[]>([]);
   const [filteredData, setFilteredData] = useState<IProduct[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -35,16 +35,16 @@ export default function FashionPage() {
   const [isNew, setIsNew] = useState<boolean | null>(null);
   const [discounted, setDiscounted] = useState<boolean>(false);
   const [priceRange, setPriceRange] = useState<number[]>([0, 10000]);
-  const [show] = useState<number>(10); // Adjusted default show value
+  const [show] = useState<number>(10);
   const [sortBy, setSortBy] = useState<string>("default");
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const [selectedTag, setSelectedTag] = useState<string | null>(null); // New state for selected tag
 
   // Pagination States
   const [currentPage, setCurrentPage] = useState<number>(1);
 
   const { addToWishlist } = useWishlist();
 
-  // Handle wishlist functionality
   const handleWishlist = (product: IProduct) => {
     if (!product) {
       toast.error("Invalid product data.");
@@ -52,7 +52,7 @@ export default function FashionPage() {
     }
 
     try {
-      addToWishlist(product); // Use the addToWishlist function from context
+      addToWishlist(product);
       toast.success("Product added to wishlist!");
     } catch (err) {
       console.error("Error handling wishlist:", err);
@@ -60,11 +60,9 @@ export default function FashionPage() {
     }
   };
 
-  // Function to handle sharing
   const handleShare = (productId: string) => {
     const productLink = `${window.location.origin}/product/${productId}`;
 
-    // Check if the Web Share API is supported
     if (navigator.share) {
       navigator
         .share({
@@ -80,7 +78,6 @@ export default function FashionPage() {
           toast.error("Failed to share product.");
         });
     } else {
-      // Fallback for browsers that don't support the Web Share API
       navigator.clipboard
         .writeText(productLink)
         .then(() => {
@@ -97,7 +94,7 @@ export default function FashionPage() {
     const fetchProducts = async () => {
       try {
         const products: IProduct[] = await client.fetch(
-          '*[_type == "product" && "fashion" in category]{_id, title, shortDescription, dicountPercentage, price, oldPrice, isNew, productImage, freeDelivery}' // Fetch freeDelivery
+          '*[_type == "product" && "fashion" in category]{_id, title, shortDescription, dicountPercentage, price, oldPrice, isNew, productImage, freeDelivery, tags}'
         );
         setData(products);
         setFilteredData(products); // Initialize filtered data
@@ -138,6 +135,11 @@ export default function FashionPage() {
       );
     }
 
+    // Apply selected tag filter
+    if (selectedTag) {
+      filtered = filtered.filter((item) => item.tags?.includes(selectedTag));
+    }
+
     if (sortBy === "price-asc") {
       filtered = filtered.sort(
         (a, b) => parseFloat(a.price) - parseFloat(b.price)
@@ -150,7 +152,10 @@ export default function FashionPage() {
 
     setFilteredData(filtered);
     setCurrentPage(1); // Reset to first page when filters change
-  }, [isNew, discounted, priceRange, sortBy, searchQuery, data]);
+  }, [isNew, discounted, priceRange, sortBy, searchQuery, data, selectedTag]);
+
+  // Get unique tags for filter display
+  const uniqueTags = [...new Set(data.flatMap((item) => item.tags || []))];
 
   // Pagination Logic
   const indexOfLastProduct = currentPage * show;
@@ -179,14 +184,14 @@ export default function FashionPage() {
       <Toaster />
 
       <Head>
-        <title>Fashion product - Saud Solution</title>
+        <title>Beauty product - Saud Solution</title>
         <meta
           name="description"
-          content="Discover our exclusive collection of Fashion. High-quality products at affordable prices!"
+          content="Discover our exclusive collection of beauty products."
         />
         <meta
           name="keywords"
-          content="Fashion, affordable Fashion, high-quality Fashion, modern Fashion"
+          content="beauty products, cosmetics, skincare"
         />
         <meta name="author" content="Saud Solution" />
       </Head>
@@ -196,7 +201,7 @@ export default function FashionPage() {
         <div className="relative w-full h-[50vh]">
           <Image
             src="/fashion.png"
-            alt="Fashion Shop Banner"
+            alt="electronics Banner"
             layout="fill"
             style={{ objectFit: "cover", filter: "blur(3px)", opacity: 0.7 }}
             objectFit="cover"
@@ -321,8 +326,31 @@ export default function FashionPage() {
               </select>
             </div>
 
+            {/* Tag Filter using Select Dropdown */}
+            <div>
+              <label
+                htmlFor="tagSelect"
+                className="block text-gray-700 text-sm font-bold mb-2"
+              >
+                Tags:
+              </label>
+              <select
+                id="tagSelect"
+                value={selectedTag || ""} // Use empty string as value for "All"
+                onChange={(e) => setSelectedTag(e.target.value === "" ? null : e.target.value)}
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              >
+                <option value="">All</option>
+                {uniqueTags.map((tag) => (
+                  <option key={tag} value={tag}>
+                    {tag}
+                  </option>
+                ))}
+              </select>
+            </div>
+
             {/* Search Filter */}
-            <div className="md:col-span-2 lg:col-span-4">
+            <div>
               <label
                 htmlFor="search"
                 className="block text-gray-700 text-sm font-bold mb-2"
@@ -357,8 +385,7 @@ export default function FashionPage() {
                   width={1000}
                   height={1000}
                   loading="lazy"
-                  priority={false} // Optimize performance by lazy loading images
-                  style={{ objectFit: "cover", width: "100%", height: "auto" }}
+                  priority={false}
                 />
 
                 {item.dicountPercentage && (
@@ -389,7 +416,6 @@ export default function FashionPage() {
                   </span>
                 )}
 
-                {/* Free Delivery Tag */}
                 {item.freeDelivery && (
                   <div className="absolute top-4 left-4 bg-indigo-500 text-white text-xs font-bold py-1 px-2 rounded-md flex items-center space-x-1">
                     <FaTruck />
@@ -397,7 +423,6 @@ export default function FashionPage() {
                   </div>
                 )}
 
-                {/* Product Details */}
                 <div className="p-4">
                   <h3 className="font-semibold text-lg line-clamp-2" title={item.title}>
                     {item.title}
