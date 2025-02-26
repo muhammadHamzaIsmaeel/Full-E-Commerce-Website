@@ -284,6 +284,12 @@ export const product = defineType({
       },
       validation: (rule) => rule.required().min(1), // Ensure at least one category is selected
     },
+    {
+      name: 'brandName',
+      title: 'Brand Name',
+      type: 'string',
+      description: 'The name of the brand',
+    },
     
     {
       name: "isNew",

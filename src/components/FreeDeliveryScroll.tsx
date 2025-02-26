@@ -61,12 +61,8 @@ const Bannerfree: React.FC = () => {
   };
 
   return (
-    <div className="  py-10  overflow-hidden"
-    style={{
-        background: "linear-gradient(90deg, #ff7e5f, #feb47b);", // Gradient background
-      }}
+    <div className="py-10 overflow-hidden bg-gradient-to-r from-[#ff7e5f] to-[#feb47b]">
 
-    >
       <style>
         {`
           @keyframes scroll {

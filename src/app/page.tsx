@@ -1,4 +1,5 @@
 import Banner from "@/components/banner";
+import BrandProductsSection from "@/components/brandproducts";
 import BrowseRange from "@/components/category";
 import ImageGrid from "@/components/frame";
 import Bannerfree from "@/components/FreeDeliveryScroll";
@@ -14,6 +15,7 @@ export default function Home() {
         <h1 className="text-center text-2xl font-bold mb-8">Our Products</h1>
         <Products />
       </div>
+      <BrandProductsSection/>
       <Bannerfree/>
       <TrendyProductsSection />
       <ImageGrid />
