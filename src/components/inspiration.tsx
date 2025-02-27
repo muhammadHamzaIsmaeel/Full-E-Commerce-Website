@@ -1,19 +1,27 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react"; // Import useRef
-import { FaArrowRightLong } from "react-icons/fa6";
+import { useState, useEffect } from "react";
 import { client } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
 import Image from "next/image";
+import Link from "next/link";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 interface IProduct {
   id: string;
   _id: string;
   title: string;
-  shortDescription: string;
   price: string;
   oldPrice?: string;
-  discountPercentage?: string;
+  dicountPercentage?: string;
   isNew?: boolean;
   productImage: string;
   tag: string;
@@ -22,18 +30,16 @@ interface IProduct {
 
 export default function TrendyProductsSection() {
   const [products, setProducts] = useState<IProduct[]>([]);
-  const [currentSlide, setCurrentSlide] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const sliderRef = useRef<HTMLDivElement>(null); // Create a ref
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         const fetchedProducts: IProduct[] = await client.fetch(
           `*[_type == "product" && tranding == true]{
-            _id, id, title, tag, category, shortDescription, 
-            discountPercentage, price, oldPrice, isNew, productImage
+            _id, id, title, tag, category,
+            dicountPercentage, price, oldPrice, isNew, productImage
           }`
         );
 
@@ -53,31 +59,6 @@ export default function TrendyProductsSection() {
     fetchProducts();
   }, []);
 
-  const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % products.length);
-  };
-
-  const prevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + products.length) % products.length);
-  };
-
-  // Animation Effect
-  useEffect(() => {
-    if (sliderRef.current) {
-      sliderRef.current.style.transition = "transform 0.5s ease-in-out"; // Add transition property
-      sliderRef.current.style.transform = `translateX(-${currentSlide * 35}%)`;
-    }
-
-    // Reset transition after animation
-    const transitionTimeout = setTimeout(() => {
-      if (sliderRef.current) {
-        sliderRef.current.style.transition = ""; // Remove transition after animation
-      }
-    }, 500);
-
-    return () => clearTimeout(transitionTimeout);
-  }, [currentSlide]);
-
   if (isLoading) return <div className="text-center">Loading products...</div>;
   if (error) return <div className="text-center text-red-500">{error}</div>;
   if (!products.length)
@@ -85,7 +66,7 @@ export default function TrendyProductsSection() {
 
   return (
     <section
-      className="relative bg-[#FCF8F3] h-[490px] md:h-[570px] w-full bg-cover bg-center flex flex-col md:flex-row items-center"
+      className="relative bg-[#FCF8F3] h-[650px] md:h-[500px] w-full bg-cover bg-center flex flex-col md:flex-row items-center"
       aria-label="Trendy Products Section"
     >
       {/* Left Section */}
@@ -97,87 +78,89 @@ export default function TrendyProductsSection() {
           Discover the hottest products everyone&apos;s talking about. Shop the
           latest trends in fashion, electronics, beauty, and more!
         </p>
-        <a href="/shop" aria-label="Explore More">
-          <button
+        <Link href="/shop" aria-label="Explore More">
+          <Button
             className="bg-[#B88E2F] text-white mt-5 px-4 py-2 md:px-8 md:py-3 text-lg font-medium 
             hover:bg-[#c89b32] transition duration-300"
           >
             Explore More
-          </button>
-        </a>
+          </Button>
+        </Link>
       </div>
 
-      {/* Right Section: Product Image Slider */}
+      {/* Right Section: Product Image Carousel */}
       <div className="relative flex items-center w-full md:w-2/3 justify-center mt-6 md:mt-0">
-        {/* Image Slider */}
-        <div className="relative w-full md:w-[440px] lg:w-[950px] overflow-hidden">
-          <div
-            className="flex transition-transform duration-500 ease-in-out"
-            style={{ transform: `translateX(-${currentSlide * 35}%)` }}
-            role="list"
-            ref={sliderRef} // Attach the ref to the slider container
+        <div className="w-[310px] md:w-[440px] lg:w-[870px] relative">
+          <Carousel
+            opts={{
+              align: "start",
+            }}
+            className="w-full"
           >
-            {products.map((product, index) => (
-              <div
-                key={product._id}
-                className="relative w-44 h-52 md:w-[300px] md:h-[460px] lg:w-[370px] lg:h-[520px] mx-2 flex-shrink-0"
-                role="listitem"
-                aria-label={`Product: ${product.title}`}
-              >
-                <Image
-                  src={urlFor(product.productImage)
-                    .width(400)
-                    .height(400)
-                    .url()}
-                  alt={`Product: ${product.title}`}
-                  className="w-full h-full rounded-sm object-cover"
-                  loading="lazy"
-                  width={400}
-                  height={400}
-                />
-                {/*Improved Text Overlay */}
-                <div className="absolute bottom-6 left-6 w-auto bg-white bg-opacity-80 rounded-md py-4 px-6">
-                  <p className="text-xs md:text-sm font-semibold text-gray-800">
-                    {String(index + 1).padStart(2, "0")} - {product.category}
-                  </p>
-                  <h3 className="text-sm md:text-base font-bold text-gray-900 truncate">
-                    {product.tag}
-                  </h3>
-                </div>
-                <a
-                  href={`/product/${product._id}`}
-                  aria-label={`View ${product.title}`}
+            <CarouselContent className="p-0">
+              {products.map((product) => (
+                <CarouselItem
+                  key={product._id}
+                  className="md:basis-1/2 lg:basis-1/3"
                 >
-                  <div
-                    className="absolute cursor-pointer bottom-6 right-6 p-1 md:p-2 bg-[#B88E2F] 
-                     shadow hover:bg-[#c89b32] transition"
-                  >
-                    <FaArrowRightLong aria-hidden="true" />
+                  <div className="p-0">
+                    <Card className="m-0 h-full">
+                      <CardContent className="p-0 bg-white rounded-lg h-full flex flex-col">
+                        <Link
+                          href={`/product/${product._id}`}
+                          key={product._id}
+                          legacyBehavior
+                        >
+                          <a className="relative rounded-lg pt-6 overflow-hidden flex-grow block">
+                            {product.dicountPercentage && (
+                              <div className="absolute z-20 top-8 right-3 bg-red-500 text-white text-xs font-bold py-1 px-2 rounded-full">
+                                -{product.dicountPercentage}%
+                              </div>
+                            )}
+                            {product.isNew && (
+                              <div className="absolute z-20 top-8 right-3 bg-green-500 text-white text-xs font-bold py-1 px-2 rounded-full">
+                                NEW
+                              </div>
+                            )}
+
+                            <div className="relative h-48">
+                              <Image
+                                src={urlFor(product.productImage).url()}
+                                alt={product.title}
+                                fill
+                                style={{ objectFit: "cover" }}
+                                className="absolute rounded-lg top-0 left-0 w-full h-full object-cover"
+                              />
+                            </div>
+
+                            <div className="p-4 flex flex-col justify-between h-full">
+                              <div>
+                                <h3 className="text-lg font-semibold text-gray-900 line-clamp-2">
+                                  {product.title}
+                                </h3>
+                              </div>
+                              <div className="mt-2 flex items-center justify-between">
+                                {product.oldPrice && (
+                                  <span className="text-red-500 line-through text-sm">
+                                    Rs. {product.oldPrice}
+                                  </span>
+                                )}
+                                <span className="font-bold text-gray-900">
+                                  Rs. {product.price}
+                                </span>
+                              </div>
+                            </div>
+                          </a>
+                        </Link>
+                      </CardContent>
+                    </Card>
                   </div>
-                </a>
-              </div>
-            ))}
-          </div>
-
-          {/* Left Arrow Button */}
-          <button
-            onClick={prevSlide}
-            aria-label="Previous Slide"
-            className="absolute text-xl left-5 top-1/2 transform -translate-y-1/2 bg-white text-[#B88E2F] 
-            md:py-2 md:px-4 px-3 rounded-full shadow-md hover:bg-gray-200 transition duration-300"
-          >
-            ❮
-          </button>
-
-          {/* Right Arrow Button */}
-          <button
-            onClick={nextSlide}
-            aria-label="Next Slide"
-            className="absolute text-xl right-5 top-1/2 transform -translate-y-1/2 bg-white text-[#B88E2F] 
-            md:py-2 md:px-4 px-3 rounded-full shadow-md hover:bg-gray-200 transition duration-300"
-          >
-            ❯
-          </button>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white p-3 rounded-full shadow-md hover:bg-gray-100 transition-colors" />
+            <CarouselNext className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white p-3 rounded-full shadow-md hover:bg-gray-100 transition-colors" />
+          </Carousel>
         </div>
       </div>
     </section>

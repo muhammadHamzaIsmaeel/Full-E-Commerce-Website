@@ -54,14 +54,14 @@ const Bannerfree: React.FC = () => {
     const repeatedMessages = [...messages, ...messages];
 
     return repeatedMessages.map((message, index) => (
-      <p key={index} className="inline-block text-3xl text-white mx-12">
+      <p key={index} className="inline-block text-2xl md:text-3xl text-white mx-12">
         {message}
       </p>
     ));
   };
 
   return (
-    <div className="py-10 overflow-hidden bg-gradient-to-r from-[#ff7e5f] to-[#feb47b]">
+    <div className="md:py-6 py-4 overflow-hidden bg-gradient-to-r from-yellow-700 to-yellow-900">
 
       <style>
         {`

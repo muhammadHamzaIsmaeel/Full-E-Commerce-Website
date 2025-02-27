@@ -18,82 +18,80 @@ interface IProduct {
   id: string;
   _id: string;
   title: string;
-  shortDescription: string;
   price: string;
   oldPrice?: string;
   dicountPercentage?: string;
-  isNew?: true;
+  isNew?: boolean;
   productImage: string;
   tag: string;
   category: string;
   brandName: string;
+  tags?: string[];
 }
 
-export default function BrandProductsSection() {
+export default function FaceAndSkincareProducts() {
   const [products, setProducts] = useState<IProduct[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Hardcoded brand name and logo
-  const brandName = "CeraVe";
-  const brandLogo = "/cerave.png"; // Replace with the actual path to the logo
+  const fetchProducts = async () => {
+    try {
+      const query = `*[_type == "product" && ("Skin Care" in tags || "face" in tags || "Face" in tags || "Men's Care" in tags || "Personal Care" in tags)]{
+            _id, id, title, tag, category, 
+            dicountPercentage, price, oldPrice, isNew, productImage,
+            brandName, tags
+          }`;
+      const fetchedProducts: IProduct[] = await client.fetch(query);
+
+      if (!fetchedProducts.length) {
+        setError("No products found with 'skincare' or 'face' tags.");
+      } else {
+        setProducts(fetchedProducts);
+      }
+    } catch (error) {
+      console.error("Error fetching products:", error);
+      setError("Failed to load products. Please try again later.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const fetchedProducts: IProduct[] = await client.fetch(
-          `*[_type == "product" && brandName == "Cerave"]{
-            _id, id, title, tag, category, shortDescription, 
-            dicountPercentage, price, oldPrice, isNew, productImage,
-            brandName
-          }`
-        );
-
-        console.log("Fetched Products:", fetchedProducts); // Debugging ke liye
-
-        if (!fetchedProducts.length) {
-          setError("No products found for this brand.");
-        } else {
-          setProducts(fetchedProducts);
-        }
-      } catch (error) {
-        console.error("Error fetching products:", error);
-        setError("Failed to load products. Please try again later.");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
     fetchProducts();
-  }, [brandName]);
+  }, []);
 
   if (isLoading) return <div className="text-center">Loading products...</div>;
   if (error) return <div className="text-center text-red-500">{error}</div>;
   if (!products.length)
-    return <div className="text-center">No products found.</div>;
+    return (
+      <div className="text-center">No products found with specified tags.</div>
+    );
 
   return (
     <section
-      className="relative bg-[#219ebc] bg-opacity-75 pb-1 mt-6 pt-"
-      aria-label="Trendy Products Section"
+      className="relative bg-[#f4acb7] py-9"
+      aria-label="Skincare and Face Products"
     >
-      <h2 className="text-3xl font-bold py-7 text-center text-blue-950 mt-4">{brandName}</h2>
-      <div className="container mx-auto px-0">
-        {/* Brand Section */}
-        <div className="flex flex-col md:flex-row items-center mb-12">
-          <div className="md:w-1/4 flex flex-col items-center  md:items-start mb-4 md:mb-0">
-            <Image
-              src={brandLogo}
-              alt={`${brandName} Logo`}
-              width={150}
-              height={150}
-              className="rounded-full bg-white p-1 shadow-md"
-              style={{ objectFit: "cover" }}
-            />
-            <h2 className="text-2xl font-bold text-white mt-4">{brandName}</h2>
+      <div className="container mx-auto px-4">
+        <h2 className="text-3xl font-bold py-7 text-center text-blue-950 mt-4">
+          Face and Skincare Products
+        </h2>
+        <div className="flex flex-col md:flex-row md:space-x-4 items-center mb-12">
+          {/* Informative Text (Left Side) */}
+          <div className="md:w-1/4 flex flex-col items-center md:items-start mb-4 md:mb-0 text-center md:text-left">
+            <h3 className="text-2xl font-semibold text-gray-800 mb-2">
+              About Skincare
+            </h3>
+            <p className="text-gray-600 text-md">
+              Discover our curated selection of face and skincare products. Find
+              the perfect solutions for a healthy and radiant complexion.
+            </p>
+            <p className="text-gray-600 text-md mt-2">
+              Explore our range and transform your skincare routine today!
+            </p>
           </div>
 
-          {/* Products Section (Carousel) */}
+          {/* Products Section (Carousel - Right Side) */}
           <div className="w-[310px] md:w-3/4 relative">
             <Carousel
               opts={{
@@ -109,15 +107,13 @@ export default function BrandProductsSection() {
                   >
                     <div className="p-0">
                       <Card className="m-0 h-full">
-                        <CardContent className="p-0 h-full  bg-[#caf0f8] rounded-lg flex flex-col">
-                          {/* Wrap the entire card content in a Link */}
+                        <CardContent className="p-0 bg-[#ffe5d9] rounded-lg h-full flex flex-col">
                           <Link
                             href={`/product/${product._id}`}
                             key={product._id}
                             legacyBehavior
                           >
                             <a className="relative rounded-lg pt-6 overflow-hidden flex-grow block">
-                              {/* Discount Badge (Top Right) */}
                               {product.dicountPercentage && (
                                 <div className="absolute z-20 top-8 right-3 bg-red-500 text-white text-xs font-bold py-1 px-2 rounded-full">
                                   -{product.dicountPercentage}%
@@ -129,26 +125,21 @@ export default function BrandProductsSection() {
                                 </div>
                               )}
 
-                              {/* Product Image */}
                               <div className="relative h-48">
                                 <Image
                                   src={urlFor(product.productImage).url()}
                                   alt={product.title}
                                   fill
                                   style={{ objectFit: "cover" }}
-                                  className="absolute  rounded-lg top-0 left-0 w-full h-full object-cover"
+                                  className="absolute rounded-lg top-0 left-0 w-full h-full object-cover"
                                 />
                               </div>
 
-                              {/* Product Details */}
                               <div className="p-4 flex flex-col justify-between h-full">
                                 <div>
                                   <h3 className="text-lg font-semibold text-gray-900 line-clamp-2">
                                     {product.title}
                                   </h3>
-                                  <p className="text-gray-600 text-sm line-clamp-2">
-                                    {product.shortDescription}
-                                  </p>
                                 </div>
                                 <div className="mt-2 flex items-center justify-between">
                                   {product.oldPrice && (

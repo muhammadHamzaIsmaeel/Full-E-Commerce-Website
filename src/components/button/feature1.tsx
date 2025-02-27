@@ -1,41 +1,46 @@
 "use client";
 
-import { FaShippingFast, FaTags, FaHeadset } from "react-icons/fa";
+import { FaMoneyBillWave } from "react-icons/fa";
+import { FaStar } from "react-icons/fa6";
+import { RiSecurePaymentLine } from "react-icons/ri";
 
-export default function Feature() {
+export default function Feature1() {
   return (
     <div className="flex flex-col px-4 md:flex-row space-x-0 md:space-x-4 space-y-4 md:space-y-0 justify-center items-stretch py-4">
-      {/* Feature 4: Free Delivery */}
+      {/* Feature 1: Premium Quality */}
       <div className="p-3 bg-white rounded-lg shadow-md flex flex-col items-start space-y-2 hover:shadow-lg transition-shadow w-full max-w-md">
-        <FaShippingFast className="text-4xl text-indigo-500 flex-shrink-0" />
+        <FaStar className="text-4xl text-yellow-500 flex-shrink-0" />
         <div>
-          <h3 className="text-xl font-semibold text-gray-800">Free Delivery</h3>
+          <h3 className="text-xl font-semibold text-gray-800">Premium Quality</h3>
           <p className="text-sm text-gray-600 mt-2">
-            Enjoy free shipping on all orders. No minimum purchase required.
+            Carefully selected materials and craftsmanship for the best
+            products.
           </p>
         </div>
       </div>
 
-      {/* Feature 5: 40% Discount */}
+      {/* Feature 2: Secure Payment */}
       <div className="p-3 bg-white rounded-lg shadow-md flex flex-col items-start space-y-2 hover:shadow-lg transition-shadow w-full max-w-md">
-        <FaTags className="text-4xl text-red-500 flex-shrink-0" />
-        <div>
-          <h3 className="text-xl font-semibold text-gray-800">40% Discount</h3>
-          <p className="text-sm text-gray-600 mt-2">
-            Get flat 40% off on selected items. Limited time offer!
-          </p>
-        </div>
-      </div>
-
-      {/* Feature 6: Dedicated Support */}
-      <div className="p-3 bg-white rounded-lg shadow-md flex flex-col items-start space-y-2 hover:shadow-lg transition-shadow w-full max-w-md">
-        <FaHeadset className="text-4xl text-blue-500 flex-shrink-0" />
+        <RiSecurePaymentLine className="text-4xl text-green-500 flex-shrink-0" />
         <div>
           <h3 className="text-xl font-semibold text-gray-800">
-            Dedicated Support
+            Secure Payments
           </h3>
           <p className="text-sm text-gray-600 mt-2">
-            24/7 assistance from our friendly and expert team.
+            Your transactions are encrypted and 100% secure.
+          </p>
+        </div>
+      </div>
+
+      {/* Feature 3: Cash on Delivery */}
+      <div className="p-3 bg-white rounded-lg shadow-md flex flex-col items-start space-y-2 hover:shadow-lg transition-shadow w-full max-w-md">
+        <FaMoneyBillWave className="text-4xl text-purple-500 flex-shrink-0" />
+        <div>
+          <h3 className="text-xl font-semibold text-gray-800">
+            Cash on Delivery
+          </h3>
+          <p className="text-sm text-gray-600 mt-2">
+            Pay when your order is delivered. No upfront payment required.
           </p>
         </div>
       </div>

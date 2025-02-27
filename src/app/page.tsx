@@ -1,6 +1,9 @@
 import Banner from "@/components/banner";
 import BrandProductsSection from "@/components/brandproducts";
+import Feature from "@/components/button/feature";
+import Feature1 from "@/components/button/feature1";
 import BrowseRange from "@/components/category";
+import FaceAndSkincareProducts from "@/components/FaceAndSkincareProducts";
 import ImageGrid from "@/components/frame";
 import Bannerfree from "@/components/FreeDeliveryScroll";
 import TrendyProductsSection from "@/components/inspiration";
@@ -17,7 +20,10 @@ export default function Home() {
       </div>
       <BrandProductsSection/>
       <Bannerfree/>
+      <FaceAndSkincareProducts/>
+      < Feature/>
       <TrendyProductsSection />
+      < Feature1/>
       <ImageGrid />
     </>
   );
