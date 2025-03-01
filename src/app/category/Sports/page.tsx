@@ -200,7 +200,7 @@ export default function BeautyPage() {
         {/* Hero Section */}
         <div className="relative w-full h-[50vh]">
           <Image
-            src="/sports.png"
+            src="/category/sports.png"
             alt="Sports Banner"
             layout="fill"
             style={{ objectFit: "cover", filter: "blur(3px)", opacity: 0.7 }}
