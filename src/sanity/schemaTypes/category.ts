@@ -27,6 +27,23 @@ export const categories = {
                 name: 'title',
                 title: 'Title',
                 type: 'string',
+                options: {
+                  list: [
+                    { title: 'Kitchen', value: 'Kitchen' },
+                    { title: 'Jewelry', value: 'Jewelry' },
+                    { title: 'Sports', value: 'Sports' },
+                    { title: 'Books', value: 'Books' },
+                    { title: 'Automobiles', value: 'Automobiles' },
+                    { title: 'Baby', value: 'Baby' },
+                    { title: 'Grocery', value: 'Grocery' },
+                    { title: 'Health', value: 'Health' },
+                    { title: 'Home', value: 'Home' },
+                    { title: 'Deal', value: 'Deal' },
+                    { title: 'Electronics', value: 'Electronics' },
+                    { title: 'Fashion', value: 'Fashion' },
+                    { title: 'Beauty', value: 'Beauty' },
+                  ],
+                },
               },
               {
                 name: 'image',

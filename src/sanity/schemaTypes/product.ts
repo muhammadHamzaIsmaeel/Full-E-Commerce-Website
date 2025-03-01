@@ -280,6 +280,7 @@ export const product = defineType({
           { title: "Books", value: "books" },
           { title: "Sports", value: "sports" },
           { title: "Jewelry", value: "jewelry" },
+          { title: "Kitchen", value: "kitchen" },
         ],
       },
       validation: (rule) => rule.required().min(1), // Ensure at least one category is selected

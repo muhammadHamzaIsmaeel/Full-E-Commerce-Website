@@ -64,8 +64,10 @@
     @apply bg-background text-foreground;
   }
 }
-*{
+body {
   max-width: 1536px;
+  margin: 0 auto; /* Center the content */
+  width: 100%; /* Ensure it takes full width on smaller screens */
 }
 @keyframes slideInRight {
     from {
@@ -85,4 +87,11 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* Add this to your global CSS file (e.g., styles/globals.css) */
+.red-line-through {
+  color: #6b7280; /* Tailwind's text-gray-500 */
+  text-decoration: line-through;
+  text-decoration-color: #ef4444; /* Tailwind's text-red-500 */
 }
