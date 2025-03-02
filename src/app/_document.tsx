@@ -1,4 +1,5 @@
 import Document, { Html, Head, Main, NextScript } from 'next/document';
+import Image from 'next/image'; // Import the Image component
 import React from 'react';
 
 class MyDocument extends Document {
@@ -24,12 +25,12 @@ class MyDocument extends Document {
             }}
           />
           <noscript>
-            <img
-              height="1"
-              width="1"
-              style={{ display: 'none' }}
+            <Image
               src="https://www.facebook.com/tr?id=830158322624136&ev=PageView&noscript=1"
               alt="Facebook Pixel"
+              width={1} // Required
+              height={1} // Required
+              style={{ display: 'none' }}
             />
           </noscript>
           {/* End Meta Pixel Code */}
