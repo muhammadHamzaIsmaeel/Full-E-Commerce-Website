@@ -76,7 +76,7 @@ const Bannerfree: React.FC = () => {
           .scrolling-wrapper {
             display: inline-block;
             white-space: nowrap;
-            animation: scroll 20s linear infinite;
+            animation: scroll 100s linear infinite;
           }
         `}
       </style>
