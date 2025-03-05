@@ -22,31 +22,6 @@ const Bannerfree: React.FC = () => {
     "Enjoy Free Delivery",
     "Exclusive Seasonal Picks ",
     "Enjoy Free Delivery On All Orders",
-    "Enjoy Free Delivery",
-    "Exclusive Seasonal Picks",
-    "Enjoy Free Delivery On All Orders",
-    "Enjoy Free Delivery",
-    "Exclusive Seasonal Picks",
-    "Enjoy Free Delivery On All Orders",
-    "Enjoy Free Delivery",
-    "Exclusive Seasonal Picks ",
-    "Enjoy Free Delivery On All Orders",
-    "Enjoy Free Delivery",
-    "Exclusive Seasonal Picks",
-    "Enjoy Free Delivery On All Orders",
-    "Enjoy Free Delivery",
-    "Exclusive Seasonal Picks",
-    "Enjoy Free Delivery On All Orders",
-    "Enjoy Free Delivery",
-    "Exclusive Seasonal Picks ",
-    "Enjoy Free Delivery On All Orders",
-    "Enjoy Free Delivery",
-    "Exclusive Seasonal Picks",
-    "Enjoy Free Delivery On All Orders",
-    "Enjoy Free Delivery",
-    "Exclusive Seasonal Picks",
-    "Enjoy Free Delivery On All Orders",
-    "Enjoy Free Delivery",
   ];
 
   const renderMessages = () => {
@@ -76,7 +51,7 @@ const Bannerfree: React.FC = () => {
           .scrolling-wrapper {
             display: inline-block;
             white-space: nowrap;
-            animation: scroll 100s linear infinite;
+            animation: scroll 240s linear infinite; /* Increased duration to 240s */
           }
         `}
       </style>
