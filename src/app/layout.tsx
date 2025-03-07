@@ -10,6 +10,7 @@ import SalesBanner from "@/components/salesBanner";
 import { WishlistProvider } from "./context/WishlistContext";
 import WhatsAppButton from "../components/WhatsAppButton";
 import Script from "next/script";
+import Image from "next/image";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -169,7 +170,7 @@ export default function RootLayout({
             }}
           />
           <noscript>
-            <img
+            <Image
               height="1"
               width="1"
               style={{ display: "none" }}

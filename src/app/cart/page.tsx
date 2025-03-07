@@ -58,6 +58,15 @@ export default function Cart() {
     }
   };
 
+  // Function to truncate the title to three words
+  const truncateTitle = (title: string): string => {
+    const words = title.split(" ");
+    if (words.length > 3) {
+      return words.slice(0, 3).join(" ") + "...";
+    }
+    return title;
+  };
+
   return (
     <div className="">
       {/* Banner Section */}
@@ -132,7 +141,7 @@ export default function Cart() {
                           className="rounded-md border border-gray-200"
                           loading="lazy"
                         />
-                        <h2 className="font-semibold text-lg">{item.title}</h2>
+                        <h2 className="font-semibold text-lg">{truncateTitle(item.title)}</h2>
                       </td>
                       <td className="py-6 px-4 text-gray-600">
                         Rs. {Number(item.price).toFixed(2)}

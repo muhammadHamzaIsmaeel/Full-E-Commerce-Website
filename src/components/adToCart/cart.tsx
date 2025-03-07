@@ -61,6 +61,15 @@ export default function AddToCart() {
     }
   };
 
+  // Function to truncate the title to three words
+  const truncateTitle = (title: string): string => {
+    const words = title.split(" ");
+    if (words.length > 3) {
+      return words.slice(0, 3).join(" ") + "...";
+    }
+    return title;
+  };
+
   return (
     <div>
       <Sheet>
@@ -75,7 +84,7 @@ export default function AddToCart() {
           </button>
         </SheetTrigger>
 
-        <SheetContent>
+        <SheetContent className="max-h-max">
           <SheetHeader className="flex">
             <SheetTitle className="text-lg font-semibold">
               Shopping Cart
@@ -104,7 +113,7 @@ export default function AddToCart() {
                       />
                       <div className="flex-1 mx-4">
                         <h4 className="text-base font-semibold">
-                          {item.title}
+                          {truncateTitle(item.title)}
                         </h4>
                         <p className="text-sm text-gray-500">
                           {item.quantity} x Rs.{" "}

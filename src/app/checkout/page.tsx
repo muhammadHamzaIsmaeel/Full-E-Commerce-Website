@@ -2,9 +2,7 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import { MdKeyboardArrowRight } from "react-icons/md";
 import { useLocalStorage } from "../context/CartContext";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -23,6 +21,9 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useRouter } from "next/navigation"; // Import useRouter
 import { useAuth } from "@clerk/nextjs"; // Import Clerk's useAuth hook
+import { FaLock } from "react-icons/fa"; // Import lock icon
+import { Separator } from "@/components/ui/separator"; // Import the Separator component for visual separation
+import { urlFor } from "@/sanity/lib/image";
 
 // Define types for the product image
 interface ProductImage {
@@ -220,44 +221,32 @@ export default function Checkout() {
     }
   };
 
+   // Function to truncate the title to three words
+   const truncateTitle = (title: string): string => {
+    const words = title.split(" ");
+    if (words.length > 5) {
+      return words.slice(0, 5).join(" ") + "...";
+    }
+    return title;
+  };
+
   return (
-    <div>
-      {/* Hero Section */}
-      <div className="relative w-full lg:h-[50vh] md:h-[30vh] h-[30vh] ">
-        <Image
-          src="/shop/banner11.png"
-          alt="Bedroom Shop Banner"
-          layout="fill"
-          objectFit="cover"
-          loading="lazy"
-        />
-        <div className="absolute inset-0 flex flex-col justify-center items-center text-center text-gray-950">
-          <Link href="/">
-            <Image
-              src="/logo.png"
-              alt="Saud Solution Logo"
-              width={32}
-              height={20}
-              className="w-12 h-8"
-            />
-          </Link>
-          <h4 className="text-4xl font-bold">CheckOut</h4>
-          <h5 className="flex items-center text-sm md:text-xl mb-4 space-x-1">
-            <Link className="font-bold text-xl" href="/">
-              Home
-            </Link>
-            <MdKeyboardArrowRight className="mt-2 text-2xl" />
-            <span>CheckOut</span>
-          </h5>
+    <div className="bg-gray-100 min-h-screen">
+       {/* Hero Section */}
+       <div className="bg-white py-6 shadow-md">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8 flex justify-center items-center">
+          <div className="flex items-center space-x-2 text-gray-600">
+            <FaLock />
+            <span className="text-lg font-semibold">Secure Checkout</span>
+          </div>
         </div>
       </div>
-      <div className="w-full bg-gray-50 py-10">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 px-6 lg:px-0">
+      {/* Main Content */}
+      <div className="container mx-auto py-12 px-6 lg:px-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           {/* Billing Details Section */}
           <div className="space-y-6">
-            <h2 className="text-2xl font-bold text-gray-800">
-              Billing details
-            </h2>
+            <h2 className="text-2xl font-bold text-gray-800">Billing Details</h2>
             <Form {...form}>
               <form
                 onSubmit={form.handleSubmit(onSubmit)}
@@ -272,7 +261,7 @@ export default function Checkout() {
                       <FormLabel>Full Name</FormLabel>
                       <FormControl>
                         <Input
-                          className="w-full border border-gray-300 rounded-md p-2"
+                          className="w-full border border-gray-300 rounded-md p-3"
                           placeholder="Enter your full name"
                           {...field}
                         />
@@ -290,7 +279,7 @@ export default function Checkout() {
                       <FormLabel>Address Line 1</FormLabel>
                       <FormControl>
                         <Input
-                          className="w-full border border-gray-300 rounded-md p-2"
+                          className="w-full border border-gray-300 rounded-md p-3"
                           placeholder="Street address, house number"
                           {...field}
                         />
@@ -308,7 +297,7 @@ export default function Checkout() {
                       <FormLabel>Address Line 2 (Optional)</FormLabel>
                       <FormControl>
                         <Input
-                          className="w-full border border-gray-300 rounded-md p-2"
+                          className="w-full border border-gray-300 rounded-md p-3"
                           placeholder="Apartment, suite, unit, etc."
                           {...field}
                         />
@@ -318,7 +307,7 @@ export default function Checkout() {
                   )}
                 />
 
-                <div className="grid grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <FormField
                     control={form.control}
                     name="city"
@@ -327,7 +316,7 @@ export default function Checkout() {
                         <FormLabel>Town / City</FormLabel>
                         <FormControl>
                           <Input
-                            className="w-full border border-gray-300 rounded-md p-2"
+                            className="w-full border border-gray-300 rounded-md p-3"
                             placeholder="Enter your city"
                             {...field}
                           />
@@ -345,7 +334,7 @@ export default function Checkout() {
                         <FormLabel>Province</FormLabel>
                         <FormControl>
                           <select
-                            className="w-full border border-gray-300 rounded-md p-2"
+                            className="w-full border border-gray-300 rounded-md p-3"
                             {...field}
                           >
                             <option value="Sindh">Sindh</option>
@@ -373,7 +362,7 @@ export default function Checkout() {
                       <FormLabel>Zip Code</FormLabel>
                       <FormControl>
                         <Input
-                          className="w-full border border-gray-300 rounded-md p-2"
+                          className="w-full border border-gray-300 rounded-md p-3"
                           placeholder="e.g. 12345"
                           {...field}
                         />
@@ -382,45 +371,45 @@ export default function Checkout() {
                     </FormItem>
                   )}
                 />
-                {/* Landmark (Optional) */}
-                <FormField
-                  control={form.control}
-                  name="landmark"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Landmark (Optional)</FormLabel>
-                      <FormControl>
-                        <Input
-                          className="w-full border border-gray-300 rounded-md p-2"
-                          placeholder="Nearby famous place"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                 {/* Landmark (Optional) */}
+                 <FormField
+                 control={form.control}
+                 name="landmark"
+                 render={({ field }) => (
+                   <FormItem>
+                     <FormLabel>Landmark (Optional)</FormLabel>
+                     <FormControl>
+                       <Input
+                         className="w-full border border-gray-300 rounded-md p-3"
+                         placeholder="Nearby famous place"
+                         {...field}
+                       />
+                     </FormControl>
+                     <FormMessage />
+                   </FormItem>
+                 )}
+               />
 
-                {/* Address Type (Home/Office) */}
-                <FormField
-                  control={form.control}
-                  name="addressType"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Address Type</FormLabel>
-                      <FormControl>
-                        <select
-                          className="w-full border border-gray-300 rounded-md p-2"
-                          {...field}
-                        >
-                          <option value="home">Home</option>
-                          <option value="office">Office</option>
-                        </select>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+               {/* Address Type (Home/Office) */}
+               <FormField
+                 control={form.control}
+                 name="addressType"
+                 render={({ field }) => (
+                   <FormItem>
+                     <FormLabel>Address Type</FormLabel>
+                     <FormControl>
+                       <select
+                         className="w-full border border-gray-300 rounded-md p-3"
+                         {...field}
+                       >
+                         <option value="home">Home</option>
+                         <option value="office">Office</option>
+                       </select>
+                     </FormControl>
+                     <FormMessage />
+                   </FormItem>
+                 )}
+               />
 
                 <FormField
                   control={form.control}
@@ -430,7 +419,7 @@ export default function Checkout() {
                       <FormLabel>Courier Service</FormLabel>
                       <FormControl>
                         <select
-                          className="w-full border border-gray-300 rounded-md p-2"
+                          className="w-full border border-gray-300 rounded-md p-3"
                           {...field}
                         >
                           <option value="leopard">Leopard Courier</option>
@@ -441,39 +430,42 @@ export default function Checkout() {
                   )}
                 />
 
-                <FormField
-                  control={form.control}
-                  name="phoneNumber1"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Phone Number</FormLabel>
-                      <FormControl>
-                        <Input
-                          className="w-full border border-gray-300 rounded-md p-2"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="phoneNumber2"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Phone Number (Optional)</FormLabel>
-                      <FormControl>
-                        <Input
-                          className="w-full border border-gray-300 rounded-md p-2"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <FormField
+                    control={form.control}
+                    name="phoneNumber1"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Phone Number</FormLabel>
+                        <FormControl>
+                          <Input
+                            className="w-full border border-gray-300 rounded-md p-3"
+                            placeholder="Enter phone number"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="phoneNumber2"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Additional Phone Number</FormLabel>
+                        <FormControl>
+                          <Input
+                            className="w-full border border-gray-300 rounded-md p-3"
+                            placeholder="Enter additional phone number"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
 
                 <FormField
                   control={form.control}
@@ -483,7 +475,8 @@ export default function Checkout() {
                       <FormLabel>Email Address</FormLabel>
                       <FormControl>
                         <Input
-                          className="w-full border border-gray-300 rounded-md p-2"
+                          className="w-full border border-gray-300 rounded-md p-3"
+                          placeholder="Enter your email"
                           {...field}
                         />
                       </FormControl>
@@ -500,8 +493,9 @@ export default function Checkout() {
                       <FormLabel>Additional Information (Optional)</FormLabel>
                       <FormControl>
                         <textarea
-                          className="w-full border border-gray-300 rounded-md p-2"
+                          className="w-full border border-gray-300 rounded-md p-3"
                           rows={4}
+                          placeholder="Notes about your order, e.g. special notes for delivery"
                           {...field}
                         />
                       </FormControl>
@@ -512,7 +506,7 @@ export default function Checkout() {
 
                 <Button
                   type="submit"
-                  className="w-full bg-black text-white py-2 rounded-md mt-4 hover:bg-gray-800"
+                  className="w-full bg-black text-white py-3 rounded-md mt-4 hover:bg-gray-800"
                   disabled={isSubmitting}
                 >
                   {isSubmitting
@@ -524,22 +518,30 @@ export default function Checkout() {
           </div>
 
           {/* Order Summary Section */}
-          <div className="space-y-6 border max-h-max border-gray-300 rounded-lg p-6 bg-white shadow-sm">
+          <div className="space-y-6 border border-gray-300 rounded-lg p-6 bg-white shadow-sm">
             <h2 className="text-2xl font-bold text-gray-800">Your Order</h2>
             <div className="space-y-4">
               {cartItems.map((item, index) => (
                 <div
                   key={index}
-                  className="flex justify-between items-center border-b pb-4"
+                  className="flex justify-between items-center py-3"
                 >
-                  <div>
-                    <h4 className="text-base font-medium text-gray-700">
-                      {item.title}
-                    </h4>
-                    <p className="text-sm text-gray-500">
-                      {item.quantity} x Rs.{" "}
-                      {Number(item.price).toLocaleString()}
-                    </p>
+                  <div className="flex items-center space-x-4">
+                    <Image
+                      src={item.productImage ? urlFor(item.productImage).url() : "/placeholder.png"}
+                      alt={item.title}
+                      width={64}
+                      height={64}
+                      className="w-16 h-16 rounded-md object-cover"
+                    />
+                    <div>
+                      <h4 className="text-base font-medium text-gray-700">
+                        {truncateTitle(item.title)}
+                      </h4>
+                      <p className="text-sm text-gray-500">
+                        {item.quantity} x Rs. {Number(item.price).toLocaleString()}
+                      </p>
+                    </div>
                   </div>
                   <p className="text-base font-bold text-gray-800">
                     Rs. {(item.price * item.quantity).toLocaleString()}
@@ -547,13 +549,28 @@ export default function Checkout() {
                 </div>
               ))}
             </div>
-            {/* Shipping Cost Removed*/}
+            <Separator className="my-4" />
 
-            <div className="flex justify-between items-center text-lg font-bold text-gray-800">
-              <span>Total</span>
-              <span>Rs. {calculateGrandTotal().toLocaleString()}</span>
+            {/* Calculations Summary */}
+            <div className="space-y-2">
+              <div className="flex justify-between items-center text-gray-700">
+                <span>Subtotal</span>
+                <span>Rs. {calculateSubtotal().toLocaleString()}</span>
+              </div>
+              <div className="flex justify-between items-center text-gray-700">
+                <span>Shipping</span>
+                <span className="text-green-600 font-semibold">Free</span> {/* Indicate Free Shipping */}
+              </div>
+              <Separator className="my-2" />
+              <div className="flex justify-between items-center text-lg font-bold text-gray-800">
+                <span>Total</span>
+                <span>Rs. {calculateGrandTotal().toLocaleString()}</span>
+              </div>
             </div>
-            <p className="text-green-600 font-semibold">Free Delivery!</p>
+
+            <div className="mt-4 text-center">
+              <p className="text-green-600 font-semibold">Free Delivery!</p>
+            </div>
           </div>
         </div>
       </div>

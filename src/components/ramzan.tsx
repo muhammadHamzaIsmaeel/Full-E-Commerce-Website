@@ -12,6 +12,7 @@ import {
 import Autoplay from "embla-carousel-autoplay";
 import { urlFor } from "@/sanity/lib/image";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function RamzanSale() {
   const [products, setProducts] = useState<IProduct[]>([]);
@@ -60,11 +61,13 @@ export default function RamzanSale() {
                   <div className="bg-white rounded-xl shadow-lg overflow-hidden cursor-pointer hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
                     {/* Product Image */}
                     <div className="relative h-48 md:h-56 overflow-hidden">
-                      <img
+                      <Image
                         src={urlFor(product.productImage)
                           .width(1000)
                           .height(1000)
                           .url()}
+                        width={1000}
+                        height={1000}
                         alt={product.title}
                         className="w-full h-full object-cover"
                       />
