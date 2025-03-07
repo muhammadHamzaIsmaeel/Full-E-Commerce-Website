@@ -9,7 +9,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import SalesBanner from "@/components/salesBanner";
 import { WishlistProvider } from "./context/WishlistContext";
 import WhatsAppButton from "../components/WhatsAppButton";
-import Script from "next/script"; // Import the Script component
+import Script from "next/script";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -22,52 +22,84 @@ const geistMono = localFont({
   weight: "100 900",
 });
 
+const siteName = "Saud Solutions";  // Define once and reuse
+const siteUrl = "https://saudsolutions.com"; //Define once and reuse
+const description =
+  "Discover the best beauty, skincare, fashion, and home products at Saud Solutions. Shop now for exclusive deals on high-quality items, with a focus on beauty and skincare.";
+
+
 export const metadata: Metadata = {
-  title: "Saud Solution | Your Ecommerce Store", // Be more specific about what you sell.
-  description:
-    "Shop the best e-commerce products at Saud Solution.  Find great deals and high-quality items. [Add a more specific description of your niche here!]",
+  title: {
+    default: siteName,  // Default title
+    template: `%s | ${siteName}`, // Template for dynamic titles (e.g., product pages)
+  },
+  description: description,
   keywords: [
-    "Saud Solution",
-    "ecommerce",
-    "products",
-    // Add keywords specific to the *types* of products you sell.  For example:
-    "electronics",
-    "gadgets",
-    "home goods",
+    "Saud Solutions",
+    "beauty products",
+    "skincare",
     "fashion",
-    "accessories",
+    "home goods",
+    "kitchen essentials",
     "deals",
     "best prices",
+    "online store",
+    "premium beauty",
+    "lifestyle products",
   ],
+  robots: {
+    index: true,
+    follow: true,
+    nocache: false,
+    googleBot: {
+      index: true,
+      follow: true,
+      noimageindex: false,
+      "max-snippet": -1, // Corrected casing
+      "max-video-preview": -1, // Corrected casing
+      "max-image-preview": "large", // Corrected casing
+    },
+  },
+  icons: {
+     icon: '/favicon.ico',  // Or your specific favicon path
+     apple: '/favicon.ico',  // Optional:  Apple touch icon
+   },
   openGraph: {
-    title: "Saud Solution | Your Ecommerce Store",
-    description:
-      "Shop the best e-commerce products at Saud Solution.  Find great deals and high-quality items.  [Add a more specific description of your niche here!]",
+    title: siteName,
+    description: description,
     type: "website",
-    url: "https://www.saudsolution.com", // VERY IMPORTANT: Replace with your actual website URL!
-    siteName: "Saud Solution",
+    url: siteUrl,
+    siteName: siteName,
     images: [
       {
-        url: "https://www.saudsolution.com/og-image.jpg", // VERY IMPORTANT:  Replace with YOUR Open Graph image URL!  Create a visually appealing image representing your brand.
+        url: `${siteUrl}/shop/banner11.png`,  // Use absolute URL
         width: 1200,
         height: 630,
-        alt: "Saud Solution | Your Ecommerce Store",
+        alt: siteName,
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Saud Solution | Your Ecommerce Store",
-    description:
-      "Shop the best e-commerce products at Saud Solution.  Find great deals and high-quality items. [Add a more specific description of your niche here!]",
+    title: siteName,
+    description: description,
     images: [
       {
-        url: "https://www.saudsolution.com/twitter-image.jpg", // VERY IMPORTANT: Replace with YOUR Twitter image URL!
+        url: `${siteUrl}/logo.png`,
         width: 1200,
         height: 630,
-        alt: "Saud Solution | Your Ecommerce Store",
+        alt: siteName,
       },
     ],
+    creator: '@SaudSolutions',
+    site: '@SaudSolutions',
+  },
+  // Optional:  Verification tags (Google Search Console, etc.)
+  verification: {
+    google: 'aSA3PnNDnphG5GUT8m-ae5q2FBrydx3VjE7H7uq24u0', // Replace with your code
+    // other: {
+    //   "msvalidate.01": "your_microsoft_verification_code"
+    // }
   },
 };
 
@@ -78,6 +110,44 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en">
         <head>
+          {/* Meta Tags for SEO */}
+          <meta charSet="UTF-8" />
+          <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+          <link rel="canonical" href={siteUrl} />
+
+          {/* Structured Data */}
+          <script type="application/ld+json">
+            {JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebSite",
+              name: siteName,
+              url: siteUrl,
+              description: description,
+              potentialAction: {
+                "@type": "SearchAction",
+                target: `${siteUrl}/search?q={search_term_string}`,
+                "query-input": "required name=search_term_string",
+              },
+            })}
+          </script>
+
+          {/* Organization Schema (Highly Recommended) */}
+          <script type="application/ld+json">
+            {JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              name: siteName,
+              url: siteUrl,
+              logo: `${siteUrl}/logo.png`,  // Replace with your logo URL
+              description: description,
+              //sameAs: [  // Links to social media profiles
+              //  "https://www.facebook.com/yourpage",
+              //  "https://twitter.com/yourhandle",
+              //  "https://www.instagram.com/yourhandle"
+              //],
+            })}
+          </script>
+
           {/* Meta Pixel Code */}
           <Script
             id="fb-pixel-script"
@@ -106,7 +176,6 @@ export default function RootLayout({
               alt="Facebook Pixel"
             />
           </noscript>
-          {/* End Meta Pixel Code */}
 
           {/* TikTok Pixel Code */}
           <Script
