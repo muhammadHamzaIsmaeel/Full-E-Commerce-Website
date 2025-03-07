@@ -140,11 +140,12 @@ export default function RootLayout({
               url: siteUrl,
               logo: `${siteUrl}/logo.png`,  // Replace with your logo URL
               description: description,
-              //sameAs: [  // Links to social media profiles
-              //  "https://www.facebook.com/yourpage",
-              //  "https://twitter.com/yourhandle",
-              //  "https://www.instagram.com/yourhandle"
-              //],
+              sameAs: [  // Links to social media profiles
+               "https://www.facebook.com/profile.php?id=100095090834625",
+               "https://x.com/SaudSolutions",
+               "https://www.tiktok.com/@saudsolution",
+               "https://www.instagram.com/saud_solutions/"
+              ],
             })}
           </script>
 
