@@ -1,7 +1,10 @@
+// src/app/return-policy/page.tsx
 import Link from "next/link";
 import Image from "next/image";
 import { MdKeyboardArrowRight } from "react-icons/md";
-import { FaQuestionCircle, FaShippingFast, FaBoxOpen } from "react-icons/fa"; // More icons
+import { FaQuestionCircle, FaShippingFast, FaBoxOpen } from "react-icons/fa";
+import Head from "next/head";
+import React, { useMemo } from "react";
 
 // Define types for FAQs
 interface FAQ {
@@ -14,12 +17,12 @@ const faqs: FAQ[] = [
   {
     question: "What is your return policy?",
     answer:
-      "We accept returns within 48 hours of delivery for incorrect, broken, or damaged items. To initiate a return, please contact us directly at [Your Phone Number] or email us at support@Saud Solution.com. You will need to provide video proof of the issue.", // Your Contact Info
+      "We accept returns within 48 hours of delivery for incorrect, broken, or damaged items. To initiate a return, please contact us directly at +92 315 2121984  or email us at ss.saudsolution@gmail.com. You will need to provide video proof of the issue.",
   },
   {
     question: "How do I initiate a return?",
     answer:
-      "To initiate a return, please contact our customer support team at [Your Phone Number] or email us at support@Saud Solution.com. We will guide you through the process. Video proof of any damage or defect is required.", // Your Contact Info
+      "To initiate a return, please contact our customer support team at +92 315 2121984 or email us at ss.saudsolution@gmail.com. We will guide you through the process. Video proof of any damage or defect is required.",
   },
   {
     question: "What items are eligible for return?",
@@ -29,15 +32,55 @@ const faqs: FAQ[] = [
   {
     question: "Who pays for return shipping?",
     answer:
-      "For incorrect, broken, or damaged items, we will provide a prepaid return shipping label *after* you contact us and we approve the return. For change of mind returns, the customer is responsible for return shipping costs.", // Added a qualification
+      "For incorrect, broken, or damaged items, we will provide a prepaid return shipping label *after* you contact us and we approve the return. For change of mind returns, the customer is responsible for return shipping costs.",
   },
 ];
 
 export default function ReturnPolicyPage() {
+  const structuredData = useMemo(() => ({
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Return Policy - Saud Solutions",
+    "description":
+      "Learn about Saud Solutions' return policy for online purchases. Find information on eligibility, procedures, and contact details.",
+    "url": "https://saudsolutions.com/return-policy", // Replace with your actual URL
+    "potentialAction": {
+      "@type": "CommunicateAction",
+      "actionStatus": "ActiveActionStatus",
+      "name": "Contact Customer Service for Returns",
+      "target": {
+        "@type": "EntryPoint",
+        "urlTemplate": "https://saudsolutions.com/contact", // Your Contact URL
+        "inLanguage": "en-US",
+        "actionPlatform": [
+          "http://schema.org/DesktopWebPlatform",
+          "http://schema.org/MobileWebPlatform",
+        ],
+      },
+    },
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "https://saudsolutions.com/return-policy", // Your Return Policy URL
+    },
+  }), []);
+
   return (
     <div className="bg-gray-50 text-gray-900 font-sans">
-      {" "}
-      {/* Updated Background & Font */}
+      <Head>
+        <title>Return Policy - Saud Solutions</title>
+        <meta
+          name="description"
+          content="Learn about Saud Solutions' return policy for online purchases. Find information on eligibility, procedures, and contact details."
+        />
+        <meta
+          name="keywords"
+          content="return policy, Saud Solutions, refund, exchange, shipping"
+        />
+        <link rel="canonical" href="https://saudsolutions.com/return-policy" />
+        <script type="application/ld+json">
+          {JSON.stringify(structuredData)}
+        </script>
+      </Head>
       <div className="w-full">
         {/* Hero Section */}
         <div className="relative w-full lg:h-[50vh] md:h-[30vh] h-[30vh]">
@@ -60,8 +103,7 @@ export default function ReturnPolicyPage() {
                 loading="lazy"
               />
             </Link>
-            <h1 className="text-4xl font-bold">Return Policy</h1>{" "}
-            {/* Changed to h1 for better accessibility */}
+            <h1 className="text-4xl font-bold">Return Policy</h1>
             <h2 className="flex items-center text-sm md:text-xl mb-4 space-x-1">
               <Link className="font-bold text-xl" href="/" aria-label="Home">
                 Home
@@ -70,9 +112,7 @@ export default function ReturnPolicyPage() {
                 className="mt-2 text-2xl"
                 aria-hidden="true"
               />
-              <a className="mt-2 md:mt-0" href="#" aria-label="Shop">
-                Return
-              </a>
+              <span className="mt-2 md:mt-0">Return Policy</span>
             </h2>
             <p className="mt-2 text-lg text-gray-900">
               Our return policy is designed to be fair and transparent. Please
@@ -81,38 +121,25 @@ export default function ReturnPolicyPage() {
           </div>
         </div>
       </div>
-      {/* Return Process Section (Direct Contact) */}
       <section className="container mx-auto px-4 py-16">
         <div className="text-center mb-12">
-          {" "}
-          {/* Added margin */}
           <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
             Our Simple Return Process
-          </h2>{" "}
-          {/* Text color & margin */}
+          </h2>
           <p className="mt-2 text-gray-600 max-w-3xl mx-auto leading-relaxed">
-            {" "}
-            {/* leading-relaxed for better readability */}
             Initiating a return is easy. Follow these simple steps to ensure a
             smooth experience.
           </p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
-          {/* Step 1 */}
           <div className="text-center p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
-            {" "}
-            {/* Added shadow */}
             <div className="w-16 h-16 rounded-full bg-blue-100 text-blue-600 mx-auto flex items-center justify-center mb-4">
-              {" "}
-              {/* Blue Circle */}
-              <FaQuestionCircle size={32} /> {/* Using an icon */}
+              <FaQuestionCircle size={32} />
             </div>
             <h3 className="mt-4 text-xl font-semibold text-gray-700">
               Contact Us Directly
             </h3>
             <p className="mt-2 text-gray-600 leading-relaxed">
-              {" "}
-              {/* Added leading */}
               Reach out to our support team through the provided channels.
             </p>
             <div className="mt-4">
@@ -129,8 +156,7 @@ export default function ReturnPolicyPage() {
                   >
                     +92 315 2121984
                   </a>
-                  ,
-                  <a
+                  ,<a
                     href="tel:+923073482322"
                     className="text-blue-500 hover:underline"
                   >
@@ -153,185 +179,134 @@ export default function ReturnPolicyPage() {
               </p>
             </div>
           </div>
-          {/* Step 2 */}
           <div className="text-center p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
             <div className="w-16 h-16 rounded-full bg-green-100 text-green-600 mx-auto flex items-center justify-center mb-4">
-              {" "}
-              {/* Green Circle */}
-              <FaShippingFast size={32} /> {/* Using an icon */}
+              <FaShippingFast size={32} />
             </div>
             <h3 className="mt-4 text-xl font-semibold text-gray-700">
               Provide Video Proof
             </h3>
             <p className="mt-2 text-gray-600 leading-relaxed">
-              {" "}
-              {/* Added leading */}
               Submit a clear video showcasing the issue for efficient
               processing.
             </p>
           </div>
-          {/* Step 3 */}
           <div className="text-center p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
             <div className="w-16 h-16 rounded-full bg-yellow-100 text-yellow-600 mx-auto flex items-center justify-center mb-4">
-              {" "}
-              {/* Yellow Circle */}
-              <FaBoxOpen size={32} /> {/* Using an icon */}
+              <FaBoxOpen size={32} />
             </div>
             <h3 className="mt-4 text-xl font-semibold text-gray-700">
               Await Our Instructions
             </h3>
             <p className="mt-2 text-gray-600 leading-relaxed">
-              {" "}
-              {/* Added leading */}
               Our team will review your claim and provide detailed instructions
               on how to proceed.
             </p>
           </div>
         </div>
       </section>
-      {/* Eligibility Section (Clear limitations) */}
       <section className="bg-gray-100 py-16">
-        {" "}
-        {/* Lighter Background */}
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            {" "}
-            {/* Added margin */}
             <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
               Return Eligibility
-            </h2>{" "}
-            {/* Text color */}
+            </h2>
             <p className="mt-2 text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              {" "}
-              {/* Added leading & max-w */}
               To ensure a smooth return process, please ensure your item meets
               the following criteria.
             </p>
           </div>
           <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Condition 1 */}
             <div className="text-center p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
-              {" "}
-              {/* Added shadow */}
               <Image
-                src="/returns/con1.png" // Replace with your icon path
+                src="/returns/con1.png"
                 alt="Damaged"
                 width={80}
                 height={80}
                 className="mx-auto"
+                loading="lazy"
               />
               <h3 className="mt-4 text-xl font-semibold text-gray-700">
                 Damaged Items
-              </h3>{" "}
-              {/* Text color */}
+              </h3>
               <p className="mt-2 text-gray-600 leading-relaxed">
-                {" "}
-                {/* Added leading */}
                 Products damaged during shipping.
               </p>
             </div>
-            {/* Condition 2 */}
             <div className="text-center p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
-              {" "}
-              {/* Added shadow */}
               <Image
-                src="/returns/con2.png" // Replace with your icon path
+                src="/returns/con2.png"
                 alt="Defective"
                 width={80}
                 height={80}
                 className="mx-auto"
+                loading="lazy"
               />
               <h3 className="mt-4 text-xl font-semibold text-gray-700">
                 Defective Items
-              </h3>{" "}
-              {/* Text color */}
+              </h3>
               <p className="mt-2 text-gray-600 leading-relaxed">
-                {" "}
-                {/* Added leading */}
                 Products with manufacturing defects.
               </p>
             </div>
-            {/* Condition 3 */}
             <div className="text-center p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
-              {" "}
-              {/* Added shadow */}
               <Image
-                src="/returns/con1.png" // Replace with your icon path
+                src="/returns/con1.png"
                 alt="Incorrect"
                 width={80}
                 height={80}
                 className="mx-auto"
+                loading="lazy"
               />
               <h3 className="mt-4 text-xl font-semibold text-gray-700">
                 Incorrect Items
-              </h3>{" "}
-              {/* Text color */}
+              </h3>
               <p className="mt-2 text-gray-600 leading-relaxed">
-                {" "}
-                {/* Added leading */}
                 Products that do not match the order description.
               </p>
             </div>
           </div>
           <p className="mt-8 text-gray-600 text-center leading-relaxed">
-            {" "}
-            {/* Added leading */}
             For &quot;change of mind&quot; returns, please contact us. These are
             assessed individually and may be subject to return shipping costs
             borne by the customer.
           </p>
         </div>
       </section>
-      {/* FAQ Section */}
       <section className="container mx-auto px-4 py-16">
         <div className="text-center mb-12">
-          {" "}
-          {/* Added margin */}
           <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
             Frequently Asked Questions
-          </h2>{" "}
-          {/* Text color */}
+          </h2>
           <p className="mt-2 text-gray-600 max-w-3xl mx-auto leading-relaxed">
-            {" "}
-            {/* Added leading & max-w */}
             Find answers to common questions about our return policy.
           </p>
         </div>
         <div className="mt-12 space-y-6 max-w-3xl mx-auto">
           {faqs.map((faq, index) => (
             <div key={index} className="border-b border-gray-200 pb-6">
-              {" "}
-              {/* Minimal border */}
               <h3 className="text-xl font-semibold text-gray-700 mb-2">
                 {faq.question}
-              </h3>{" "}
-              {/* Text color */}
+              </h3>
               <p className="mt-2 text-gray-600 leading-relaxed">
                 {faq.answer}
-              </p>{" "}
-              {/* Added leading */}
+              </p>
             </div>
           ))}
         </div>
       </section>
-      {/* Call-to-Action Section */}
       <section className="bg-gradient-to-r from-blue-800 to-blue-600 text-white py-16 rounded-lg shadow-lg">
-        {" "}
-        {/* Gradient & shadow */}
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
             Need Help with Your Return?
-          </h2>{" "}
-          {/* Margin */}
+          </h2>
           <p className="mt-2 text-gray-200 max-w-3xl mx-auto leading-relaxed">
-            {" "}
-            {/* Added leading & max-w */}
             Our dedicated customer support team is ready to assist you. Contact
             us for any questions or concerns.
           </p>
           <Link
             href="/contact"
-            className="mt-8 inline-block bg-white text-blue-800 px-8 py-3 rounded-lg font-semibold hover:bg-blue-50 transition duration-300" // Color Change
+            className="mt-8 inline-block bg-white text-blue-800 px-8 py-3 rounded-lg font-semibold hover:bg-blue-50 transition duration-300"
           >
             Contact Us
           </Link>

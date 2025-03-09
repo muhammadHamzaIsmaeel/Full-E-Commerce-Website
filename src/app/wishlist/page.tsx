@@ -1,26 +1,77 @@
-"use client";  // ✅ This tells Next.js this is a client component
-
+"use client";
 import { urlFor } from "@/sanity/lib/image";
 import Image from "next/image";
 import toast, { Toaster } from "react-hot-toast";
 import { useWishlist } from "../context/WishlistContext";
 import { MdKeyboardArrowRight } from "react-icons/md";
 import Link from "next/link";
+import Head from "next/head";
+import { Product, WithContext } from "schema-dts";
+import React, { memo } from "react";
 
-const WishlistPage = () => {
+const truncateTitle = (title: string, maxWords: number) => {
+  const words = title.split(" ");
+  if (words.length > maxWords) {
+    return words.slice(0, maxWords).join(" ") + "...";
+  }
+  return title;
+};
+
+const WishlistPage = memo(() => {
   const { wishlist, removeFromWishlist } = useWishlist();
 
-  // 🛠️ Handle Remove with Toast Notification
   const handleRemove = (productId: string, productTitle: string) => {
-    removeFromWishlist(productId);  // ✅ Remove item from wishlist
-    toast.success(`${productTitle} removed from wishlist!`);  // ✅ Show toast
+    removeFromWishlist(productId);
+    toast.success(`${productTitle} removed from wishlist!`);
   };
+
+  const productSchema: WithContext<Product>[] = wishlist.map((product) => ({
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.title,
+    description: product.shortDescription,
+    image: urlFor(product.productImage).url(),
+    offers: {
+      "@type": "Offer",
+      price: product.price,
+      priceCurrency: "PKR",
+      availability: "https://schema.org/InStock",
+    },
+  }));
 
   return (
     <>
-      <Toaster position="top-right" reverseOrder={false} />  {/* ✅ Toast will appear in the top-right */}
+      <Head>
+        <title>Wishlist - Saud Solution</title>
+        <meta
+          name="description"
+          content="View your wishlist at Saud Solution. Save your favorite products for later."
+        />
+        <meta
+          name="keywords"
+          content="wishlist, Saud Solution, favorite products, save for later"
+        />
+        <meta property="og:title" content="Wishlist - Saud Solution" />
+        <meta
+          property="og:description"
+          content="View your wishlist at Saud Solution. Save your favorite products for later."
+        />
+        <meta property="og:image" content="/shop/banner11.png" />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Wishlist - Saud Solution" />
+        <meta
+          name="twitter:description"
+          content="View your wishlist at Saud Solution. Save your favorite products for later."
+        />
+        <meta name="twitter:image" content="/shop/banner11.png" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }}
+        />
+      </Head>
+      <Toaster position="top-right" reverseOrder={false} />
       <div className="w-full">
-        {/* Hero Section */}
         <div className="relative w-full lg:h-[50vh] md:h-[30vh] h-[30vh]">
           <Image
             src="/shop/banner11.png"
@@ -42,7 +93,7 @@ const WishlistPage = () => {
                 loading="lazy"
               />
             </Link>
-            <h1 className="text-4xl font-bold">WishList</h1> {/* Changed to h1 for better accessibility */}
+            <h1 className="text-4xl font-bold">WishList</h1>
             <h2 className="flex items-center text-sm md:text-xl mb-4 space-x-1">
               <Link className="font-bold text-xl" href="/" aria-label="Home">
                 Home
@@ -69,17 +120,24 @@ const WishlistPage = () => {
                   height={400}
                   loading="lazy"
                 />
-                <h2 className="text-lg font-semibold">{product.title}</h2>
-                <p className="text-sm text-gray-600">{product.shortDescription}</p>
+                <h2 className="text-lg font-semibold">
+                  {truncateTitle(product.title, 3)}
+                </h2>
                 <div className="flex items-center justify-between mt-4">
                   <span className="text-red-500 font-bold">Rs.{product.price}</span>
                   <button
-                    onClick={() => handleRemove(product._id, product.title)}  // ✅ Use handleRemove function
+                    onClick={() => handleRemove(product._id, product.title)}
                     className="text-white bg-red-500 hover:bg-red-600 px-3 py-1 rounded-lg"
                   >
                     Remove
                   </button>
                 </div>
+                {/* "View Details" Button */}
+                <Link href={`/product/${product._id}`} legacyBehavior>
+                  <a className="bg-white hover:bg-yellow-500 text-yellow-600 hover:text-white px-6 py-2 mt-4 font-medium rounded shadow block text-center">
+                    View Details
+                  </a>
+                </Link>
               </div>
             ))}
           </div>
@@ -87,6 +145,7 @@ const WishlistPage = () => {
       </div>
     </>
   );
-};
+});
 
+WishlistPage.displayName = "WishlistPage";
 export default WishlistPage;

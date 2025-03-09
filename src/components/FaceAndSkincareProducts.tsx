@@ -69,11 +69,11 @@ export default function FaceAndSkincareProducts() {
 
   return (
     <section
-      className="relative bg-[#f4acb7] py-9"
+      className="relative  py-9"
       aria-label="Skincare and Face Products"
     >
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl font-bold py-7 text-center text-blue-950 mt-4">
+        <h2 className="text-4xl font-bold py-7 text-center text-blue-950 mt-4">
           Face and Skincare Products
         </h2>
         <div className="flex flex-col md:flex-row md:space-x-4 items-center mb-12">
@@ -107,7 +107,7 @@ export default function FaceAndSkincareProducts() {
                   >
                     <div className="p-0">
                       <Card className="m-0 h-full">
-                        <CardContent className="p-0 bg-[#ffe5d9] rounded-lg h-full flex flex-col">
+                        <CardContent className="p-0  rounded-lg h-full flex flex-col">
                           <Link
                             href={`/product/${product._id}`}
                             key={product._id}

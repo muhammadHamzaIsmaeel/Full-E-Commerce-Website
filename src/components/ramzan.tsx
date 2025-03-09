@@ -31,7 +31,7 @@ export default function RamzanSale() {
   const plugin = Autoplay({ delay: 3000, stopOnInteraction: true });
 
   return (
-    <div className="px-3 md:px-0 bg-gradient-to-r from-gray-50 to-gray-100 py-8 md:py-16">
+    <div className="px-3 md:px-0  py-8 md:py-16">
       {/* Heading */}
       <h1 className="text-center text-3xl md:text-5xl font-extrabold mb-6 md:mb-12">
         <span className="bg-gradient-to-r from-red-600 to-orange-500 bg-clip-text text-transparent">

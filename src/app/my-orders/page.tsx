@@ -1,11 +1,12 @@
 // src/app/my-orders/page.tsx
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import Image from "next/image";
 import { urlFor } from "@/sanity/lib/image";
 import { client } from "@/sanity/lib/client";
 import { useAuth } from "@clerk/nextjs";
+import Head from "next/head";
 
 // Define types for the product image
 interface ProductImage {
@@ -50,76 +51,114 @@ interface Order {
 }
 
 export default function MyOrders() {
-  const { userId } = useAuth(); // Get the logged-in user's ID
+  const { userId } = useAuth();
   const [orders, setOrders] = useState<Order[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [filteredOrders, setFilteredOrders] = useState<Order[]>([]);
+
+  // Fetch orders from Sanity using useCallback to prevent re-creation on every render
+  const fetchOrders = useCallback(async () => {
+    if (!userId) return;
+
+    try {
+      const query = `*[_type == "order" && userId == "${userId}"] | order(date desc) {
+        orderId,
+        status,
+        products[] {
+          _id,
+          title,
+          price,
+          quantity,
+          productImage,
+          selectedSize,
+          selectedColor
+        },
+        date,
+        formData {
+          fullName,
+          addressLine1,
+          addressLine2,
+          city,
+          province,
+          zipCode,
+          courierService,
+          phoneNumber1,
+          phoneNumber2,
+          emailAddress,
+          additionalInformation,
+          paymentMethod,
+          landmark,
+          addressType
+        }
+      }`;
+
+      const sanityOrders = await client.fetch(query);
+      setOrders(sanityOrders);
+    } catch (error) {
+      console.error("Error fetching orders from Sanity:", error);
+    }
+  }, [userId]);
 
   useEffect(() => {
-    if (!userId) return; // Ensure the user is logged in
-
-    // Fetch orders for the logged-in user
-    const fetchOrders = async () => {
-      try {
-        const query = `*[_type == "order" && userId == "${userId}"] | order(date desc) {
-          orderId,
-          status,
-          products[] {
-            _id,
-            title,
-            price,
-            quantity,
-            productImage,
-            selectedSize, // Fetch selected size
-            selectedColor // Fetch selected color
-          },
-          date,
-          formData {
-            fullName,
-            addressLine1,
-            addressLine2,
-            city,
-            province,
-            zipCode,
-            courierService,
-            phoneNumber1,
-            phoneNumber2,
-            emailAddress,
-            additionalInformation,
-            paymentMethod,
-            landmark,
-            addressType
-          }
-        }`;
-
-        const sanityOrders = await client.fetch(query);
-        setOrders(sanityOrders);
-        setFilteredOrders(sanityOrders); // Initialize filtered orders with all orders
-      } catch (error) {
-        console.error("Error fetching orders from Sanity:", error);
-      }
-    };
-
     fetchOrders();
-  }, [userId]); // Re-fetch orders when userId changes
+  }, [fetchOrders]); // Re-fetch orders when fetchOrders changes
 
-  // Handle search functionality
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const term = e.target.value;
-    setSearchTerm(term);
-
-    if (term === "") {
-      setFilteredOrders(orders); // Reset to all orders if search term is empty
-    } else {
-      const filtered = orders.filter((order) =>
-        order.orderId.toString().includes(term)
-      );
-      setFilteredOrders(filtered);
+  // Memoize the filtered orders based on the search term using useMemo
+  const filteredOrders = useMemo(() => {
+    if (!searchTerm) {
+      return orders;
     }
-  };
+    return orders.filter((order) =>
+      order.orderId.toString().includes(searchTerm)
+    );
+  }, [orders, searchTerm]);
+
+  // Handle search functionality using useCallback to prevent re-creation on every render
+  const handleSearch = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+  }, []);
+
+  // Structured data for SEO
+  const structuredData = useMemo(() => ({
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": "My Orders - Saud Solutions",
+    "description": "View your order history at Saud Solutions.",
+    "url": "https://saudsolutions.com/my-orders", // Replace with the actual URL
+    "hasPart": filteredOrders.map(order => ({
+      "@type": "Order",
+      "orderNumber": order.orderId,
+      "orderStatus": order.status,
+      "orderDate": order.date,
+      "customer": {
+        "@type": "Person",
+        "name": order.formData.fullName
+      },
+      "itemListElement": order.products.map(product => ({
+        "@type": "Product",
+        "name": product.title,
+        "price": product.price,
+        "quantity": product.quantity
+      }))
+    }))
+  }), [filteredOrders]);
 
   return (
     <div className="max-w-7xl mx-auto p-6">
+      <Head>
+        <title>My Orders - Saud Solutions</title>
+        <meta
+          name="description"
+          content="View your order history at Saud Solutions."
+        />
+        <meta
+          name="keywords"
+          content="orders, history, Saud Solutions, purchases"
+        />
+        <link rel="canonical" href="https://saudsolutions.com/my-orders" />
+        <script type="application/ld+json">
+          {JSON.stringify(structuredData)}
+        </script>
+      </Head>
       <h1 className="text-3xl font-bold text-gray-900 mb-8">My Orders</h1>
 
       {/* Search Bar */}

@@ -74,10 +74,10 @@ export default function BrandProductsSection() {
 
   return (
     <section
-      className="relative bg-[#219ebc] bg-opacity-75 pb-1 mt-6 pt-"
+      className="relative bg-opacity-75 pb-1 mt-6 pt-"
       aria-label="Trendy Products Section"
     >
-      <h2 className="text-3xl font-bold py-7 text-center text-blue-950 mt-4">{brandName}</h2>
+      <h2 className="text-4xl font-bold py-7 text-center text-blue-950 mt-4">{brandName}</h2>
       <div className="container mx-auto px-0">
         {/* Brand Section */}
         <div className="flex flex-col md:flex-row items-center mb-12">
@@ -109,7 +109,7 @@ export default function BrandProductsSection() {
                   >
                     <div className="p-0">
                       <Card className="m-0 h-full">
-                        <CardContent className="p-0 h-full  bg-[#caf0f8] rounded-lg flex flex-col">
+                        <CardContent className="p-0 h-full  rounded-lg flex flex-col">
                           {/* Wrap the entire card content in a Link */}
                           <Link
                             href={`/product/${product._id}`}

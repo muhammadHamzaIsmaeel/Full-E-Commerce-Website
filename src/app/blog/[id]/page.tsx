@@ -6,6 +6,7 @@ import { MdPerson3 } from "react-icons/md";
 import { BsCalendar2DateFill, BsFillTagFill } from "react-icons/bs";
 import { PortableText } from "@portabletext/react";
 import { PortableTextBlock } from "@sanity/types";
+import Head from "next/head";
 
 // Define the blog data interface
 interface IBlog {
@@ -48,9 +49,10 @@ async function getBlogData(id: string): Promise<IBlog | null> {
 export default async function BlogDetailPage({
   params,
 }: {
-  params:Promise<{ id: string }>;
+  params: Promise<{ id: string }>;
 }) {
-  const { id } = await params; // Destructure the `id` from `params`
+  // Await the params to get the id
+  const { id } = await params;
 
   // Fetch the blog data
   const blog = await getBlogData(id);
@@ -60,18 +62,58 @@ export default async function BlogDetailPage({
     return <div>Blog not found</div>;
   }
 
-  // Render the blog details
+  // Structured Data for Blog Post
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": blog.title,
+    "description": blog.shortDescription,
+    "image": urlFor(blog.image).url(),
+    "author": {
+      "@type": "Person",
+      "name": blog.author,
+    },
+    "datePublished": blog.date,
+    "publisher": {
+      "@type": "Organization",
+      "name": "Saud Solutions",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://saudsolutions.com/logo.png",
+      },
+    },
+  };
+
   return (
     <div className="min-h-screen">
+      <Head>
+        <title>{blog.title} - Saud Solutions Blog</title>
+        <meta name="description" content={blog.shortDescription} />
+        <meta name="keywords" content={blog.tags.join(", ")} />
+        <meta name="author" content={blog.author} />
+        <meta property="og:title" content={`${blog.title} - Saud Solutions Blog`} />
+        <meta property="og:description" content={blog.shortDescription} />
+        <meta property="og:image" content={urlFor(blog.image).url()} />
+        <meta property="og:url" content={`https://saudsolutions.com/blog/${id}`} />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={`${blog.title} - Saud Solutions Blog`} />
+        <meta name="twitter:description" content={blog.shortDescription} />
+        <meta name="twitter:image" content={urlFor(blog.image).url()} />
+        <link rel="canonical" href={`https://saudsolutions.com/blog/${id}`} />
+        <script type="application/ld+json">
+          {JSON.stringify(structuredData)}
+        </script>
+      </Head>
+
       <main className="container mx-auto px-6 py-12">
-        <div className="overflow-hidden">
+        <article className="overflow-hidden">
           <Image
             src={urlFor(blog.image).url()}
             alt={blog.title}
             width={1200}
             height={600}
             className="w-full h-full object-cover"
-            loading="lazy"
+            priority // Eager load the blog image
           />
           <div className="p-6">
             <div className="text-sm text-gray-500 flex items-center gap-4 mb-4">
@@ -85,13 +127,13 @@ export default async function BlogDetailPage({
                 <BsFillTagFill /> {Array.isArray(blog.tags) ? blog.tags.join(", ") : "No tags"}
               </span>
             </div>
-            <h2 className="text-xl font-bold">{blog.title}</h2>
+            <h1 className="text-3xl font-bold">{blog.title}</h1>
             <p className="text-gray-600 mt-4">{blog.shortDescription}</p>
             <div className="mt-4">
               <PortableText value={blog.content} />
             </div>
           </div>
-        </div>
+        </article>
       </main>
     </div>
   );

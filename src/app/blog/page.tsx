@@ -12,6 +12,7 @@ import Pagination from "@/components/blog/pagination";
 import Feature from "@/components/button/feature";
 import debounce from "lodash.debounce";
 import DOMPurify from "dompurify";
+import Head from "next/head";
 
 interface IBlog {
   _id: string;
@@ -107,6 +108,20 @@ export default function BlogPage() {
 
   const totalPages = Math.ceil(filteredBlogs.length / blogsPerPage);
 
+  // Structured Data for Blog Listing
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    "name": "Saud Solutions Blog",
+    "url": "https://saudsolutions.com/blog",
+    "description": "Discover the latest trends, tips, and insights on skincare, beauty, and more at Saud Solutions Blog.",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://saudsolutions.com/blog/search?q={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="w-full h-screen flex justify-center items-center">
@@ -137,6 +152,25 @@ export default function BlogPage() {
 
   return (
     <div className="min-h-screen">
+      <Head>
+        <title>Saud Solutions Blog - Latest Trends & Insights</title>
+        <meta name="description" content="Discover the latest trends, tips, and insights on skincare, beauty, and more at Saud Solutions Blog." />
+        <meta name="keywords" content="skincare blog, beauty tips, latest trends, Saud Solutions" />
+        <meta name="author" content="Saud Solutions" />
+        <meta property="og:title" content="Saud Solutions Blog - Latest Trends & Insights" />
+        <meta property="og:description" content="Discover the latest trends, tips, and insights on skincare, beauty, and more at Saud Solutions Blog." />
+        <meta property="og:image" content="https://saudsolutions.com/logo.png" />
+        <meta property="og:url" content="https://saudsolutions.com/blog" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Saud Solutions Blog - Latest Trends & Insights" />
+        <meta name="twitter:description" content="Discover the latest trends, tips, and insights on skincare, beauty, and more at Saud Solutions Blog." />
+        <meta name="twitter:image" content="https://saudsolutions.com/logo.png" />
+        <link rel="canonical" href="https://saudsolutions.com/blog" />
+        <script type="application/ld+json">
+          {JSON.stringify(structuredData)}
+        </script>
+      </Head>
+
       <header className="relative w-full lg:h-[50vh] md:h-[30vh] h-[30vh]">
         <Image
           src="/shop/banner11.png"
@@ -144,7 +178,7 @@ export default function BlogPage() {
           layout="fill"
           style={{ objectFit: "cover", filter: "blur(3px)", opacity: 0.7 }}
           objectFit="cover"
-          loading="lazy"
+          priority // Eager load the banner
         />
         <div className="absolute inset-0 flex flex-col justify-center items-center text-center text-gray-950">
           <Link href="/">
@@ -154,7 +188,7 @@ export default function BlogPage() {
               width="32"
               height="20"
               className="w-12 h-8"
-              loading="lazy"
+              priority // Eager load the logo
             />
           </Link>
           <h4 className="text-4xl font-bold">Blog</h4>
@@ -180,7 +214,7 @@ export default function BlogPage() {
                 width={1200}
                 height={600}
                 className="w-full h-full object-cover"
-                loading="lazy"
+                priority // Eager load blog images
               />
               <div className="p-6">
                 <div className="text-sm text-gray-500 flex items-center gap-4 mb-4">

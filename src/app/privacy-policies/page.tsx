@@ -1,13 +1,53 @@
+// src/app/privacy-policies/page.tsx
 import Link from "next/link";
 import Image from "next/image";
 import { MdKeyboardArrowRight } from "react-icons/md";
+import Head from "next/head";
+import React, { useMemo } from "react";
 
 export default function PrivacyPolicyPage() {
   const today = new Date();
-  const formattedDate = today.toLocaleDateString(); // Get today's date
+  const formattedDate = today.toLocaleDateString();
+
+  const structuredData = useMemo(() => ({
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Privacy Policy - Saud Solutions",
+    "description":
+      "Read the Privacy Policy of Saud Solutions and understand how we protect your personal information.",
+    "url": "https://saudsolutions.com/privacy-policies", // Replace with actual URL
+    "datePublished": formattedDate,
+    "publisher": {
+      "@type": "Organization",
+      "name": "Saud Solutions",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://saudsolutions.com/logo.png", // Replace with your logo URL
+      },
+    },
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "https://saudsolutions.com/privacy-policies", // Replace with actual URL
+    },
+  }), [formattedDate]);
 
   return (
     <div className="bg-white text-gray-900">
+      <Head>
+        <title>Privacy Policy - Saud Solutions</title>
+        <meta
+          name="description"
+          content="Read the Privacy Policy of Saud Solutions and understand how we protect your personal information."
+        />
+        <meta
+          name="keywords"
+          content="privacy policy, data protection, personal information, GDPR, CCPA"
+        />
+        <link rel="canonical" href="https://saudsolutions.com/privacy-policies" />
+        <script type="application/ld+json">
+          {JSON.stringify(structuredData)}
+        </script>
+      </Head>
       <div className="w-full">
         {/* Hero Section */}
         <div className="relative w-full lg:h-[50vh] md:h-[30vh] h-[30vh]">
@@ -18,20 +58,21 @@ export default function PrivacyPolicyPage() {
             style={{ objectFit: "cover", filter: "blur(3px)", opacity: 0.7 }}
             objectFit="cover"
             loading="lazy"
+            priority
           />
           <div className="absolute inset-0 flex flex-col justify-center items-center text-center text-gray-950">
             <Link href="/" aria-label="Go to Home">
               <Image
                 src="/logo.png"
                 alt="Saud Solution Logo"
-                width="32"
-                height="20"
+                width={32}
+                height={20}
                 className="w-12 h-8"
                 loading="lazy"
+                priority
               />
             </Link>
-            <h1 className="text-4xl font-bold">Privacy Policy</h1>{" "}
-            {/* Changed to h1 for better accessibility */}
+            <h1 className="text-4xl font-bold">Privacy Policy</h1>
             <h2 className="flex items-center text-sm md:text-xl mb-4 space-x-1">
               <Link className="font-bold text-xl" href="/" aria-label="Home">
                 Home
@@ -63,7 +104,6 @@ export default function PrivacyPolicyPage() {
             collected in relation to the products we sell on our site.
           </p>
 
-          {/* Data Collection Section */}
           <div className="mt-12">
             <h3 className="text-2xl font-bold">1. Data Collection</h3>
             <p className="mt-4 text-gray-600">
@@ -108,7 +148,6 @@ export default function PrivacyPolicyPage() {
             </ul>
           </div>
 
-          {/* Data Usage Section */}
           <div className="mt-12">
             <h3 className="text-2xl font-bold">2. Data Usage</h3>
             <p className="mt-4 text-gray-600">
@@ -148,7 +187,6 @@ export default function PrivacyPolicyPage() {
             </ul>
           </div>
 
-          {/* Data Sharing and Disclosure Section */}
           <div className="mt-12">
             <h3 className="text-2xl font-bold">
               3. Data Sharing and Disclosure
@@ -191,7 +229,6 @@ export default function PrivacyPolicyPage() {
             </ul>
           </div>
 
-          {/* Data Security Section */}
           <div className="mt-12">
             <h3 className="text-2xl font-bold">4. Data Security</h3>
             <p className="mt-4 text-gray-600">
@@ -222,7 +259,6 @@ export default function PrivacyPolicyPage() {
             </ul>
           </div>
 
-          {/* Data Retention Section */}
           <div className="mt-12">
             <h3 className="text-2xl font-bold">5. Data Retention</h3>
             <p className="mt-4 text-gray-600">
@@ -236,7 +272,6 @@ export default function PrivacyPolicyPage() {
             </p>
           </div>
 
-          {/* User Rights Section */}
           <div className="mt-12">
             <h3 className="text-2xl font-bold">6. Your Rights</h3>
             <p className="mt-4 text-gray-600">
@@ -288,7 +323,6 @@ export default function PrivacyPolicyPage() {
             </ul>
           </div>
 
-          {/* Children's Privacy Section */}
           <div className="mt-12">
             <h3 className="text-2xl font-bold">7. Children&apos;s Privacy</h3>
             <p className="mt-4 text-gray-600">
@@ -300,7 +334,6 @@ export default function PrivacyPolicyPage() {
             </p>
           </div>
 
-          {/* International Data Transfers Section */}
           <div className="mt-12">
             <h3 className="text-2xl font-bold">8. Data Transfers</h3>
             <p className="mt-4 text-gray-600">
@@ -315,7 +348,6 @@ export default function PrivacyPolicyPage() {
             </p>
           </div>
 
-          {/* Changes to this Privacy Policy Section */}
           <div className="mt-12">
             <h3 className="text-2xl font-bold">
               9. Changes to this Privacy Policy
@@ -332,7 +364,6 @@ export default function PrivacyPolicyPage() {
             </p>
           </div>
 
-          {/* Contact Section */}
           <div className="mt-12">
             <h3 className="text-2xl font-bold">10. Contact Us</h3>
             <p className="mt-4 text-gray-600">
@@ -361,7 +392,6 @@ export default function PrivacyPolicyPage() {
         </div>
       </section>
 
-      {/* Call-to-Action Section */}
       <section className="bg-gray-900 text-white py-16">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl md:text-4xl font-bold">

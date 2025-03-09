@@ -1,3 +1,4 @@
+// src/app/contact/page.tsx
 "use client";
 
 import Image from "next/image";
@@ -24,6 +25,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"; // Import Toastify CSS
+import Head from "next/head";
 
 // Zod schema for form validation
 const formSchema = z.object({
@@ -85,17 +87,58 @@ const ContactPage: React.FC = () => {
     }
   }
 
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "ContactPage",
+    "name": "Contact Us - Saud Solutions",
+    "description": "Contact Saud Solutions for any inquiries or support.",
+    "url": "https://saudsolutions.com/contact", // Replace with your actual URL
+    "potentialAction": {
+      "@type": "CommunicateAction",
+      "actionStatus": "ActiveActionStatus",
+      "name": "Contact Customer Service",
+      "target": {
+        "@type": "EntryPoint",
+        "urlTemplate": "https://saudsolutions.com/contact", // Replace with your actual URL
+        "inLanguage": "en-US",
+        "actionPlatform": [
+          "http://schema.org/DesktopWebPlatform",
+          "http://schema.org/MobileWebPlatform"
+        ]
+      }
+    },
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "https://saudsolutions.com/contact" // Replace with your actual URL
+    }
+  };
+
   return (
     <>
+      <Head>
+        <title>Contact Us - Saud Solutions</title>
+        <meta
+          name="description"
+          content="Contact Saud Solutions for inquiries or support."
+        />
+        <meta
+          name="keywords"
+          content="contact, support, inquiries, Saud Solutions"
+        />
+        <link rel="canonical" href="https://saudsolutions.com/contact" />
+        <script type="application/ld+json">
+          {JSON.stringify(structuredData)}
+        </script>
+      </Head>
       <header>
         <div className="relative w-full lg:h-[50vh] md:h-[30vh] h-[30vh]">
           <Image
             src="/shop/banner11.png"
             alt="Contact Banner"
             layout="fill"
-            style={{ objectFit: "cover", filter: "blur(3px)", opacity: 0.7 }}
             objectFit="cover"
-            loading="lazy"
+            className="filter blur-sm opacity-70"
+            priority
           />
           <div className="absolute inset-0 flex flex-col justify-center items-center text-center text-gray-950">
             <Link href="/">
@@ -105,7 +148,7 @@ const ContactPage: React.FC = () => {
                 width={32}
                 height={20}
                 className="w-12 h-8"
-                priority // Prioritize loading the logo
+                priority
               />
             </Link>
             <h4 className="text-4xl font-bold">Contact</h4>
@@ -114,9 +157,7 @@ const ContactPage: React.FC = () => {
                 Home
               </Link>
               <MdKeyboardArrowRight className="mt-2 text-2xl" />
-              <a className="mt-1 md:mt-0" href="#">
-                Contact
-              </a>
+              <span className="mt-1 md:mt-0">Contact</span>
             </h5>
           </div>
         </div>
@@ -134,7 +175,6 @@ const ContactPage: React.FC = () => {
         </div>
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12">
           {/* Online Shop Information */}
-
           <div className="space-y-6">
             <h3 className="text-2xl font-semibold text-gray-800 mb-2">
               We&apos;re Here to Help Online
@@ -284,7 +324,6 @@ const ContactPage: React.FC = () => {
         </div>
       </div>
 
-      {/* ToastContainer for toasts */}
       <ToastContainer />
     </>
   );

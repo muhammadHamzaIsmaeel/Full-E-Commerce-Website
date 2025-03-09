@@ -60,9 +60,9 @@ export default function Header() {
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-white border-b border-gray-200">
+    <header className="sticky top-0 z-50 bg-white/80 border-b border-gray-200">
       {preloadResources()}
-      <div className="container flex justify-between items-center mx-auto px-4 py-3">
+      <div className="container flex justify-between items-center mx-auto px-4 md:px-0 py-3">
         {/* Logo and Brand Name */}
         <div className="flex items-center gap-2">
           <Link href="/" aria-label="Saud Solution Home" passHref>
@@ -86,7 +86,7 @@ export default function Header() {
         {/* Search Bar */}
         <form
           onSubmit={handleSearchSubmit}
-          className="flex px-8 md:px-0 items-center w-full max-w-xl"
+          className="flex px-8 md:px-0 items-center w-full max-w-md"
         >
           <div className="relative w-full">
             <input
@@ -111,7 +111,7 @@ export default function Header() {
 
         {/* Desktop Navigation and Actions */}
         <div className="hidden lg:flex items-center gap-6">
-          <nav className="flex items-center gap-8" aria-label="Main Navigation">
+          <nav className="flex lg:mr-8 items-center gap-8" aria-label="Main Navigation">
             {["Home", "Shop", "Blog", "Contact"].map((item) => {
               const href = item === "Home" ? "/" : `/${item.toLowerCase()}`;
               const isActive = pathname === href;

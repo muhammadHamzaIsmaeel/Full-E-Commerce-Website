@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { IoMdShare } from "react-icons/io";
 import { MdCompareArrows } from "react-icons/md";
 import { FaRegHeart } from "react-icons/fa";
@@ -10,7 +10,7 @@ import { client } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
 import toast, { Toaster } from "react-hot-toast";
 import { useWishlist } from "@/app/context/WishlistContext";
-import { FaTruck } from "react-icons/fa"; // Import the truck icon
+import { FaTruck } from "react-icons/fa";
 
 interface IProduct {
   _id: string;
@@ -21,107 +21,119 @@ interface IProduct {
   dicountPercentage?: string;
   isNew?: boolean;
   productImage: string;
-  freeDelivery?: boolean; // Add freeDelivery property
+  freeDelivery?: boolean;
 }
 
-export default function Products() {
+interface ProductsProps {
+  tags?: string[]; // Only tags are needed
+  excludeId?: string; // Exclude the current product ID
+}
+
+export default function Products({ tags, excludeId }: ProductsProps) {
   const [data, setData] = useState<IProduct[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [animated, setAnimated] = useState(false); // State for animation
+  const [animated, setAnimated] = useState(false);
 
-  // Use the useWishlist hook to access wishlist functions
+
   const { addToWishlist } = useWishlist();
 
-  // Handle wishlist functionality
-  const handleWishlist = (product: IProduct) => {
-    if (!product) {
-      toast.error("Invalid product data.", {
-        position: "top-right",
-        duration: 3000,
-        style: {
-          background: "#f87171",
-          color: "white",
-        },
-      });
-      return;
-    }
-
-    try {
-      addToWishlist(product); // Use the addToWishlist function from context
-      toast.success("Product added to wishlist!", {
-        position: "top-right",
-        duration: 3000,
-        style: {
-          background: "#B88E2F",
-          color: "white",
-        },
-      });
-    } catch (err) {
-      console.error("Error handling wishlist:", err);
-      toast.error("Failed to add product to wishlist.", {
-        position: "top-right",
-        duration: 3000,
-        style: {
-          background: "#f87171",
-          color: "white",
-        },
-      });
-    }
-  };
-
-  // Handle sharing functionality
-  const handleShare = async (productId: string) => {
-    const productLink = `${window.location.origin}/product/${productId}`;
-
-    try {
-      // Check if the Web Share API is supported
-      if (navigator.share) {
-        await navigator.share({
-          title: "Check out this product!",
-          text: "I found this amazing product and thought you might like it.",
-          url: productLink,
-        });
-        toast.success("Product shared successfully!", {
+   // Handle share functionality
+    const handleShare = useCallback(async (productId: string) => {
+      const productLink = `${window.location.origin}/product/${productId}`;
+  
+      try {
+        if (navigator.share) {
+          await navigator.share({
+            title: "Check out this product!",
+            text: "I found this amazing product and thought you might like it.",
+            url: productLink,
+          });
+          toast.success("Product shared successfully!", {
+            position: "top-right",
+            duration: 3000,
+            style: {
+              background: "#4ade80",
+              color: "white",
+            },
+          });
+        } else {
+          await navigator.clipboard.writeText(productLink);
+          toast.success("Link copied to clipboard!", {
+            position: "top-right",
+            duration: 3000,
+            style: {
+              background: "#4ade80",
+              color: "white",
+            },
+          });
+        }
+      } catch (err) {
+        console.error("Error sharing product:", err);
+        toast.error("Failed to share product.", {
           position: "top-right",
           duration: 3000,
           style: {
-            background: "#4ade80",
-            color: "white",
-          },
-        });
-      } else {
-        // Fallback for browsers that don't support the Web Share API
-        await navigator.clipboard.writeText(productLink);
-        toast.success("Link copied to clipboard!", {
-          position: "top-right",
-          duration: 3000,
-          style: {
-            background: "#4ade80",
+            background: "#f87171",
             color: "white",
           },
         });
       }
-    } catch (err) {
-      console.error("Error sharing product:", err);
-      toast.error("Failed to share product.", {
-        position: "top-right",
-        duration: 3000,
-        style: {
-          background: "#f87171",
-          color: "white",
-        },
-      });
-    }
-  };
+    }, []);
 
-  // Fetch products from Sanity
+    // Handle wishlist functionality
+  const handleWishlist = useCallback(
+    (product: IProduct) => {
+      if (!product) {
+        toast.error("Invalid product data.", {
+          position: "top-right",
+          duration: 3000,
+          style: {
+            background: "#f87171",
+            color: "white",
+          },
+        });
+        return;
+      }
+
+      try {
+        addToWishlist(product);
+        toast.success("Product added to wishlist!", {
+          position: "top-right",
+          duration: 3000,
+          style: {
+            background: "#B88E2F",
+            color: "white",
+          },
+        });
+      } catch (err) {
+        console.error("Error handling wishlist:", err);
+        toast.error("Failed to add product to wishlist.", {
+          position: "top-right",
+          duration: 3000,
+          style: {
+            background: "#f87171",
+            color: "white",
+          },
+        });
+      }
+    },
+    [addToWishlist]
+  );
+  // Fetch products from Sanity with filtering
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const products: IProduct[] = await client.fetch(
-          '*[_type == "product"][0...10]{_id, title, shortDescription, dicountPercentage, price, oldPrice, isNew, productImage, freeDelivery}' // Fetch the freeDelivery property
-        );
+        let query = '*[_type == "product"';
+        if (tags && tags.length > 0) {
+          query += ` && (${tags.map((tag) => `"${tag}" in tags`).join(" || ")})`;
+        }
+        if (excludeId) {
+          query += ` && _id != "${excludeId}"`;
+        }
+        query += `]{_id, title, shortDescription, dicountPercentage, price, oldPrice, isNew, productImage, freeDelivery}[0...10]`;
+
+        const products: IProduct[] = await client.fetch(query);
         setData(products);
       } catch (err) {
         console.error("Failed to fetch products:", err);
@@ -132,7 +144,7 @@ export default function Products() {
     };
 
     fetchProducts();
-  }, []);
+  }, [tags, excludeId]);
 
   // Trigger animation on component mount
   useEffect(() => {
@@ -161,7 +173,7 @@ export default function Products() {
   if (!data.length) {
     return (
       <div className="text-center py-12">
-        <p>No products found.</p>
+        <p>No related products found.</p>
       </div>
     );
   }
@@ -182,15 +194,17 @@ export default function Products() {
             role="listitem"
             aria-label={`Product: ${item.title}`}
           >
+            {/* Product Image */}
             <Image
               src={urlFor(item.productImage).width(1000).height(1000).url()}
               alt={`Image of ${item.title}`}
               width={1000}
               height={1000}
               loading="lazy"
-              priority={false} // Optimize performance by lazy loading images
+              priority={false}
             />
 
+            {/* Discount, New, and Free Delivery Tags */}
             {item.dicountPercentage && (
               <span
                 className="absolute top-4 right-4 bg-red-500 text-white text-xs font-bold flex items-center justify-center"
@@ -219,7 +233,6 @@ export default function Products() {
               </span>
             )}
 
-            {/* Free Delivery Tag */}
             {item.freeDelivery && (
               <div className="absolute top-4 left-4 bg-indigo-500 text-white text-xs font-bold py-1 px-2 rounded-md flex items-center space-x-1">
                 <FaTruck />
@@ -245,6 +258,7 @@ export default function Products() {
               </div>
             </div>
 
+            {/* Hover Actions */}
             <div className="absolute inset-0 bg-black bg-opacity-50 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
               <Link href={`/product/${item._id}`} legacyBehavior>
                 <a
@@ -285,7 +299,6 @@ export default function Products() {
           </div>
         ))}
       </div>
-
       <div className="mt-8 text-center">
         <Link href="/shop" legacyBehavior>
           <a

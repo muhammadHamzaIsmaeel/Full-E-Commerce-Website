@@ -66,7 +66,7 @@ export default function TrendyProductsSection() {
 
   return (
     <section
-      className="relative bg-[#FCF8F3] h-[650px] md:h-[500px] w-full bg-cover bg-center flex flex-col md:flex-row items-center"
+      className="relative  h-[650px] md:h-[500px] w-full bg-cover bg-center flex flex-col md:flex-row items-center"
       aria-label="Trendy Products Section"
     >
       {/* Left Section */}

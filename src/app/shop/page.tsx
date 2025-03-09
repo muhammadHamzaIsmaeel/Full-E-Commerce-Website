@@ -1,19 +1,39 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect} from "react";
 import { client } from "@/sanity/lib/client";
-import Filter from "@/components/shop/filter";
-import ProductGrid from "@/components/shop/products";
+import dynamic from "next/dynamic";
 import { IProduct } from "@/types";
-import Pagination from "@/components/shop/pagination";
 import Image from "next/image";
 import Link from "next/link";
 import { MdKeyboardArrowRight } from "react-icons/md";
+import Head from "next/head";
+
+
+const Filter = dynamic(() => import("@/components/shop/filter"));
+const ProductGrid = dynamic(() => import("@/components/shop/products"));
+const Pagination = dynamic(() => import("@/components/shop/pagination"));
+
+const useDebounce = (value: string, delay: number) => {
+  const [debouncedValue, setDebouncedValue] = useState(value);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [value, delay]);
+
+  return debouncedValue;
+};
 
 export default function ShopProducts() {
   const [data, setData] = useState<IProduct[]>([]);
   const [filteredData, setFilteredData] = useState<IProduct[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null); // Error state for handling fetch errors
+  const [error, setError] = useState<string | null>(null);
 
   // Filters
   const [isNew, setIsNew] = useState<boolean | null>(null);
@@ -22,6 +42,7 @@ export default function ShopProducts() {
   const [show, setShow] = useState<number>(16);
   const [sortBy, setSortBy] = useState<string>("default");
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const debouncedSearchQuery = useDebounce(searchQuery, 300);
 
   // Pagination States
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -37,7 +58,7 @@ export default function ShopProducts() {
         setIsLoading(false);
       } catch (error) {
         console.error("Failed to fetch products:", error);
-        setError("Failed to load products. Please try again later."); // Set error message
+        setError("Failed to load products. Please try again later.");
         setIsLoading(false);
       }
     };
@@ -65,9 +86,9 @@ export default function ShopProducts() {
       );
     }
 
-    if (searchQuery) {
+    if (debouncedSearchQuery) {
       filtered = filtered.filter((item) =>
-        item.title.toLowerCase().includes(searchQuery.toLowerCase())
+        item.title.toLowerCase().includes(debouncedSearchQuery.toLowerCase())
       );
     }
 
@@ -82,8 +103,8 @@ export default function ShopProducts() {
     }
 
     setFilteredData(filtered);
-    setCurrentPage(1); // Reset to first page when filters change
-  }, [isNew, discounted, priceRange, sortBy, searchQuery, data]);
+    setCurrentPage(1);
+  }, [isNew, discounted, priceRange, sortBy, debouncedSearchQuery, data]);
 
   // Pagination Logic
   const indexOfLastProduct = currentPage * show;
@@ -97,7 +118,7 @@ export default function ShopProducts() {
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
-    window.scrollTo({ top: 0, behavior: "smooth" }); // Scroll to top on page change
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   if (isLoading) {
@@ -122,30 +143,6 @@ export default function ShopProducts() {
             <span className="dot text-5xl">.</span>
           </div>
         </div>
-
-        <style jsx>{`
-          .dot {
-            animation: blink 1.5s infinite step-start;
-          }
-
-          .dot:nth-child(1) {
-            animation-delay: 0s;
-          }
-
-          .dot:nth-child(2) {
-            animation-delay: 0.3s;
-          }
-
-          .dot:nth-child(3) {
-            animation-delay: 0.6s;
-          }
-
-          @keyframes blink {
-            50% {
-              opacity: 0;
-            }
-          }
-        `}</style>
       </div>
     );
   }
@@ -170,6 +167,31 @@ export default function ShopProducts() {
 
   return (
     <div>
+      <Head>
+        <title>Shop - Saud Solution</title>
+        <meta
+          name="description"
+          content="Explore our wide range of products at Saud Solution. Find the best deals on high-quality items."
+        />
+        <meta
+          name="keywords"
+          content="shop, Saud Solution, products, deals, discounts"
+        />
+        <meta property="og:title" content="Shop - Saud Solution" />
+        <meta
+          property="og:description"
+          content="Explore our wide range of products at Saud Solution. Find the best deals on high-quality items."
+        />
+        <meta property="og:image" content="/shop/banner11.png" />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Shop - Saud Solution" />
+        <meta
+          name="twitter:description"
+          content="Explore our wide range of products at Saud Solution. Find the best deals on high-quality items."
+        />
+        <meta name="twitter:image" content="/shop/banner11.png" />
+      </Head>
       <div className="w-full">
         {/* Hero Section */}
         <div className="relative w-full lg:h-[50vh] md:h-[30vh] h-[30vh]">
@@ -192,8 +214,7 @@ export default function ShopProducts() {
                 loading="lazy"
               />
             </Link>
-            <h1 className="text-4xl font-bold">Shop</h1>{" "}
-            {/* Changed to h1 for better accessibility */}
+            <h1 className="text-4xl font-bold">Shop</h1>
             <h2 className="flex items-center text-sm md:text-xl mb-4 space-x-1">
               <Link className="font-bold text-xl" href="/" aria-label="Home">
                 Home
