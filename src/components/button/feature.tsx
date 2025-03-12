@@ -6,7 +6,7 @@ export default function Feature() {
   return (
     <div className="flex flex-col px-4 md:flex-row space-x-0 md:space-x-4 space-y-4 md:space-y-0 justify-center items-stretch py-4">
       {/* Feature 4: Free Delivery */}
-      <div className="p-3 bg-white rounded-lg shadow-md flex flex-col items-start space-y-2 hover:shadow-lg transition-shadow w-full max-w-md">
+      <div className="feature-card">
         <FaShippingFast className="text-4xl text-indigo-500 flex-shrink-0" />
         <div>
           <h3 className="text-xl font-semibold text-gray-800">Free Delivery</h3>
@@ -17,7 +17,7 @@ export default function Feature() {
       </div>
 
       {/* Feature 5: 40% Discount */}
-      <div className="p-3 bg-white rounded-lg shadow-md flex flex-col items-start space-y-2 hover:shadow-lg transition-shadow w-full max-w-md">
+      <div className="feature-card">
         <FaTags className="text-4xl text-red-500 flex-shrink-0" />
         <div>
           <h3 className="text-xl font-semibold text-gray-800">40% Discount</h3>
@@ -28,7 +28,7 @@ export default function Feature() {
       </div>
 
       {/* Feature 6: Dedicated Support */}
-      <div className="p-3 bg-white rounded-lg shadow-md flex flex-col items-start space-y-2 hover:shadow-lg transition-shadow w-full max-w-md">
+      <div className="feature-card">
         <FaHeadset className="text-4xl text-blue-500 flex-shrink-0" />
         <div>
           <h3 className="text-xl font-semibold text-gray-800">

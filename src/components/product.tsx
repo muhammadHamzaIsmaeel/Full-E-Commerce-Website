@@ -35,53 +35,52 @@ export default function Products({ tags, excludeId }: ProductsProps) {
   const [error, setError] = useState<string | null>(null);
   const [animated, setAnimated] = useState(false);
 
-
   const { addToWishlist } = useWishlist();
 
-   // Handle share functionality
-    const handleShare = useCallback(async (productId: string) => {
-      const productLink = `${window.location.origin}/product/${productId}`;
-  
-      try {
-        if (navigator.share) {
-          await navigator.share({
-            title: "Check out this product!",
-            text: "I found this amazing product and thought you might like it.",
-            url: productLink,
-          });
-          toast.success("Product shared successfully!", {
-            position: "top-right",
-            duration: 3000,
-            style: {
-              background: "#4ade80",
-              color: "white",
-            },
-          });
-        } else {
-          await navigator.clipboard.writeText(productLink);
-          toast.success("Link copied to clipboard!", {
-            position: "top-right",
-            duration: 3000,
-            style: {
-              background: "#4ade80",
-              color: "white",
-            },
-          });
-        }
-      } catch (err) {
-        console.error("Error sharing product:", err);
-        toast.error("Failed to share product.", {
+  // Handle share functionality
+  const handleShare = useCallback(async (productId: string) => {
+    const productLink = `${window.location.origin}/product/${productId}`;
+
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: "Check out this product!",
+          text: "I found this amazing product and thought you might like it.",
+          url: productLink,
+        });
+        toast.success("Product shared successfully!", {
           position: "top-right",
           duration: 3000,
           style: {
-            background: "#f87171",
+            background: "#4ade80",
+            color: "white",
+          },
+        });
+      } else {
+        await navigator.clipboard.writeText(productLink);
+        toast.success("Link copied to clipboard!", {
+          position: "top-right",
+          duration: 3000,
+          style: {
+            background: "#4ade80",
             color: "white",
           },
         });
       }
-    }, []);
+    } catch (err) {
+      console.error("Error sharing product:", err);
+      toast.error("Failed to share product.", {
+        position: "top-right",
+        duration: 3000,
+        style: {
+          background: "#f87171",
+          color: "white",
+        },
+      });
+    }
+  }, []);
 
-    // Handle wishlist functionality
+  // Handle wishlist functionality
   const handleWishlist = useCallback(
     (product: IProduct) => {
       if (!product) {
@@ -120,6 +119,7 @@ export default function Products({ tags, excludeId }: ProductsProps) {
     },
     [addToWishlist]
   );
+
   // Fetch products from Sanity with filtering
   useEffect(() => {
     const fetchProducts = async () => {
@@ -190,7 +190,7 @@ export default function Products({ tags, excludeId }: ProductsProps) {
         {data.map((item) => (
           <div
             key={item._id}
-            className="relative bg-gray-100 rounded overflow-hidden group"
+            className="product-card relative bg-gray-100 rounded overflow-hidden group"
             role="listitem"
             aria-label={`Product: ${item.title}`}
           >
@@ -202,6 +202,7 @@ export default function Products({ tags, excludeId }: ProductsProps) {
               height={1000}
               loading="lazy"
               priority={false}
+              className=" object-cover"
             />
 
             {/* Discount, New, and Free Delivery Tags */}
@@ -258,8 +259,8 @@ export default function Products({ tags, excludeId }: ProductsProps) {
               </div>
             </div>
 
-            {/* Hover Actions */}
-            <div className="absolute inset-0 bg-black bg-opacity-50 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+            {/* Hover Overlay */}
+            <div className="hover-overlay">
               <Link href={`/product/${item._id}`} legacyBehavior>
                 <a
                   className="bg-white hover:bg-yellow-500 text-yellow-600 hover:text-white px-6 py-2 mb-2 font-medium rounded shadow"

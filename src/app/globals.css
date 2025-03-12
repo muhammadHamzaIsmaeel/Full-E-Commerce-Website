@@ -95,3 +95,67 @@ body {
   text-decoration: line-through;
   text-decoration-color: #ef4444; /* Tailwind's text-red-500 */
 }
+
+@keyframes scroll {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+.scrolling-wrapper {
+  display: inline-block;
+  white-space: nowrap;
+  animation: scroll 120s linear infinite; /* Reduced duration to 120s */
+}
+
+.feature-card {
+  @apply p-3 bg-white rounded-lg shadow-md flex flex-col items-start space-y-2 hover:shadow-lg transition-all duration-300 w-full max-w-md;
+}
+
+.product-card {
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Card animation */
+}
+
+.product-card:hover {
+  transform: translateY(-5px); /* Card moves up slightly */
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); /* Shadow effect */
+}
+
+.product-card .hover-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transform: scale(0.9); /* Initial scale */
+  transition: opacity 0.3s ease, transform 0.3s ease; /* Smooth transition */
+}
+
+.product-card:hover .hover-overlay {
+  opacity: 1;
+  transform: scale(1); /* Scale up on hover */
+}
+
+/* Optional: Add a bounce animation to the buttons inside the overlay */
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.product-card:hover .hover-overlay button {
+  animation: bounce 0.5s ease; /* Apply bounce animation to buttons */
+}

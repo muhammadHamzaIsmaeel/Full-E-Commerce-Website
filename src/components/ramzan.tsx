@@ -56,19 +56,20 @@ export default function RamzanSale() {
 
           <CarouselContent>
             {products.map((product) => (
-              <CarouselItem key={product._id} className="basis-full sm:basis-1/2 md:basis-1/4">
+              <CarouselItem
+                key={product._id}
+                className="basis-full sm:basis-1/2 md:basis-1/4"
+              >
                 <Link href={`/product/${product._id}`}>
                   <div className="bg-white rounded-xl shadow-lg overflow-hidden cursor-pointer hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
                     {/* Product Image */}
                     <div className="relative h-48 md:h-56 overflow-hidden">
                       <Image
-                        src={urlFor(product.productImage)
-                          .width(1000)
-                          .height(1000)
-                          .url()}
+                        src={urlFor(product.productImage).url()}
+                        alt={product.title}
                         width={1000}
                         height={1000}
-                        alt={product.title}
+                        loading="lazy" // Lazy load images
                         className="w-full h-full object-cover"
                       />
                       {/* Discount Badge */}

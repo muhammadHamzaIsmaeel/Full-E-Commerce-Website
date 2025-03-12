@@ -128,6 +128,7 @@ export default function TrendyProductsSection() {
                                 src={urlFor(product.productImage).url()}
                                 alt={product.title}
                                 fill
+                                loading="lazy"
                                 style={{ objectFit: "cover" }}
                                 className="absolute rounded-lg top-0 left-0 w-full h-full object-cover"
                               />

@@ -58,13 +58,25 @@ export default function Banner() {
   // Animation Variants
   const slideVariants = {
     hidden: { opacity: 0, x: 100 },
-    visible: { opacity: 1, x: 0, transition: { duration: 0.8, ease: "easeInOut" } },
-    exit: { opacity: 0, x: -100, transition: { duration: 0.8, ease: "easeInOut" } },
+    visible: {
+      opacity: 1,
+      x: 0,
+      transition: { duration: 0.8, ease: "easeInOut" },
+    },
+    exit: {
+      opacity: 0,
+      x: -100,
+      transition: { duration: 0.8, ease: "easeInOut" },
+    },
   };
 
   const textVariants = {
     hidden: { opacity: 0, y: 50 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.6, delay: 0.3, ease: "easeOut" } },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.6, delay: 0.3, ease: "easeOut" },
+    },
   };
 
   if (loading)
@@ -92,7 +104,10 @@ export default function Banner() {
     );
 
   return (
-    <section className="relative w-full overflow-hidden" aria-label="Banner Carousel">
+    <section
+      className="relative w-full overflow-hidden"
+      aria-label="Banner Carousel"
+    >
       <AnimatePresence mode="wait">
         {banners.map((banner, index) => {
           if (index === currentSlide) {
@@ -115,7 +130,8 @@ export default function Banner() {
                   alt={banner.alt || `Banner ${index + 1}`}
                   width={1920}
                   height={1080}
-                  priority={index === 0}
+                  priority={index === 0} // Only prioritize the first banner
+                  loading={index === 0 ? "eager" : "lazy"} // Lazy load offscreen banners
                   style={{ objectFit: "cover", objectPosition: "center" }}
                   className="w-full h-full"
                 />

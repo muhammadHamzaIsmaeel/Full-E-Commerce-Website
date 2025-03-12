@@ -74,23 +74,30 @@ export default function BrandProductsSection() {
 
   return (
     <section
-      className="relative bg-opacity-75 pb-1 mt-6 pt-"
+      className="relative bg-[#F5F5F5] py-12"
       aria-label="Trendy Products Section"
     >
-      <h2 className="text-4xl font-bold py-7 text-center text-blue-950 mt-4">{brandName}</h2>
-      <div className="container mx-auto px-0">
+      <h2 className="text-4xl font-bold py-7 text-center text-[#333333] mt-4">
+        {brandName}
+      </h2>
+      <div className="container mx-auto px-4">
         {/* Brand Section */}
         <div className="flex flex-col md:flex-row items-center mb-12">
-          <div className="md:w-1/4 flex flex-col items-center  md:items-start mb-4 md:mb-0">
-            <Image
-              src={brandLogo}
-              alt={`${brandName} Logo`}
-              width={150}
-              height={150}
-              className="rounded-full bg-white p-1 shadow-md"
-              style={{ objectFit: "cover" }}
-            />
-            <h2 className="text-2xl font-bold text-white mt-4">{brandName}</h2>
+          <div className="md:w-1/4 flex flex-col items-center md:items-start mb-4 md:mb-0">
+            <div className="bg-[#FFC0CB] p-4 rounded-full shadow-lg">
+              <Image
+                src={brandLogo}
+                alt={`${brandName} Logo`}
+                width={150}
+                height={150}
+                loading="lazy"
+                className="rounded-full bg-white p-1 shadow-md"
+                style={{ objectFit: "cover" }}
+              />
+            </div>
+            <h2 className="text-2xl font-bold text-[#333333] mt-4">
+              {brandName}
+            </h2>
           </div>
 
           {/* Products Section (Carousel) */}
@@ -108,8 +115,8 @@ export default function BrandProductsSection() {
                     className="md:basis-1/2 lg:basis-1/3"
                   >
                     <div className="p-0">
-                      <Card className="m-0 h-full">
-                        <CardContent className="p-0 h-full  rounded-lg flex flex-col">
+                      <Card className="m-0 h-full bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                        <CardContent className="p-0 h-full rounded-lg flex flex-col">
                           {/* Wrap the entire card content in a Link */}
                           <Link
                             href={`/product/${product._id}`}
@@ -119,12 +126,12 @@ export default function BrandProductsSection() {
                             <a className="relative rounded-lg pt-6 overflow-hidden flex-grow block">
                               {/* Discount Badge (Top Right) */}
                               {product.dicountPercentage && (
-                                <div className="absolute z-20 top-8 right-3 bg-red-500 text-white text-xs font-bold py-1 px-2 rounded-full">
+                                <div className="absolute z-20 top-8 right-3 bg-[#FFD700] text-white text-xs font-bold py-1 px-2 rounded-full">
                                   -{product.dicountPercentage}%
                                 </div>
                               )}
                               {product.isNew && (
-                                <div className="absolute z-20 top-8 right-3 bg-green-500 text-white text-xs font-bold py-1 px-2 rounded-full">
+                                <div className="absolute z-20 top-8 right-3 bg-[#FFC0CB] text-white text-xs font-bold py-1 px-2 rounded-full">
                                   NEW
                                 </div>
                               )}
@@ -136,14 +143,14 @@ export default function BrandProductsSection() {
                                   alt={product.title}
                                   fill
                                   style={{ objectFit: "cover" }}
-                                  className="absolute  rounded-lg top-0 left-0 w-full h-full object-cover"
+                                  className="absolute rounded-lg top-0 left-0 w-full h-full object-cover"
                                 />
                               </div>
 
                               {/* Product Details */}
                               <div className="p-4 flex flex-col justify-between h-full">
                                 <div>
-                                  <h3 className="text-lg font-semibold text-gray-900 line-clamp-2">
+                                  <h3 className="text-lg font-semibold text-[#333333] line-clamp-2">
                                     {product.title}
                                   </h3>
                                   <p className="text-gray-600 text-sm line-clamp-2">
@@ -156,7 +163,7 @@ export default function BrandProductsSection() {
                                       Rs. {product.oldPrice}
                                     </span>
                                   )}
-                                  <span className="font-bold text-gray-900">
+                                  <span className="font-bold text-[#333333]">
                                     Rs. {product.price}
                                   </span>
                                 </div>
@@ -169,8 +176,8 @@ export default function BrandProductsSection() {
                   </CarouselItem>
                 ))}
               </CarouselContent>
-              <CarouselPrevious className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white p-3 rounded-full shadow-md hover:bg-gray-100 transition-colors" />
-              <CarouselNext className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white p-3 rounded-full shadow-md hover:bg-gray-100 transition-colors" />
+              <CarouselPrevious className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-[#FFD700] p-3 rounded-full shadow-md hover:bg-[#FFC0CB] transition-colors" />
+              <CarouselNext className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-[#FFD700] p-3 rounded-full shadow-md hover:bg-[#FFC0CB] transition-colors" />
             </Carousel>
           </div>
         </div>

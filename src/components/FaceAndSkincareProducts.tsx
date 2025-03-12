@@ -131,6 +131,7 @@ export default function FaceAndSkincareProducts() {
                                   alt={product.title}
                                   fill
                                   style={{ objectFit: "cover" }}
+                                  loading="lazy"
                                   className="absolute rounded-lg top-0 left-0 w-full h-full object-cover"
                                 />
                               </div>

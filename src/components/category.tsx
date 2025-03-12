@@ -118,9 +118,10 @@ const BrowseRange = () => {
                           src={urlFor(category.image).url()}
                           alt={`Category: ${category.title}`}
                           fill
+                          loading="lazy" // Lazy load images
                           style={{ objectFit: 'cover' }}
                           className="hover:scale-110"
-                          priority={index < 4}
+                          // priority={index < 4}
                         />
                       </motion.div>
                     </div>

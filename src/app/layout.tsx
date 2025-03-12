@@ -23,15 +23,14 @@ const geistMono = localFont({
   weight: "100 900",
 });
 
-const siteName = "Saud Solutions";  // Define once and reuse
+const siteName = "Saud Solutions"; // Define once and reuse
 const siteUrl = "https://saudsolutions.com"; //Define once and reuse
 const description =
   "Discover the best beauty, skincare, fashion, and home products at Saud Solutions. Shop now for exclusive deals on high-quality items, with a focus on beauty and skincare.";
 
-
 export const metadata: Metadata = {
   title: {
-    default: siteName,  // Default title
+    default: siteName, // Default title
     template: `%s | ${siteName}`, // Template for dynamic titles (e.g., product pages)
   },
   description: description,
@@ -62,9 +61,9 @@ export const metadata: Metadata = {
     },
   },
   icons: {
-     icon: '/favicon.ico',  // Or your specific favicon path
-     apple: '/favicon.ico',  // Optional:  Apple touch icon
-   },
+    icon: "/favicon.ico", // Or your specific favicon path
+    apple: "/favicon.ico", // Optional:  Apple touch icon
+  },
   openGraph: {
     title: siteName,
     description: description,
@@ -73,7 +72,7 @@ export const metadata: Metadata = {
     siteName: siteName,
     images: [
       {
-        url: `${siteUrl}/shop/banner11.png`,  // Use absolute URL
+        url: `${siteUrl}/shop/banner11.png`, // Use absolute URL
         width: 1200,
         height: 630,
         alt: siteName,
@@ -92,12 +91,12 @@ export const metadata: Metadata = {
         alt: siteName,
       },
     ],
-    creator: '@SaudSolutions',
-    site: '@SaudSolutions',
+    creator: "@SaudSolutions",
+    site: "@SaudSolutions",
   },
   // Optional:  Verification tags (Google Search Console, etc.)
   verification: {
-    google: 'aSA3PnNDnphG5GUT8m-ae5q2FBrydx3VjE7H7uq24u0', // Replace with your code
+    google: "aSA3PnNDnphG5GUT8m-ae5q2FBrydx3VjE7H7uq24u0", // Replace with your code
     // other: {
     //   "msvalidate.01": "your_microsoft_verification_code"
     // }
@@ -113,7 +112,10 @@ export default function RootLayout({
         <head>
           {/* Meta Tags for SEO */}
           <meta charSet="UTF-8" />
-          <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+          <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0"
+          />
           <link rel="canonical" href={siteUrl} />
 
           {/* Structured Data */}
@@ -139,13 +141,14 @@ export default function RootLayout({
               "@type": "Organization",
               name: siteName,
               url: siteUrl,
-              logo: `${siteUrl}/logo.png`,  // Replace with your logo URL
+              logo: `${siteUrl}/logo.png`, // Replace with your logo URL
               description: description,
-              sameAs: [  // Links to social media profiles
-               "https://www.facebook.com/profile.php?id=100095090834625",
-               "https://x.com/SaudSolutions",
-               "https://www.tiktok.com/@saudsolution",
-               "https://www.instagram.com/saud_solutions/"
+              sameAs: [
+                // Links to social media profiles
+                "https://www.facebook.com/profile.php?id=100095090834625",
+                "https://x.com/SaudSolutions",
+                "https://www.tiktok.com/@saudsolution",
+                "https://www.instagram.com/saud_solutions/",
               ],
             })}
           </script>
@@ -153,20 +156,20 @@ export default function RootLayout({
           {/* Meta Pixel Code */}
           <Script
             id="fb-pixel-script"
-            strategy="afterInteractive"
+            strategy="lazyOnload" // Change to lazyOnload for better performance
             dangerouslySetInnerHTML={{
               __html: `
-                !function(f,b,e,v,n,t,s)
-                {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-                n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-                if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-                n.queue=[];t=b.createElement(e);t.async=!0;
-                t.src=v;s=b.getElementsByTagName(e)[0];
-                s.parentNode.insertBefore(t,s)}(window, document,'script',
-                'https://connect.facebook.net/en_US/fbevents.js');
-                fbq('init', '830158322624136');
-                fbq('track', 'PageView');
-              `,
+      !function(f,b,e,v,n,t,s)
+      {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+      n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+      if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+      n.queue=[];t=b.createElement(e);t.async=!0;
+      t.src=v;s=b.getElementsByTagName(e)[0];
+      s.parentNode.insertBefore(t,s)}(window, document,'script',
+      'https://connect.facebook.net/en_US/fbevents.js');
+      fbq('init', '830158322624136');
+      fbq('track', 'PageView');
+    `,
             }}
           />
           <noscript>
@@ -182,7 +185,7 @@ export default function RootLayout({
           {/* TikTok Pixel Code */}
           <Script
             id="tiktok-pixel-script"
-            strategy="afterInteractive"
+            strategy="lazyOnload"
             dangerouslySetInnerHTML={{
               __html: `
                 !function (w, d, t) {
