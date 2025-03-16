@@ -1,3 +1,4 @@
+// BrandProductsSection.tsx
 "use client";
 
 import { useState, useEffect } from "react";
@@ -77,24 +78,28 @@ export default function BrandProductsSection() {
       className="relative bg-[#F5F5F5] py-12"
       aria-label="Trendy Products Section"
     >
-      <h2 className="text-4xl font-bold py-7 text-center text-[#333333] mt-4">
-        {brandName}
-      </h2>
+      <Link href={`/brand/Cerave`}>
+        <h2 className="text-4xl font-bold py-7 text-center text-[#333333] mt-4 cursor-pointer">
+          {brandName}
+        </h2>
+      </Link>
       <div className="container mx-auto px-4">
         {/* Brand Section */}
         <div className="flex flex-col md:flex-row items-center mb-12">
           <div className="md:w-1/4 flex flex-col items-center md:items-start mb-4 md:mb-0">
-            <div className="bg-[#FFC0CB] p-4 rounded-full shadow-lg">
-              <Image
-                src={brandLogo}
-                alt={`${brandName} Logo`}
-                width={150}
-                height={150}
-                loading="lazy"
-                className="rounded-full bg-white p-1 shadow-md"
-                style={{ objectFit: "cover" }}
-              />
-            </div>
+            <Link href={`/brand/Cerave`}>
+              <div className="bg-[#FFC0CB] p-4 rounded-full shadow-lg cursor-pointer">
+                <Image
+                  src={brandLogo}
+                  alt={`${brandName} Logo`}
+                  width={150}
+                  height={150}
+                  loading="lazy"
+                  className="rounded-full bg-white p-1 shadow-md"
+                  style={{ objectFit: "cover" }}
+                />
+              </div>
+            </Link>
             <h2 className="text-2xl font-bold text-[#333333] mt-4">
               {brandName}
             </h2>

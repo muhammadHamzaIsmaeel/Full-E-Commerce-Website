@@ -159,3 +159,30 @@ body {
 .product-card:hover .hover-overlay button {
   animation: bounce 0.5s ease; /* Apply bounce animation to buttons */
 }
+
+
+/* Responsive grid layout */
+.grid {
+  display: grid; /* Make sure the grid display is set */
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); /* Min width of 150px and 2 per row by default */
+  gap: 1rem; /* Adjust gap as needed */
+}
+
+
+@media (min-width: 768px) {
+  .grid {
+      grid-template-columns: repeat(3, minmax(150px, 1fr)); /* Adjust minmax and repeat as per design */
+  }
+}
+
+@media (min-width: 1024px) {
+  .grid {
+      grid-template-columns: repeat(4, minmax(150px, 1fr));
+  }
+}
+
+@media (min-width: 1280px) {
+  .grid {
+      grid-template-columns: repeat(5, minmax(150px, 1fr));
+  }
+}
