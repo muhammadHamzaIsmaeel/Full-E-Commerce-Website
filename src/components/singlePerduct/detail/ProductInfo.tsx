@@ -32,10 +32,10 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
   onShare,
 }) => {
   return (
-    <div className="lg:col-span-6 mx-3 md:mx-0 mt-8 space-y-6">
-      {/* Product Title and Price */}
-      <div className="items-start flex-col space-y-3">
-        <h1 className="text-3xl lg:text-4xl font-extrabold text-gray-900 tracking-tight">
+    <div className="w-full px-4 md:px-0 mt-6 md:mt-8 space-y-4 md:space-y-6">
+  {/* Product Title and Price */}
+  <div className="items-start flex-col space-y-2 md:space-y-3">
+    <h1 className="text-2xl md:text-3xl lg:text-4xl font-extrabold text-gray-900 tracking-tight">
           {title}
         </h1>
         <div className="flex items-center space-x-3">

@@ -35,10 +35,10 @@ export default function RamzanSale() {
       {/* Heading */}
       <h1 className="text-center text-3xl md:text-5xl font-extrabold mb-6 md:mb-12">
         <span className="bg-gradient-to-r from-red-600 to-orange-500 bg-clip-text text-transparent">
-          🌙 Ramzan Sale - 40% Off 🎉
+          Mega Discount Days - 40% Off 🎉
         </span>
         <span className="block text-sm md:text-lg text-gray-600 mt-1 md:mt-2">
-          Celebrate the holy month with amazing discounts! 🛍
+        Unbeatable prices on your favorite products – only during Mega Discount Days! 🛍
         </span>
       </h1>
 

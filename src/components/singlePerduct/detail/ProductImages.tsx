@@ -18,24 +18,24 @@ const ProductImages: React.FC<ProductImagesProps> = ({ images, videoUrl, onThumb
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
-    <div className="lg:col-span-6 p-3 md:p-0 mt-10">
-      {/* Big Image Frame */}
-      <div className="aspect-w-1 aspect-h-1 rounded-lg overflow-hidden">
-        {videoUrl ? (
-          <VideoPlayer src={videoUrl} /> // Display video if videoUrl is set
-        ) : selectedImage ? (
-          <div onClick={() => setIsModalOpen(true)}>
-            <Image
-              src={selectedImage}
-              alt="Product Image"
-              width={1000}
-              height={1000}
-              className="h-[240px] lg:h-[500px] lg:w-full object-cover cursor-pointer"
-              loading="lazy"
-            />
-          </div>
-        ) : null}
+    <div className="w-full p-3 md:p-0 mt-4 md:mt-10">
+  {/* Big Image Frame */}
+  <div className="aspect-w-1 aspect-h-1 rounded-lg overflow-hidden">
+    {videoUrl ? (
+      <VideoPlayer src={videoUrl} />
+    ) : selectedImage ? (
+      <div onClick={() => setIsModalOpen(true)}>
+        <Image
+          src={selectedImage}
+          alt="Product Image"
+          width={1000}
+          height={1000}
+          className="h-[300px] w-full md:h-[500px] object-cover cursor-pointer"
+          loading="lazy"
+        />
       </div>
+    ) : null}
+  </div>
 
       {/* Thumbnail Slider */}
       <div className="mt-4">

@@ -392,7 +392,7 @@ const Detail: React.FC<Props> = ({ id }) => {
           content={getDescriptionText(description)}
         />
       </Head>
-      <div className="max-w-7xl mx-auto grid md:mx-8 grid-cols-1 lg:grid-cols-12 gap-12">
+      <div className="max-w-7xl mx-auto flex flex-col lg:grid lg:grid-cols-12 gap-6 px-4 md:px-8">
         {notification && (
           <Notification
             message={notification.message}
@@ -400,25 +400,28 @@ const Detail: React.FC<Props> = ({ id }) => {
             onClose={() => setNotification(null)}
           />
         )}
-        <ProductImages
-          images={thumbnailImages}
-          videoUrl={videoUrl}
-          onThumbnailClick={handleThumbnailClick}
-        />
-
-        <ProductInfo
-          title={title}
-          price={product.price}
-          oldPrice={oldPrice}
-          description={description}
-          SKU={SKU}
-          category={category}
-          tags={tags}
-          stockQuantity={stockQuantity}
-          onAddToCart={handleAddToCart}
-          onBuyNow={handleBuyNow}
-          onShare={handleShare}
-        />
+        <div className="w-full lg:col-span-6">
+          <ProductImages
+            images={thumbnailImages}
+            videoUrl={videoUrl}
+            onThumbnailClick={handleThumbnailClick}
+          />
+        </div>
+        <div className="w-full lg:col-span-6 mt-6 lg:mt-0">
+          <ProductInfo
+            title={title}
+            price={product.price}
+            oldPrice={oldPrice}
+            description={description}
+            SKU={SKU}
+            category={category}
+            tags={tags}
+            stockQuantity={stockQuantity}
+            onAddToCart={handleAddToCart}
+            onBuyNow={handleBuyNow}
+            onShare={handleShare}
+          />
+        </div>
       </div>
       <ProductReviews
         reviews={reviews || []}
