@@ -97,7 +97,7 @@ export const metadata: Metadata = {
     site: "@SaudSolutions",
   },
   verification: {
-    google: "aSA3PnNDnphG5GUT8m-ae5q2FBrydx3VjE7H7uq24u0",
+    google: "x_hVWLNO7Tu54px-p6Rtkh-4y-IRW_jmfGJfhRNKizM",
     yandex: "d6ab867a8431f329",
   },
   alternates: {
