@@ -15,7 +15,6 @@ import {
 import { Card, CardContent } from "@/components/ui/card";
 
 interface IProduct {
-  id: string;
   _id: string;
   title: string;
   price: string;
@@ -37,14 +36,13 @@ export default function FaceAndSkincareProducts() {
   const fetchProducts = async () => {
     try {
       const query = `*[_type == "product" && ("Skin Care" in tags || "face" in tags || "Face" in tags || "Men's Care" in tags || "Personal Care" in tags)]{
-            _id, id, title, tag, category, 
+            _id, title, tag, category, 
             dicountPercentage, price, oldPrice, isNew, productImage,
             brandName, tags
-          }`;
+          }[0...8]`;
       const fetchedProducts: IProduct[] = await client.fetch(query);
-
       if (!fetchedProducts.length) {
-        setError("No products found with 'skincare' or 'face' tags.");
+        setError("No skincare or face products found.");
       } else {
         setProducts(fetchedProducts);
       }
@@ -62,41 +60,56 @@ export default function FaceAndSkincareProducts() {
 
   if (isLoading) return <div className="text-center">Loading products...</div>;
   if (error) return <div className="text-center text-red-500">{error}</div>;
-  if (!products.length)
-    return (
-      <div className="text-center">No products found with specified tags.</div>
-    );
+  if (!products.length) return <div className="text-center">No skincare or face products found.</div>;
 
   return (
-    <section
-      className="relative  py-9"
-      aria-label="Skincare and Face Products"
-    >
+    <section className="relative py-9" aria-label="Skincare and Face Products">
+      <script type="application/ld+json">
+        {JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "ItemList",
+          "name": "Saud Solutions Skincare and Face Products",
+          "itemListElement": products.map((product, index) => ({
+            "@type": "ListItem",
+            "position": index + 1,
+            "item": {
+              "@type": "Product",
+              "name": product.title,
+              "image": urlFor(product.productImage).url(),
+              "url": `https://saudsolutions.com/product/${product._id}`,
+              "offers": {
+                "@type": "Offer",
+                "priceCurrency": "PKR",
+                "price": product.price,
+                "availability": "https://schema.org/InStock",
+              },
+              "brand": {
+                "@type": "Brand",
+                "name": product.brandName || "Saud Solutions",
+              },
+            },
+          })),
+        })}
+      </script>
       <div className="container mx-auto px-4">
         <h2 className="text-4xl font-bold py-7 text-center text-blue-950 mt-4">
-          Face and Skincare Products
+          Skincare and Face Products
         </h2>
         <div className="flex flex-col md:flex-row md:space-x-4 items-center mb-12">
-          {/* Informative Text (Left Side) */}
           <div className="md:w-1/4 flex flex-col items-center md:items-start mb-4 md:mb-0 text-center md:text-left">
             <h3 className="text-2xl font-semibold text-gray-800 mb-2">
-              About Skincare
+              Transform Your Skin
             </h3>
             <p className="text-gray-600 text-md">
-              Discover our curated selection of face and skincare products. Find
-              the perfect solutions for a healthy and radiant complexion.
+              Discover premium skincare and face products for a radiant complexion. Shop top brands at Saud Solutions with exclusive deals.
             </p>
-            <p className="text-gray-600 text-md mt-2">
-              Explore our range and transform your skincare routine today!
-            </p>
+            <Link href="/category/Skin Care" legacyBehavior>
+              <a className="text-yellow-600 hover:underline mt-2">Explore Skincare</a>
+            </Link>
           </div>
-
-          {/* Products Section (Carousel - Right Side) */}
           <div className="w-[310px] md:w-3/4 relative">
             <Carousel
-              opts={{
-                align: "start",
-              }}
+              opts={{ align: "start" }}
               className="w-full"
             >
               <CarouselContent className="p-0">
@@ -107,12 +120,8 @@ export default function FaceAndSkincareProducts() {
                   >
                     <div className="p-0">
                       <Card className="m-0 h-full">
-                        <CardContent className="p-0  rounded-lg h-full flex flex-col">
-                          <Link
-                            href={`/product/${product._id}`}
-                            key={product._id}
-                            legacyBehavior
-                          >
+                        <CardContent className="p-0 rounded-lg h-full flex flex-col">
+                          <Link href={`/product/${product._id}`} legacyBehavior>
                             <a className="relative rounded-lg pt-6 overflow-hidden flex-grow block">
                               {product.dicountPercentage && (
                                 <div className="absolute z-20 top-8 right-3 bg-red-500 text-white text-xs font-bold py-1 px-2 rounded-full">
@@ -124,18 +133,16 @@ export default function FaceAndSkincareProducts() {
                                   NEW
                                 </div>
                               )}
-
                               <div className="relative h-48">
                                 <Image
-                                  src={urlFor(product.productImage).url()}
-                                  alt={product.title}
+                                  src={urlFor(product.productImage).width(300).height(300).format('webp').url()}
+                                  alt={`${product.title} - ${product.category} by ${product.brandName} at Saud Solutions`}
                                   fill
                                   style={{ objectFit: "cover" }}
                                   loading="lazy"
                                   className="absolute rounded-lg top-0 left-0 w-full h-full object-cover"
                                 />
                               </div>
-
                               <div className="p-4 flex flex-col justify-between h-full">
                                 <div>
                                   <h3 className="text-lg font-semibold text-gray-900 line-clamp-2">

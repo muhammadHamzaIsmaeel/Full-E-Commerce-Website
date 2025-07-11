@@ -7,6 +7,8 @@ export interface IProduct {
     dicountPercentage?: string;
     isNew?: boolean;
     productImage: string;
+    category?: string;
+    brandName?: string;
     freeDelivery?: boolean; // Add freeDelivery property
   }
   

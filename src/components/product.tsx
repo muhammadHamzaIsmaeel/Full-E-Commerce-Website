@@ -22,11 +22,13 @@ interface IProduct {
   isNew?: boolean;
   productImage: string;
   freeDelivery?: boolean;
+  category: string;
+  brandName: string;
 }
 
 interface ProductsProps {
-  tags?: string[]; // Only tags are needed
-  excludeId?: string; // Exclude the current product ID
+  tags?: string[];
+  excludeId?: string;
 }
 
 export default function Products({ tags, excludeId }: ProductsProps) {
@@ -34,37 +36,28 @@ export default function Products({ tags, excludeId }: ProductsProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [animated, setAnimated] = useState(false);
-
   const { addToWishlist } = useWishlist();
 
-  // Handle share functionality
   const handleShare = useCallback(async (productId: string) => {
     const productLink = `${window.location.origin}/product/${productId}`;
-
     try {
       if (navigator.share) {
         await navigator.share({
           title: "Check out this product!",
-          text: "I found this amazing product and thought you might like it.",
+          text: "I found this amazing product at Saud Solutions.",
           url: productLink,
         });
         toast.success("Product shared successfully!", {
           position: "top-right",
           duration: 3000,
-          style: {
-            background: "#4ade80",
-            color: "white",
-          },
+          style: { background: "#4ade80", color: "white" },
         });
       } else {
         await navigator.clipboard.writeText(productLink);
         toast.success("Link copied to clipboard!", {
           position: "top-right",
           duration: 3000,
-          style: {
-            background: "#4ade80",
-            color: "white",
-          },
+          style: { background: "#4ade80", color: "white" },
         });
       }
     } catch (err) {
@@ -72,66 +65,51 @@ export default function Products({ tags, excludeId }: ProductsProps) {
       toast.error("Failed to share product.", {
         position: "top-right",
         duration: 3000,
-        style: {
-          background: "#f87171",
-          color: "white",
-        },
+        style: { background: "#f87171", color: "white" },
       });
     }
   }, []);
 
-  // Handle wishlist functionality
   const handleWishlist = useCallback(
     (product: IProduct) => {
       if (!product) {
         toast.error("Invalid product data.", {
           position: "top-right",
           duration: 3000,
-          style: {
-            background: "#f87171",
-            color: "white",
-          },
+          style: { background: "#f87171", color: "white" },
         });
         return;
       }
-
       try {
         addToWishlist(product);
         toast.success("Product added to wishlist!", {
           position: "top-right",
           duration: 3000,
-          style: {
-            background: "#B88E2F",
-            color: "white",
-          },
+          style: { background: "#B88E2F", color: "white" },
         });
       } catch (err) {
         console.error("Error handling wishlist:", err);
         toast.error("Failed to add product to wishlist.", {
           position: "top-right",
           duration: 3000,
-          style: {
-            background: "#f87171",
-            color: "white",
-          },
+          style: { background: "#f87171", color: "white" },
         });
       }
     },
     [addToWishlist]
   );
 
-  // Fetch products from Sanity with filtering
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        let query = '*[_type == "product"';
+        let query = '*[_type == "product" && (tranding == true || discountPercentage > 0)';
         if (tags && tags.length > 0) {
           query += ` && (${tags.map((tag) => `"${tag}" in tags`).join(" || ")})`;
         }
         if (excludeId) {
           query += ` && _id != "${excludeId}"`;
         }
-        query += `]{_id, title, shortDescription, dicountPercentage, price, oldPrice, isNew, productImage, freeDelivery}[0...10]`;
+        query += `]{_id, title, shortDescription, dicountPercentage, price, oldPrice, isNew, productImage, freeDelivery, category, brandName}[0...12]`;
 
         const products: IProduct[] = await client.fetch(query);
         setData(products);
@@ -142,44 +120,57 @@ export default function Products({ tags, excludeId }: ProductsProps) {
         setIsLoading(false);
       }
     };
-
     fetchProducts();
   }, [tags, excludeId]);
 
-  // Trigger animation on component mount
   useEffect(() => {
     if (!isLoading && !error) {
       setAnimated(true);
     }
   }, [isLoading, error]);
 
-  // Loading and error states
   if (isLoading) {
-    return (
-      <div className="text-center py-12">
-        <p>Loading products...</p>
-      </div>
-    );
+    return <div className="text-center py-12"><p>Loading products...</p></div>;
   }
 
   if (error) {
-    return (
-      <div className="text-center py-12">
-        <p className="text-red-500">{error}</p>
-      </div>
-    );
+    return <div className="text-center py-12"><p className="text-red-500">{error}</p></div>;
   }
 
   if (!data.length) {
-    return (
-      <div className="text-center py-12">
-        <p>No related products found.</p>
-      </div>
-    );
+    return <div className="text-center py-12"><p>No products found.</p></div>;
   }
 
   return (
     <div className="py-12 px-8 lg:px-16">
+      <script type="application/ld+json">
+        {JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "ItemList",
+          "name": "Saud Solutions Featured Products",
+          "itemListElement": data.map((product, index) => ({
+            "@type": "ListItem",
+            "position": index + 1,
+            "item": {
+              "@type": "Product",
+              "name": product.title,
+              "image": urlFor(product.productImage).url(),
+              "url": `https://saudsolutions.com/product/${product._id}`,
+              "description": product.shortDescription,
+              "offers": {
+                "@type": "Offer",
+                "priceCurrency": "PKR",
+                "price": product.price,
+                "availability": product.freeDelivery ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+              },
+              "brand": {
+                "@type": "Brand",
+                "name": product.brandName || "Saud Solutions",
+              },
+            },
+          })),
+        })}
+      </script>
       <Toaster />
       <div
         className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 max-w-7xl mx-auto ${
@@ -194,54 +185,38 @@ export default function Products({ tags, excludeId }: ProductsProps) {
             role="listitem"
             aria-label={`Product: ${item.title}`}
           >
-            {/* Product Image */}
             <Image
-              src={urlFor(item.productImage).width(1000).height(1000).url()}
-              alt={`Image of ${item.title}`}
-              width={1000}
-              height={1000}
+              src={urlFor(item.productImage).width(400).height(400).format('webp').url()}
+              alt={`${item.title} - ${item.category} at Saud Solutions`}
+              width={400}
+              height={400}
               loading="lazy"
-              priority={false}
-              className=" object-cover"
+              className="object-cover"
             />
-
-            {/* Discount, New, and Free Delivery Tags */}
             {item.dicountPercentage && (
               <span
                 className="absolute top-4 right-4 bg-red-500 text-white text-xs font-bold flex items-center justify-center"
-                style={{
-                  width: "33px",
-                  height: "33px",
-                  borderRadius: "50%",
-                }}
+                style={{ width: "33px", height: "33px", borderRadius: "50%" }}
                 aria-label={`Discount: ${item.dicountPercentage}%`}
               >
                 {item.dicountPercentage}%
               </span>
             )}
-
             {item.isNew && (
               <span
                 className="absolute top-4 right-4 bg-green-500 text-white text-xs font-bold flex items-center justify-center"
-                style={{
-                  width: "33px",
-                  height: "33px",
-                  borderRadius: "50%",
-                }}
+                style={{ width: "33px", height: "33px", borderRadius: "50%" }}
                 aria-label="New Product"
               >
                 NEW
               </span>
             )}
-
             {item.freeDelivery && (
               <div className="absolute top-4 left-4 bg-indigo-500 text-white text-xs font-bold py-1 px-2 rounded-md flex items-center space-x-1">
                 <FaTruck />
                 <span>Free Delivery</span>
               </div>
             )}
-
-            {/* Product Details */}
             <div className="p-4">
               <h3 className="font-semibold text-lg line-clamp-2" title={item.title}>
                 {item.title}
@@ -258,8 +233,6 @@ export default function Products({ tags, excludeId }: ProductsProps) {
                 )}
               </div>
             </div>
-
-            {/* Hover Overlay */}
             <div className="hover-overlay">
               <Link href={`/product/${item._id}`} legacyBehavior>
                 <a
@@ -304,9 +277,9 @@ export default function Products({ tags, excludeId }: ProductsProps) {
         <Link href="/shop" legacyBehavior>
           <a
             className="px-10 py-2 text-yellow-600 border-2 border-yellow-600 hover:bg-yellow-500 hover:text-white font-medium rounded transition"
-            aria-label="Show more products"
+            aria-label="Explore all products at Saud Solutions"
           >
-            Show More
+            Shop All Products
           </a>
         </Link>
       </div>

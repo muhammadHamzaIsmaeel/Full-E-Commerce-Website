@@ -16,7 +16,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
 interface IProduct {
-  id: string;
   _id: string;
   title: string;
   price: string;
@@ -26,6 +25,7 @@ interface IProduct {
   productImage: string;
   tag: string;
   category: string;
+  brandName: string;
 }
 
 export default function TrendyProductsSection() {
@@ -38,11 +38,9 @@ export default function TrendyProductsSection() {
       try {
         const fetchedProducts: IProduct[] = await client.fetch(
           `*[_type == "product" && tranding == true]{
-            _id, id, title, tag, category,
-            dicountPercentage, price, oldPrice, isNew, productImage
-          }`
+            _id, title, tag, category, dicountPercentage, price, oldPrice, isNew, productImage, brandName
+          }[0...8]`
         );
-
         if (!fetchedProducts.length) {
           setError("No trending products found.");
         } else {
@@ -55,46 +53,61 @@ export default function TrendyProductsSection() {
         setIsLoading(false);
       }
     };
-
     fetchProducts();
   }, []);
 
   if (isLoading) return <div className="text-center">Loading products...</div>;
   if (error) return <div className="text-center text-red-500">{error}</div>;
-  if (!products.length)
-    return <div className="text-center">No products found.</div>;
+  if (!products.length) return <div className="text-center">No trending products found.</div>;
 
   return (
-    <section
-      className="relative  h-[650px] md:h-[500px] w-full bg-cover bg-center flex flex-col md:flex-row items-center"
-      aria-label="Trendy Products Section"
-    >
-      {/* Left Section */}
+    <section className="relative h-[650px] md:h-[500px] w-full bg-cover bg-center flex flex-col md:flex-row items-center" aria-label="Trending Products">
+      <script type="application/ld+json">
+        {JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "ItemList",
+          "name": "Saud Solutions Trending Products",
+          "itemListElement": products.map((product, index) => ({
+            "@type": "ListItem",
+            "position": index + 1,
+            "item": {
+              "@type": "Product",
+              "name": product.title,
+              "image": urlFor(product.productImage).url(),
+              "url": `https://saudsolutions.com/product/${product._id}`,
+              "offers": {
+                "@type": "Offer",
+                "priceCurrency": "PKR",
+                "price": product.price,
+                "availability": "https://schema.org/InStock",
+              },
+              "brand": {
+                "@type": "Brand",
+                "name": product.brandName || "Saud Solutions",
+              },
+            },
+          })),
+        })}
+      </script>
       <div className="md:pl-16 pl-4 py-5 w-full md:py-20 text-black space-y-4 md:space-y-6">
-        <h1 className="md:text-4xl text-2xl font-bold text-gray-800 leading-tight">
+        <h2 className="md:text-4xl text-2xl font-bold text-gray-800 leading-tight">
           Trending Now: Must-Have Products
-        </h1>
+        </h2>
         <p className="md:text-lg lg:pr-16 text-gray-600">
-          Discover the hottest products everyone&apos;s talking about. Shop the
-          latest trends in fashion, electronics, beauty, and more!
+          Shop the latest trends in beauty, skincare, fashion, electronics, and more at Saud Solutions.
         </p>
-        <Link href="/shop" aria-label="Explore More">
+        <Link href="/shop" aria-label="Explore Trending Products">
           <Button
-            className="bg-[#B88E2F] text-white mt-5 px-4 py-2 md:px-8 md:py-3 text-lg font-medium 
-            hover:bg-[#c89b32] transition duration-300"
+            className="bg-[#B88E2F] text-white mt-5 px-4 py-2 md:px-8 md:py-3 text-lg font-medium hover:bg-[#c89b32] transition duration-300"
           >
-            Explore More
+            Shop Trending Products
           </Button>
         </Link>
       </div>
-
-      {/* Right Section: Product Image Carousel */}
       <div className="relative flex items-center w-full md:w-2/3 justify-center mt-6 md:mt-0">
         <div className="w-[310px] md:w-[440px] lg:w-[870px] relative">
           <Carousel
-            opts={{
-              align: "start",
-            }}
+            opts={{ align: "start" }}
             className="w-full"
           >
             <CarouselContent className="p-0">
@@ -106,11 +119,7 @@ export default function TrendyProductsSection() {
                   <div className="p-0">
                     <Card className="m-0 h-full">
                       <CardContent className="p-0 bg-white rounded-lg h-full flex flex-col">
-                        <Link
-                          href={`/product/${product._id}`}
-                          key={product._id}
-                          legacyBehavior
-                        >
+                        <Link href={`/product/${product._id}`} legacyBehavior>
                           <a className="relative rounded-lg pt-6 overflow-hidden flex-grow block">
                             {product.dicountPercentage && (
                               <div className="absolute z-20 top-8 right-3 bg-red-500 text-white text-xs font-bold py-1 px-2 rounded-full">
@@ -122,18 +131,16 @@ export default function TrendyProductsSection() {
                                 NEW
                               </div>
                             )}
-
                             <div className="relative h-48">
                               <Image
-                                src={urlFor(product.productImage).url()}
-                                alt={product.title}
+                                src={urlFor(product.productImage).width(300).height(300).format('webp').url()}
+                                alt={`${product.title} - ${product.category} at Saud Solutions`}
                                 fill
                                 loading="lazy"
                                 style={{ objectFit: "cover" }}
                                 className="absolute rounded-lg top-0 left-0 w-full h-full object-cover"
                               />
                             </div>
-
                             <div className="p-4 flex flex-col justify-between h-full">
                               <div>
                                 <h3 className="text-lg font-semibold text-gray-900 line-clamp-2">

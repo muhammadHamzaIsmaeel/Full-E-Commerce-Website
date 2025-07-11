@@ -1,4 +1,3 @@
-// BrandProductsSection.tsx
 "use client";
 
 import { useState, useEffect } from "react";
@@ -16,7 +15,6 @@ import {
 import { Card, CardContent } from "@/components/ui/card";
 
 interface IProduct {
-  id: string;
   _id: string;
   title: string;
   shortDescription: string;
@@ -34,24 +32,22 @@ export default function BrandProductsSection() {
   const [products, setProducts] = useState<IProduct[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
-  // Hardcoded brand name and logo
-  const brandName = "CeraVe";
-  const brandLogo = "/cerave.png"; // Replace with the actual path to the logo
+  const [brand] = useState<{ name: string; logo: string }>({
+    name: "Cerave",
+    logo: "/cerave.png",
+  });
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         const fetchedProducts: IProduct[] = await client.fetch(
           `*[_type == "product" && brandName == "Cerave"]{
-            _id, id, title, tag, category, shortDescription, 
+            _id, title, tag, category, shortDescription, 
             dicountPercentage, price, oldPrice, isNew, productImage,
             brandName
-          }`
+          }`,
+          // { brandName: brand.name, next: { revalidate: 3600 } }
         );
-
-        console.log("Fetched Products:", fetchedProducts); // Debugging ke liye
-
         if (!fetchedProducts.length) {
           setError("No products found for this brand.");
         } else {
@@ -64,34 +60,56 @@ export default function BrandProductsSection() {
         setIsLoading(false);
       }
     };
-
     fetchProducts();
-  }, [brandName]);
+  }, [brand.name]);
 
   if (isLoading) return <div className="text-center">Loading products...</div>;
   if (error) return <div className="text-center text-red-500">{error}</div>;
-  if (!products.length)
-    return <div className="text-center">No products found.</div>;
+  if (!products.length) return <div className="text-center">No products found.</div>;
 
   return (
-    <section
-      className="relative bg-[#F5F5F5] py-12"
-      aria-label="Trendy Products Section"
-    >
-      <Link href={`/brand/Cerave`}>
+    <section className="relative bg-[#F5F5F5] py-12" aria-label={`${brand.name} Products Section`}>
+      <script type="application/ld+json">
+        {JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "ItemList",
+          "name": `${brand.name} Products at Saud Solutions`,
+          "itemListElement": products.map((product, index) => ({
+            "@type": "ListItem",
+            "position": index + 1,
+            "item": {
+              "@type": "Product",
+              "name": product.title,
+              "image": urlFor(product.productImage).url(),
+              "url": `https://saudsolutions.com/product/${product._id}`,
+              "description": product.shortDescription,
+              "offers": {
+                "@type": "Offer",
+                "priceCurrency": "PKR",
+                "price": product.price,
+                "availability": "https://schema.org/InStock",
+              },
+              "brand": {
+                "@type": "Brand",
+                "name": product.brandName,
+              },
+            },
+          })),
+        })}
+      </script>
+      <Link href={`/brand/${brand.name}`}>
         <h2 className="text-4xl font-bold py-7 text-center text-[#333333] mt-4 cursor-pointer">
-          {brandName}
+          {brand.name}
         </h2>
       </Link>
       <div className="container mx-auto px-4">
-        {/* Brand Section */}
         <div className="flex flex-col md:flex-row items-center mb-12">
           <div className="md:w-1/4 flex flex-col items-center md:items-start mb-4 md:mb-0">
-            <Link href={`/brand/Cerave`}>
+            <Link href={`/brand/${brand.name}`}>
               <div className="bg-[#FFC0CB] p-4 rounded-full shadow-lg cursor-pointer">
                 <Image
-                  src={brandLogo}
-                  alt={`${brandName} Logo`}
+                  src={brand.logo}
+                  alt={`${brand.name} Logo at Saud Solutions`}
                   width={150}
                   height={150}
                   loading="lazy"
@@ -100,17 +118,13 @@ export default function BrandProductsSection() {
                 />
               </div>
             </Link>
-            <h2 className="text-2xl font-bold text-[#333333] mt-4">
-              {brandName}
-            </h2>
+            <h3 className="text-2xl font-bold text-[#333333] mt-4">
+              {brand.name}
+            </h3>
           </div>
-
-          {/* Products Section (Carousel) */}
           <div className="w-[310px] md:w-3/4 relative">
             <Carousel
-              opts={{
-                align: "start",
-              }}
+              opts={{ align: "start" }}
               className="w-full"
             >
               <CarouselContent className="p-0">
@@ -122,14 +136,8 @@ export default function BrandProductsSection() {
                     <div className="p-0">
                       <Card className="m-0 h-full bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow">
                         <CardContent className="p-0 h-full rounded-lg flex flex-col">
-                          {/* Wrap the entire card content in a Link */}
-                          <Link
-                            href={`/product/${product._id}`}
-                            key={product._id}
-                            legacyBehavior
-                          >
+                          <Link href={`/product/${product._id}`} legacyBehavior>
                             <a className="relative rounded-lg pt-6 overflow-hidden flex-grow block">
-                              {/* Discount Badge (Top Right) */}
                               {product.dicountPercentage && (
                                 <div className="absolute z-20 top-8 right-3 bg-[#FFD700] text-white text-xs font-bold py-1 px-2 rounded-full">
                                   -{product.dicountPercentage}%
@@ -140,19 +148,16 @@ export default function BrandProductsSection() {
                                   NEW
                                 </div>
                               )}
-
-                              {/* Product Image */}
                               <div className="relative h-48">
                                 <Image
-                                  src={urlFor(product.productImage).url()}
-                                  alt={product.title}
+                                  src={urlFor(product.productImage).width(300).height(300).format('webp').url()}
+                                  alt={`${product.title} - ${product.category} by ${product.brandName} at Saud Solutions`}
                                   fill
                                   style={{ objectFit: "cover" }}
                                   className="absolute rounded-lg top-0 left-0 w-full h-full object-cover"
+                                  loading="lazy"
                                 />
                               </div>
-
-                              {/* Product Details */}
                               <div className="p-4 flex flex-col justify-between h-full">
                                 <div>
                                   <h3 className="text-lg font-semibold text-[#333333] line-clamp-2">
